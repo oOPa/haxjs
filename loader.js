@@ -95,9 +95,6 @@ misc.endFill();
 graphics.addChild(chat);
 graphics.addChild(misc);
 stage.addChild(graphics);
-/**** ****/
-var acceleration = new PIXI.Vector();
-/**** ****/
 
 // run the render loop
 animate();
@@ -107,16 +104,26 @@ function animate() {
     renderer.render(stage);	
     requestAnimationFrame( animate );
 }
-
+function Anim(e)
+{
+	if(e == 37){player.x--;}
+				else if(e == 39){player.x++;}
+				else if(e == 38){player.y--;}
+				else if(e == 40){player.y++;}
+}
 
 
 	document.addEventListener('keydown', function (e) {
         if (e.keyCode > 36 && e.keyCode < 41) {
-			acceleration.add(new PIXI.Vector(0,0.001));
+            console.log(e.keyCode);	
+			Anim(e.keyCode)
+
 		}
     });
     document.addEventListener('keyup', function (e) {
-			acceleration.sub(new PIXI.Vector(0,0.001));
+			Anim(e.keyCode);
+            //dx = 0;
+			//dy = 0;
     });
 	
 
