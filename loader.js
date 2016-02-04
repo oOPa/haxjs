@@ -76,10 +76,12 @@ graphics.endFill();
 /** add chat area **/
 var chat = new PIXI.Graphics();
 chat.beginFill(0x3c312b);
-chat.drawRect(0,500,400,200);
+chat.drawRoundedRect(0,500,400,200,15);
 chat.endFill();
-t= new PIXI.Text('* vagrant was moved to red',{font : '24px Arial', fill : 'white', align : 'center'});
-t.y = 500;
+t= new PIXI.Text('* vagrant was moved to red',{font : '20px Arial', fill : 'white', align : 'center'});
+t.y = 510;
+t.x += 10;
+chat.x = 20;
 chat.addChild(t);
 /** misc area **/
 var misc = new PIXI.Graphics();
