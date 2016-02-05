@@ -37,8 +37,15 @@ PIXI.Vector.prototype.copy = function (p) {
 };
 
 PIXI.Vector.prototype.add = function(v) {
+	if(v instanceof PIXI.Vector){
     this.x += v.x;
     this.y += v.y;
+	}
+	else
+	{
+		this.x += arguments[0];
+    this.y += arguments[1];
+	}
     return this;
 };
 
@@ -154,6 +161,7 @@ PIXI.Vector.prototype.rotate = function(theta) {
 
 // constructor
 PIXI.Vector.prototype.constructor = PIXI.Vector;
+PIXI.Point.prototype.constructor = PIXI.Point;
 
 /** apply it **/
 PIXI.Point = PIXI.Vector;
