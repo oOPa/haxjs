@@ -1,6 +1,6 @@
 //var peer = new Peer({key: 'dlsz9588ud3rf6r'});
 //var peer = new Peer({key: 'uudkizxc7pl4ygb9'});
-var peer = new Peer('host',{host : "freecodecamp.cloudapp.net",port:80,key:"peerjs"});
+var peer = new Peer('host',{host : "haxjs.cloudapp.net",port:80,key:"peerjs"});
 
 peer.on('open', function(id) {
 	console.log('My peer ID is: ' + id);
