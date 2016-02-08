@@ -149,6 +149,7 @@ function animate() {
 }
 **/
 velocity.add(acceleration);
+console.log(acceleration);
 player.position.add(velocity);
     renderer.render(stage);	
     requestAnimationFrame( animate );
@@ -171,7 +172,7 @@ function Anim(e)
 		}
     });
     document.addEventListener('keyup', function (e) {
-			acceleration.add(acceleration.add(-0.01, 0));
+			acceleration.add(-0.00001, 0);
 			console.log("up");
     });
 	
