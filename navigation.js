@@ -119,7 +119,7 @@ conn.on('data',function(dataConnection){
 var createRoom = function()
 {
 	$("#roomlist").addClass("hide");
-	var peer = new Peer('host',{host : "haxjs.cloudapp.net",port:80,key:"peerjs"});
+	var peer = new Peer('host',{host : "haxjs.cloudapp.net",path:"/api",port:80,key:"peerjs"});
 
 	peer.on('open', function(id) {
 		console.log('My peer ID is: ' + id);
@@ -132,7 +132,7 @@ var createRoom = function()
 		dataConnection.on('close',function(){console.log("DC");var that=this;window.game.addText(that.peer + "has disconnected")});
 		
 		//console.log();
-		//window.game.addPlayer(dataConnection.peer,20);
+		window.game.addPlayer(dataConnection.peer,20);
 		window.game.addText(dataConnection.peer + "has joined");
 		dataConnection.on('data',function(data){
 			
