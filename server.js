@@ -1,3 +1,4 @@
+var ExpressPeerServer = require('peer').ExpressPeerServer;
 var express = require("express")
 app = express();
 //app.use(express.static('.'));
@@ -11,4 +12,9 @@ app.get("/", function(req,res){res.sendFile(__dirname+"/entry.html");});
 app.get("/create_room",function (req,res){
 	
 })
-app.listen(process.env.port || 8888);
+
+server = app.listen(process.env.port || 8888);
+var options = {
+    debug: true
+};
+app.use('/api', ExpressPeerServer(server, options));
