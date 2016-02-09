@@ -1,32 +1,56 @@
-
 var Loader = function(){
 	var that = this;
-that.players =  [];
-this.playerObject = function(name,avatar) {
-	var that = this;
-	this.name = name;
-	this.avatar = avatar;
-	this.graphics = new PIXI.Graphics();
-	/** draw player **/
-	that.graphics.beginFill(0x00FF00);
-	// draw a circle, set the lineStyle to zero so the circle doesn't have an outline
-	that.graphics.lineStyle(3,0xFFFFFF);
-	that.graphics.beginFill(0xE56E56, 1);
-	that.graphics.drawCircle(470, 90,25);
-	that.graphics.endFill();
-	/** add text to player **/
-	that.text = new PIXI.Text('ax',{font : '24px Arial', fill : 'white', align : 'center'});
-	var n = -5;
-	that.text.x = (470)+n;
-	that.text.y = (90)+n-5;
-	that.graphics.addChild(that.text);
-}
+	that.players =  [];
+	this.playerObject = function(name,avatar) {
+		var that = this;
+		this.name = name;
+		this.avatar = avatar.substr(0,2);
+		this.graphics = new PIXI.Graphics();
+		/** draw player **/
+		/* dunno what this does */
+		//that.graphics.beginFill(0x00FF00);
+		/** player border **/
+		that.graphics.lineStyle(3,0xFFFFFF);
+		/** player inner color **/
+		that.graphics.beginFill(0xE56E56, 1);
+		/** draw the actual circle **/
+		that.graphics.drawCircle(Loader.constants.RADIUS, 50,Loader.constants.RADIUS);
+		that.graphics.endFill();
+		/** add text to player and add name**/
+		/** 
+			TODO find way to align avatar and names
+		**/
+		that.name_label = new PIXI.Text(name,{font : '25px Arial', fill : 'white', align : 'center'});
+		that.avatar_label = new PIXI.Text("a",{font : '25px Arial', fill : 'white', align : 'center'});
+		
+		that.avatar_label.x = Loader.constants.RADIUS-7.50;
+		that.avatar_label.y = (50)-15;
+		
+		that.name_label.y = Loader.constants.RADIUS*3;
+		
+		
+		that.graphics.addChild(that.avatar_label);
+		that.graphics.addChild(that.name_label);
+	}
 var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
 document.getElementById("game-view").appendChild(renderer.view)
 //renderer.backgroundColor = 0x718c5a;
 renderer.backgroundColor = 0x939e7f;
 
 // create the root of the scene graph
+/**
+	stage
+		graphics
+			viewport_
+				camera
+					players
+			chat
+				txt
+				
+			misc
+				menuTxt
+				optTxt
+**/
 var stage = new PIXI.Container();
 that.stage = stage;
 var graphics = new PIXI.Graphics();
@@ -42,7 +66,7 @@ graphics.lineStyle(20,0x3c312b,1);
 graphics.alpha = 1;
 graphics.drawRoundedRect(0,0,800,(600-150),25);
 graphics.endFill();
-/**/
+/*create player 1*/
 that.players.push(new that.playerObject("Enyinna","4"));
 
 that.camera.addChild(that.players[0].graphics);
@@ -100,12 +124,12 @@ var chat = new PIXI.Graphics();
 chat.beginFill(0x3c312b);
 chat.drawRoundedRect(0,500,400,200,15);
 chat.endFill();
-t= new PIXI.Text('* vagrant was moved to red\n',{font : '20px Arial', fill : 'white', align : 'center'});
-that.t = t;
-t.y = 510;
-t.x += 10;
+txt= new PIXI.Text('* vagrant was moved to red\n',{font : '20px Arial', fill : 'white', align : 'center'});
+that.txt = txt;
+txt.y = 510;
+txt.x += 10;
 chat.x = 20;
-chat.addChild(t);
+chat.addChild(txt);
 /** misc area **/
 var misc = new PIXI.Graphics();
 misc.beginFill(0x3c312b);
@@ -185,6 +209,9 @@ Loader.prototype.addPlayer = function(name, avatar){
 	that.players.push(player);
 	that.camera.addChild(player.graphics);
 }
-Loader.prototype.addText = function(text) {
-	this.t.text+= text+"\n";
+Loader.prototype.addText = function(txt) {
+	this.txt.text+= txt+"\n";
 }
+Loader.constants = {
+	RADIUS : 25
+};
