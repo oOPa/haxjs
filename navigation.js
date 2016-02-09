@@ -98,7 +98,7 @@ function enterRoom(host)
 	}));
 	**/
 	
-	var peer = new Peer({host : "haxjs.cloudapp.net",port:80,key:"peerjs"});
+	var peer = new Peer({host : "haxjs.cloudapp.net",path:"/api",port:80,key:"peerjs"});
 	peer.on('open', function(id) {
 		console.log('My peer ID is: ' + id);
 	}); 
