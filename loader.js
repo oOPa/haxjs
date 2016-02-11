@@ -64,7 +64,7 @@ viewport_.y=0
 //graphics.beginFill(0x3c312b);
 graphics.lineStyle(20,0x3c312b,1);
 graphics.alpha = 1;
-graphics.drawRoundedRect(0,0,800,(600-150),25);
+graphics.drawRect(0,0,800,(600-150));
 graphics.endFill();
 /*create player 1*/
 that.players.push(new that.playerObject("Enyinna","4"));
@@ -122,7 +122,7 @@ that.camera.endFill();
 var chat = new PIXI.Graphics();
 //var chatContent = new PIXI.DisplayObjectContainer();
 chat.beginFill(0x3c312b);
-chat.drawRoundedRect(0,500,400,200,15);
+chat.drawRect(0,500,400,200);
 chat.endFill();
 txt= new PIXI.Text('* vagrant was moved to red\n',{font : '20px Arial', fill : 'white', align : 'center'});
 that.txt = txt;
@@ -215,3 +215,7 @@ Loader.prototype.addText = function(txt) {
 Loader.constants = {
 	RADIUS : 25
 };
+var Stadium = function()
+{
+	/** Players **/
+}
