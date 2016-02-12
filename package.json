@@ -10,6 +10,10 @@
     "type": "git",
     "url": "git+https://github.com/oOPa/haxjs.git"
   },
+  "dependencies": {
+    "express": ">= 4.0.0",
+    "peer": ">= 0.0.1"
+  },
   "author": "haxjs.net",
   "license": "ISC",
   "bugs": {
