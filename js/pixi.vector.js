@@ -38,20 +38,27 @@ PIXI.Vector.prototype.copy = function (p) {
 
 PIXI.Vector.prototype.add = function(v) {
 	if(v instanceof PIXI.Vector){
-    this.x += v.x;
-    this.y += v.y;
+		this.x += v.x;
+		this.y += v.y;
 	}
 	else
 	{
 		this.x += arguments[0];
-    this.y += arguments[1];
+		this.y += arguments[1];
 	}
     return this;
 };
 
 PIXI.Vector.prototype.sub = function(v) {
-    this.x -= v.x;
-    this.y -= v.y;
+	if(v instanceof PIXI.Vector){
+		this.x -= v.x;
+		this.y -= v.y;
+	}
+	else
+	{
+		this.x -= arguments[0];
+		this.y -= arguments[1];
+	}
     return this;
 };
 

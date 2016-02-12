@@ -1,5 +1,12 @@
 var Loader = function(){
 	var that = this;
+	that.keys = [false,false,false,false];
+	that.Directions = {
+    39:0,
+    40:3,
+    37:2,
+    38:1
+}
 	that.players =  [];
 	this.playerObject = function(name,avatar) {
 		var that = this;
@@ -124,11 +131,13 @@ var chat = new PIXI.Graphics();
 chat.beginFill(0x3c312b);
 chat.drawRect(0,500,400,200);
 chat.endFill();
+
 txt= new PIXI.Text('* vagrant was moved to red\n',{font : '20px Arial', fill : 'white', align : 'center'});
 that.txt = txt;
 txt.y = 510;
 txt.x += 10;
-chat.x = 20;
+chat.x = 0;
+
 chat.addChild(txt);
 /** misc area **/
 misc = new PIXI.Graphics();
@@ -139,15 +148,15 @@ misc.endFill();
 that.misc = misc;
 /* menu buttons */
 misc.beginFill(0x604E44);
-misc.drawRect(misc.x, 300, 150, 50);
-misc.drawRect(misc.x, 500, 150,50);
-var menuTxt =  new PIXI.Text('Menu (esc)',{font : '20px Arial', fill : 'white', align : 'center'});
-var optTxt =  new PIXI.Text('Options',{font : '20px Arial', fill : 'white', align : 'center'});
-menuTxt.x = 500;
-menuTxt.y = 300;
+misc.drawRect(misc_pos.x, 500, 75, 30);
+misc.drawRect(misc_pos.x, 550, 75,30);
+var menuTxt =  new PIXI.Text('Menu (esc)',{font : '15px Arial', fill : 'white', align : 'center'});
+var optTxt =  new PIXI.Text('Options',{font : '15px Arial', fill : 'white', align : 'center'});
+menuTxt.x = misc_pos.x;
+menuTxt.y = 500;
 
-optTxt.x = 500;
-optTxt.y = 450;
+optTxt.x = misc_pos.x;;
+optTxt.y = 550;
 //604E44
 misc.addChild(menuTxt);
 misc.addChild(optTxt);
@@ -170,15 +179,63 @@ animate();
 var oldtime = Math.floor(Date.now() / 1000);
 var shit=false;
 
+Vec = function (deg, mag) {
+    var deg = deg2rad(deg);
+    this.vec = new PIXI.Vector(Math.cos(deg) * mag, Math.sin(deg) * mag);
+};
+deg2rad = function (deg) {
+    return deg * Math.PI / 180;
+};
 
+function physics()
+{
+	var vec = new PIXI.Vector(0, 0);
+	that.keys.forEach(function (key, i) {
+	if (key) {
+		var vec2 = new Vec(i * -90, 10);
+		vec.add(vec2.vec);
+	}
+	});
+
+	if (vec.length() > 0)
+	{
+		//player.body.ApplyForce(vec, player.body.GetWorldCenter());
+		that.players[0].graphics.position.add(vec);
+		
+	}
+}
+function move()
+{
+    var start_time = new Date().getTime();
+    var interval_length = 50;   
+	var duration = 50;
+	
+	var timer = setInterval(function(){
+		var elapsed_time = new Date().getTime() - start_time;
+        var this_length = elapsed_time / duration * total_length;
+        var subpathstr = guide_path.getSubpath( 0, this_length );            
+        attr.path = subpathstr;
+
+        path.animate( attr, interval_length );
+        if ( elapsed_time >= duration )
+        {
+            clearInterval( interval_id );
+            if ( callback != undefined ) callback();
+                guide_path.remove();
+        }                                       
+    }, interval_length ); 
+	});
+}
 function animate() {
 
 velocity.add(acceleration);
 
 that.players[0].graphics.position.add(velocity);
     renderer.render(stage);	
+	physics();
     requestAnimationFrame( animate );
 }
+
 function Anim(e)
 {
 	if(e == 37){that.players[0].graphics.x--;}
@@ -186,22 +243,33 @@ function Anim(e)
 				else if(e == 38){that.players[0].graphics.y--;}
 				else if(e == 40){that.players[0].graphics.y++;}
 }
-
+/**
 
 	document.addEventListener('keydown', function (e) {
         if (e.keyCode > 36 && e.keyCode < 41) {
-
 			console.log("downup")
 			Anim(e.keyCode)
 
 		}
     });
     document.addEventListener('keyup', function (e) {
-			acceleration.add(-0.00001, 0);
+			acceleration.sub(0.00001, 0);
 			console.log("up");
+			//window.game.
     });
 	
+**/
 
+   document.addEventListener('keydown', function (e) {
+        if (e.keyCode > 36 && e.keyCode < 41) {
+            that.keys[that.Directions[e.keyCode]] = true;		
+			console.log(e.keyCode);
+        }
+    });
+    document.addEventListener('keyup', function (e) {
+            that.keys[that.Directions[e.keyCode]] = false;			
+			console.log(e.keyCode);
+    });
 
 };
 
