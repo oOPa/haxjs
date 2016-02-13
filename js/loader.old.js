@@ -1,67 +1,18 @@
-var b2Vec2 = Box2D.Common.Math.b2Vec2,
-    b2BodyDef = Box2D.Dynamics.b2BodyDef,
-    b2Body = Box2D.Dynamics.b2Body,
-    b2FixtureDef = Box2D.Dynamics.b2FixtureDef,
-    b2Fixture = Box2D.Dynamics.b2Fixture,
-    b2World = Box2D.Dynamics.b2World,
-    b2MassData = Box2D.Collision.Shapes.b2MassData,
-    b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape,
-    b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
-
-	var Loader2 = function()
+var Animator = function(player)
 {
-	var that  = this;
-	this.world = new b2World(new b2Vec2(0, 0), true);
-	this.buildGround();
-	this.player = new Loader2.hxPlayer(that.world);
-
+	this.vec = new PIXI.Vector();
+	this.started = false;
+	this.player = player;
+	this.interval_id = 0;
 }
-
-Loader2.hxPlayer = function (world) {
-    var bodyDef = new b2BodyDef();
-    bodyDef.type = b2Body.b2_dynamicBody;
-
-    var fixDef = new b2FixtureDef();
-    fixDef.density = hx.constants.Player.DENSITY;
-    fixDef.friction = hx.constants.Player.FRICTION;
-    fixDef.restitution = hx.constants.Player.RESTITUTION;
-    fixDef.shape = new b2CircleShape(hx.constants.Player.RADIUS);
-
-    bodyDef.position.x = 100 / hx.constants.World.SCALE;
-    bodyDef.position.y = 100 / hx.constants.World.SCALE;
-
-    bodyDef.linearDamping = hx.constants.Player.LD;
-    bodyDef.angularDamping = hx.constants.Player.AD;
-
-    this.body = world.CreateBody(bodyDef);
-    this.body.CreateFixture(fixDef);
-	this.keys = [false,false,false,false];
-};
-
-Loader2.prototype.buildGround = function () {
-    var fixDef = new b2FixtureDef();
-    fixDef.density = hx.constants.Ground.DENSITY;
-    fixDef.friction = hx.constants.Ground.FRICTION;
-    fixDef.restitution = hx.constants.Ground.RESTITUTION;
-    fixDef.shape = new b2PolygonShape();
-
-    var bodyDef = new b2BodyDef();
-    bodyDef.type = b2Body.b2_staticBody;
-
-    for (var b in hx.grounds.G1) {
-        b = hx.grounds.G1[b];
-        bodyDef.position.x = b[0] / hx.constants.World.SCALE;
-        bodyDef.position.y = b[1] / hx.constants.World.SCALE;
-        fixDef.shape.SetAsBox((b[2] / hx.constants.World.SCALE), (b[3] / hx.constants.World.SCALE));
-        this.world.CreateBody(bodyDef).CreateFixture(fixDef);
-    }
+Animator.prototype.start = function(){
+	
 }
-
-Loader2.prototype.update = function () {
-    this.world.Step(1 / 60, 10, 10);
-    //this.world.DrawDebugData();
-    this.world.ClearForces();
-
+Animator.prototype.stop = function(){
+	
+}
+Animator.prototype.push = function(){
+	
 }
 var Loader = function(){
 	var that = this;
@@ -72,7 +23,6 @@ var Loader = function(){
     37:2,
     38:1
 }
-	that.physics = new Loader2();
 	that.players =  [];
 	this.playerObject = function(name,avatar) {
 		var that = this;
@@ -236,7 +186,7 @@ graphics.addChild(misc);
 stage.addChild(graphics);
 
 // run the render loop
-//that.animatorObject = new Animator(that.players[0]);
+that.animatorObject = new Animator(that.players[0]);
 var acceleration = new PIXI.Vector(0,0);
 var velocity = new PIXI.Vector(0,0);
 that.players[0].graphics.position = new PIXI.Vector(0,0);
@@ -254,12 +204,12 @@ deg2rad = function (deg) {
     return deg * Math.PI / 180;
 };
 
-function forces()
+function physics()
 {
 	var vec = new PIXI.Vector(0, 0);
 	that.keys.forEach(function (key, i) {
 	if (key) {
-		var vec2 = new Vec(i * -90, 100);
+		var vec2 = new Vec(i * -90, 2);
 		vec.add(vec2.vec);
 	}
 	});
@@ -267,8 +217,7 @@ function forces()
 	if (vec.length() > 0)
 	{
 		//player.body.ApplyForce(vec, player.body.GetWorldCenter());
-		that.physics.player.body.ApplyForce(vec, that.physics.player.body.GetWorldCenter());
-		//that.players[0].graphics.position.add(vec);
+		that.players[0].graphics.position.add(vec);
 		//velocity.add(vec);
 	}
 }
@@ -279,13 +228,7 @@ function animate() {
 velocity.add(acceleration);
 that.players[0].graphics.position.add(velocity);
     renderer.render(stage);	
-	forces();
-	that.physics.update();
-	v=that.physics.player.body.GetPosition();
-	//that.players[0].graphics.position.x = v.x;
-	//that.players[0].graphics.position.y = v.y;
-	that.players[0].graphics.position.x = v.x;
-	that.players[0].graphics.position.y = v.y;
+	physics();
     requestAnimationFrame( animate );
 }
 
@@ -296,7 +239,22 @@ function Anim(e)
 				else if(e == 38){that.players[0].graphics.y--;}
 				else if(e == 40){that.players[0].graphics.y++;}
 }
+/**
 
+	document.addEventListener('keydown', function (e) {
+        if (e.keyCode > 36 && e.keyCode < 41) {
+			console.log("downup")
+			Anim(e.keyCode)
+
+		}
+    });
+    document.addEventListener('keyup', function (e) {
+			acceleration.sub(0.00001, 0);
+			console.log("up");
+			//window.game.
+    });
+	
+**/
 
    document.addEventListener('keydown', function (e) {
         if (e.keyCode > 36 && e.keyCode < 41) {
