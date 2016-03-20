@@ -48,12 +48,15 @@ Loader2.prototype.buildGround = function () {
     var bodyDef = new b2BodyDef();
     bodyDef.type = b2Body.b2_staticBody;
 
-    for (var b in hx.grounds.G1) {
-        b = hx.grounds.G1[b];
+    for (var b in hx.grounds.G2) {
+		/**
+        b = hx.grounds.G2[b];
         bodyDef.position.x = b[0] / hx.constants.World.SCALE;
         bodyDef.position.y = b[1] / hx.constants.World.SCALE;
         fixDef.shape.SetAsBox((b[2] / hx.constants.World.SCALE), (b[3] / hx.constants.World.SCALE));
         this.world.CreateBody(bodyDef).CreateFixture(fixDef);
+		**/
+		
     }
 }
 
@@ -259,7 +262,7 @@ function forces()
 	var vec = new PIXI.Vector(0, 0);
 	that.keys.forEach(function (key, i) {
 	if (key) {
-		var vec2 = new Vec(i * -90, 100);
+		var vec2 = new Vec(i * -90,200);
 		vec.add(vec2.vec);
 	}
 	});

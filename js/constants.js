@@ -55,3 +55,9 @@ hx.grounds.G1 = {
     bottom:[0, hx.constants.World.HEIGHT - 10, hx.constants.World.WIDTH, 10],
     left:[10, 0, 10, hx.constants.World.HEIGHT]
 };
+hx.grounds.G2 = {
+    top:[0, 10, hx.constants.World.WIDTH, 10],
+    right:[hx.constants.World.WIDTH - 10, 0, 100, hx.constants.World.HEIGHT],
+    bottom:[0, hx.constants.World.HEIGHT - 10, hx.constants.World.WIDTH, 10],
+    left:[10, 0, 10, hx.constants.World.HEIGHT]
+};
