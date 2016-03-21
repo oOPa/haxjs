@@ -80,7 +80,7 @@ var Loader = function(){
 	this.playerObject = function(name,avatar) {
 		var that = this;
 		this.name = name;
-		this.avatar = avatar.substr(0,2);
+		//this.avatar = avatar.substr(0,2);
 		this.graphics = new PIXI.Graphics();
 		/** draw player **/
 		/* dunno what this does */

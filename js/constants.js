@@ -1,6 +1,10 @@
 var hx = {};
 hx.constants = {};
-
+console.log("Loading constants");
+hx.server = {};
+hx.server.host = "localhost";
+hx.server.port = 8888;
+hx.server.key = "peerjs";
 hx.constants.World = {
     FRICTION:0.1,
     SCALE:30,
