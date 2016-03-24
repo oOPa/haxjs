@@ -17,67 +17,8 @@ var play = function()
 }
 function loadRooms()
 {
-	list = {
-	ver:0.1,
-	rooms : [
-	{
-		ver :0.1,
-		host : "host",
-		name : "02323",
-		players : 0,
-		maxplayers : 8,
-		pass : 0,
-		country : 'gb',
-		lat : 0,
-		longitude :0
-	},
-		{
-		ver :0.1,
-		host : "00000",
-		name : "02323",
-		players : 0,
-		maxplayers : 8,
-		pass : 0,
-		country : 'gb',
-		lat : 0,
-		longitude :0
-	},
-		{
-		ver :0.1,
-		host : "00000",
-		name : "02323",
-		players : 0,
-		maxplayers : 8,
-		pass : 0,
-		country : 'gb',
-		lat : 0,
-		longitude :0
-	},
-		{
-		ver :0.1,
-		host : "00000",
-		name : "02323",
-		players : 0,
-		maxplayers : 8,
-		pass : 0,
-		country : 'gb',
-		lat : 0,
-		longitude :0
-	},
-		{
-		ver :0.1,
-		host : "00000",
-		name : "02323",
-		players : 0,
-		maxplayers : 8,
-		pass : 0,
-		country : 'gb',
-		lat : 0,
-		longitude :0
-	}	
-	]
-};
-		rooms = list.rooms;
+	
+		rooms = window.roomlist.rooms;
 		for(i in rooms)
 		{
 			room = rooms[i];
@@ -120,7 +61,6 @@ var createRoom = function()
 {
 	$("#roomlist").addClass("hide");
 	var peer = new Peer('host',{host : hx.server.host,path:"/api",port:hx.server.port,key:hx.server.key});
-	//var peer = new Peer('host',{host : "haxjs.cloudapp.net",path:"/api",port:80,key:"peerjs"});
 
 	peer.on('open', function(id) {
 		console.log('My peer ID is: ' + id);

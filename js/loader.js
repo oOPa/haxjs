@@ -8,16 +8,15 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2,
     b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape,
     b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
 
-	var Loader2 = function()
+var Physics = function()
 {
 	var that  = this;
 	this.world = new b2World(new b2Vec2(0, 0), true);
 	this.buildGround();
-	this.player = new Loader2.hxPlayer(that.world);
-
+	//this.player = new Loader2.hxPlayer(that.world);
 }
 
-Loader2.hxPlayer = function (world) {
+Physics.hxPlayer = function (world) {
     var bodyDef = new b2BodyDef();
     bodyDef.type = b2Body.b2_dynamicBody;
 
@@ -38,7 +37,7 @@ Loader2.hxPlayer = function (world) {
 	this.keys = [false,false,false,false];
 };
 
-Loader2.prototype.buildGround = function () {
+Physics.prototype.buildGround = function () {
     var fixDef = new b2FixtureDef();
     fixDef.density = hx.constants.Ground.DENSITY;
     fixDef.friction = hx.constants.Ground.FRICTION;
@@ -60,7 +59,7 @@ Loader2.prototype.buildGround = function () {
     }
 }
 
-Loader2.prototype.update = function () {
+Physics.prototype.update = function () {
     this.world.Step(1 / 60, 10, 10);
     //this.world.DrawDebugData();
     this.world.ClearForces();
@@ -75,10 +74,10 @@ var Loader = function(){
     37:2,
     38:1
 }
-	that.physics = new Loader2();
+	that.physics = new Physics();
 	that.players =  [];
 	this.playerObject = function(name,avatar) {
-		var that = this;
+        //this.physics = new Physics.hxPlayer(that.physics.world);
 		this.name = name;
 		//this.avatar = avatar.substr(0,2);
 		this.graphics = new PIXI.Graphics();
@@ -86,27 +85,27 @@ var Loader = function(){
 		/* dunno what this does */
 		//that.graphics.beginFill(0x00FF00);
 		/** player border **/
-		that.graphics.lineStyle(3,0xFFFFFF);
+		this.graphics.lineStyle(3,0xFFFFFF);
 		/** player inner color **/
-		that.graphics.beginFill(0xE56E56, 1);
+		this.graphics.beginFill(0xE56E56, 1);
 		/** draw the actual circle **/
-		that.graphics.drawCircle(Loader.constants.RADIUS, 50,Loader.constants.RADIUS);
-		that.graphics.endFill();
+		this.graphics.drawCircle(Loader.constants.RADIUS, 50,Loader.constants.RADIUS);
+		this.graphics.endFill();
 		/** add text to player and add name**/
 		/** 
 			TODO find way to align avatar and names
 		**/
-		that.name_label = new PIXI.Text(name,{font : '25px Arial', fill : 'white', align : 'center'});
-		that.avatar_label = new PIXI.Text("a",{font : '25px Arial', fill : 'white', align : 'center'});
+		this.name_label = new PIXI.Text(name,{font : '25px Arial', fill : 'white', align : 'center'});
+		this.avatar_label = new PIXI.Text("a",{font : '25px Arial', fill : 'white', align : 'center'});
 		
-		that.avatar_label.x = Loader.constants.RADIUS-7.50;
-		that.avatar_label.y = (50)-15;
+		this.avatar_label.x = Loader.constants.RADIUS-7.50;
+		this.avatar_label.y = (50)-15;
 		
-		that.name_label.y = Loader.constants.RADIUS*3;
+		this.name_label.y = Loader.constants.RADIUS*3;
 		
 		
-		that.graphics.addChild(that.avatar_label);
-		that.graphics.addChild(that.name_label);
+		this.graphics.addChild(that.avatar_label);
+		this.graphics.addChild(that.name_label);
 	}
 var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
 document.getElementById("game-view").appendChild(renderer.view)
@@ -143,9 +142,10 @@ graphics.alpha = 1;
 graphics.drawRect(0,0,800,(600-150));
 graphics.endFill();
 /*create player 1*/
-that.players.push(new that.playerObject("vagrant","4"));
-
-that.camera.addChild(that.players[0].graphics);
+//that.players.push(new that.playerObject("vagrant","4"));
+new that.playerObject("hi",2);
+//that.controller = that.players[0];
+//that.camera.addChild(that.players[0].graphics);
 
 
 /** add ball(s) **/
@@ -242,6 +242,7 @@ stage.addChild(graphics);
 //that.animatorObject = new Animator(that.players[0]);
 var acceleration = new PIXI.Vector(0,0);
 var velocity = new PIXI.Vector(0,0);
+//Allow the use of vectors
 that.players[0].graphics.position = new PIXI.Vector(0,0);
 animate();
 /*speed**/
@@ -280,15 +281,17 @@ function forces()
 function animate() {
 
 velocity.add(acceleration);
-that.players[0].graphics.position.add(velocity);
+//that.players[0].graphics.position.add(velocity);
     renderer.render(stage);	
 	forces();
 	that.physics.update();
-	v=that.physics.player.body.GetPosition();
+	v=that.controller.physics.body.GetPosition();
 	//that.players[0].graphics.position.x = v.x;
 	//that.players[0].graphics.position.y = v.y;
-	that.players[0].graphics.position.x = v.x;
-	that.players[0].graphics.position.y = v.y;
+    that.controller.graphics.position.x = v.x;
+    that.controller.graphics.position.y = v.y;
+	//that.players[0].graphics.position.x = v.x;
+	//that.players[0].graphics.position.y = v.y;
     requestAnimationFrame( animate );
 }
 
@@ -326,6 +329,7 @@ Loader.prototype.addText = function(txt) {
 Loader.constants = {
 	RADIUS : 25
 };
+
 var Stadium = function()
 {
 	/** Players **/
