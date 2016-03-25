@@ -1,70 +1,3 @@
-var b2Vec2 = Box2D.Common.Math.b2Vec2,
-    b2BodyDef = Box2D.Dynamics.b2BodyDef,
-    b2Body = Box2D.Dynamics.b2Body,
-    b2FixtureDef = Box2D.Dynamics.b2FixtureDef,
-    b2Fixture = Box2D.Dynamics.b2Fixture,
-    b2World = Box2D.Dynamics.b2World,
-    b2MassData = Box2D.Collision.Shapes.b2MassData,
-    b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape,
-    b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
-
-var Physics = function()
-{
-	var that  = this;
-	this.world = new b2World(new b2Vec2(0, 0), true);
-	this.buildGround();
-	//this.player = new Loader2.hxPlayer(that.world);
-}
-
-Physics.hxPlayer = function (world) {
-    var bodyDef = new b2BodyDef();
-    bodyDef.type = b2Body.b2_dynamicBody;
-
-    var fixDef = new b2FixtureDef();
-    fixDef.density = hx.constants.Player.DENSITY;
-    fixDef.friction = hx.constants.Player.FRICTION;
-    fixDef.restitution = hx.constants.Player.RESTITUTION;
-    fixDef.shape = new b2CircleShape(hx.constants.Player.RADIUS);
-
-    bodyDef.position.x = 100 / hx.constants.World.SCALE;
-    bodyDef.position.y = 100 / hx.constants.World.SCALE;
-
-    bodyDef.linearDamping = hx.constants.Player.LD;
-    bodyDef.angularDamping = hx.constants.Player.AD;
-
-    this.body = world.CreateBody(bodyDef);
-    this.body.CreateFixture(fixDef);
-	this.keys = [false,false,false,false];
-};
-
-Physics.prototype.buildGround = function () {
-    var fixDef = new b2FixtureDef();
-    fixDef.density = hx.constants.Ground.DENSITY;
-    fixDef.friction = hx.constants.Ground.FRICTION;
-    fixDef.restitution = hx.constants.Ground.RESTITUTION;
-    fixDef.shape = new b2PolygonShape();
-
-    var bodyDef = new b2BodyDef();
-    bodyDef.type = b2Body.b2_staticBody;
-
-    for (var b in hx.grounds.G2) {
-		/**
-        b = hx.grounds.G2[b];
-        bodyDef.position.x = b[0] / hx.constants.World.SCALE;
-        bodyDef.position.y = b[1] / hx.constants.World.SCALE;
-        fixDef.shape.SetAsBox((b[2] / hx.constants.World.SCALE), (b[3] / hx.constants.World.SCALE));
-        this.world.CreateBody(bodyDef).CreateFixture(fixDef);
-		**/
-		
-    }
-}
-
-Physics.prototype.update = function () {
-    this.world.Step(1 / 60, 10, 10);
-    //this.world.DrawDebugData();
-    this.world.ClearForces();
-
-}
 var Loader = function(){
 	var that = this;
 	that.keys = [false,false,false,false];
@@ -76,8 +9,10 @@ var Loader = function(){
 }
 	that.physics = new Physics();
 	that.players =  [];
-	this.playerObject = function(name,avatar) {
-        //this.physics = new Physics.hxPlayer(that.physics.world);
+	this.playerObject = function(name,avatar,world) {
+        var that = this;
+        that.physics = new Physics.hxPlayer(world);
+
 		this.name = name;
 		//this.avatar = avatar.substr(0,2);
 		this.graphics = new PIXI.Graphics();
@@ -85,27 +20,27 @@ var Loader = function(){
 		/* dunno what this does */
 		//that.graphics.beginFill(0x00FF00);
 		/** player border **/
-		this.graphics.lineStyle(3,0xFFFFFF);
+		that.graphics.lineStyle(3,0xFFFFFF);
 		/** player inner color **/
-		this.graphics.beginFill(0xE56E56, 1);
+		that.graphics.beginFill(0xE56E56, 1);
 		/** draw the actual circle **/
-		this.graphics.drawCircle(Loader.constants.RADIUS, 50,Loader.constants.RADIUS);
-		this.graphics.endFill();
+		that.graphics.drawCircle(Loader.constants.RADIUS, 50,Loader.constants.RADIUS);
+		that.graphics.endFill();
 		/** add text to player and add name**/
 		/** 
 			TODO find way to align avatar and names
 		**/
-		this.name_label = new PIXI.Text(name,{font : '25px Arial', fill : 'white', align : 'center'});
-		this.avatar_label = new PIXI.Text("a",{font : '25px Arial', fill : 'white', align : 'center'});
+		that.name_label = new PIXI.Text(name,{font : '25px Arial', fill : 'white', align : 'center'});
+		that.avatar_label = new PIXI.Text("a",{font : '25px Arial', fill : 'white', align : 'center'});
 		
-		this.avatar_label.x = Loader.constants.RADIUS-7.50;
-		this.avatar_label.y = (50)-15;
+		that.avatar_label.x = Loader.constants.RADIUS-7.50;
+		that.avatar_label.y = (50)-15;
 		
-		this.name_label.y = Loader.constants.RADIUS*3;
+		that.name_label.y = Loader.constants.RADIUS*3;
 		
 		
-		this.graphics.addChild(that.avatar_label);
-		this.graphics.addChild(that.name_label);
+		that.graphics.addChild(that.avatar_label);
+		that.graphics.addChild(that.name_label);
 	}
 var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
 document.getElementById("game-view").appendChild(renderer.view)
@@ -142,10 +77,11 @@ graphics.alpha = 1;
 graphics.drawRect(0,0,800,(600-150));
 graphics.endFill();
 /*create player 1*/
-//that.players.push(new that.playerObject("vagrant","4"));
-new that.playerObject("hi",2);
-//that.controller = that.players[0];
-//that.camera.addChild(that.players[0].graphics);
+that.players.push(new that.playerObject("vagrant","4",that.physics.world));
+//new that.playerObject("hi",2);
+that.controller = that.players[0];
+//that.controller = that.addPlayer("hi",2);
+that.camera.addChild(that.players[0].graphics);
 
 
 /** add ball(s) **/
@@ -243,7 +179,7 @@ stage.addChild(graphics);
 var acceleration = new PIXI.Vector(0,0);
 var velocity = new PIXI.Vector(0,0);
 //Allow the use of vectors
-that.players[0].graphics.position = new PIXI.Vector(0,0);
+//that.players[0].graphics.position = new PIXI.Vector(0,0);
 animate();
 /*speed**/
 //velocity = new PIXI.Vector(5, 0);
@@ -271,7 +207,7 @@ function forces()
 	if (vec.length() > 0)
 	{
 		//player.body.ApplyForce(vec, player.body.GetWorldCenter());
-		that.physics.player.body.ApplyForce(vec, that.physics.player.body.GetWorldCenter());
+		that.controller.physics.body.ApplyForce(vec, that.controller.physics.body.GetWorldCenter());
 		//that.players[0].graphics.position.add(vec);
 		//velocity.add(vec);
 	}
@@ -286,12 +222,9 @@ velocity.add(acceleration);
 	forces();
 	that.physics.update();
 	v=that.controller.physics.body.GetPosition();
-	//that.players[0].graphics.position.x = v.x;
-	//that.players[0].graphics.position.y = v.y;
+    //console.log(that.controller.physics);
     that.controller.graphics.position.x = v.x;
     that.controller.graphics.position.y = v.y;
-	//that.players[0].graphics.position.x = v.x;
-	//that.players[0].graphics.position.y = v.y;
     requestAnimationFrame( animate );
 }
 
@@ -319,9 +252,10 @@ function Anim(e)
 
 Loader.prototype.addPlayer = function(name, avatar){
 	var that = this;
-	var player = new that.playerObject(name,avatar);
+	var player = new that.playerObject(name,avatar,that.physics.world);
 	that.players.push(player);
 	that.camera.addChild(player.graphics);
+    return player;
 }
 Loader.prototype.addText = function(txt) {
 	this.txt.text+= txt+"\n";
