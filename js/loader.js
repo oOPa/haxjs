@@ -4,14 +4,14 @@ var Loader = function(){
     /** load renderer and physics engine */
     that.players =  [];
 	that.physics = new Physics();
-    //that.controller = new Controller();
-    that.renderer = new Renderer();
     
     /** create player 1 */
     window.vagrant = that.createPlayer("vagrant",2);
-    //that.camera.addChild(player.graphics);
-      this.renderer.addPlayer(vagrant);
-    //that.controller = new Controller(vagrant);
+    this.controller = window.controller = new Controller(vagrant);
+    
+     window.renderer = this.renderer = new Renderer(this.physics,window.controller);
+      this.renderer.addPlayer(vagrant,controller);
+      
 }
 Loader.prototype.createPlayer = function(name, avatar){
 	var that = this;
@@ -20,7 +20,9 @@ Loader.prototype.createPlayer = function(name, avatar){
     return player;
 }
 Loader.prototype.addText = function(txt) {
-	this.txt.text+= txt+"\n";
+    if(this.renderer){
+        this.renderer.addText(txt)
+    }
 }
 Loader.constants = {
 	RADIUS : 25

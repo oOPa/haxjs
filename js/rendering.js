@@ -1,69 +1,9 @@
 var Renderer = function(physics){
 	var that = this;
     this.players = new Hashtable();
-    this.fakePhysicsEngine = function(){this.update=function(){}}
-    this.physics = physics || new this.fakePhysicsEngine();
+    this.physics = physics;
     this.init();
-}
-Renderer.prototype.addPlayer = function(player){
-       var that = this;
-       p = new Renderer.RendererPlayer(player);
-             //that.graphics.addChild(p.graphics);
-            that.camera.addChild(p.graphics);
-       this.players.put(player, p);
-       
 };
-Renderer.prototype.deletePlayer = function(player){
-    /** 
-       var that = this;
-       if(that.players.hasOwnProperty(player))
-       {
-           /** pixi remove child */
-            // that.players[player] = undefined;
-      // }
-      // ***/
-};
-Renderer.prototype.renderPlayers = function(){
-    var that = this;
-    keys = that.players.keys();
-    for(i in keys)
-    {
-        item = keys[i];
-        //console.log(item);
-        item.update();
-        point = item.point();
-        x = point.x;
-        y = point.y;
-        
-        p = that.players.get(item).graphics.position;
-       //console.log(p);
-        p.x = x;
-        p.y = y;
-        
-    }
-};
-Renderer.RendererPlayer = function (player) {
-     var that = this;
-		this.graphics = new PIXI.Graphics();
-        that.graphics.position = new PIXI.Vector(0,0);
-		that.graphics.lineStyle(3,0xFFFFFF);
-		that.graphics.beginFill(0xE56E56, 1);
-		that.graphics.drawCircle(Loader.constants.RADIUS, 50,Loader.constants.RADIUS);
-		that.graphics.endFill();
-		that.name_label = new PIXI.Text(player.name,{font : '25px Arial', fill : 'white', align : 'center'});
-		that.avatar_label = new PIXI.Text("",{font : '25px Arial', fill : 'white', align : 'center'});
-		that.avatar_label.x = Loader.constants.RADIUS-7.50;
-		that.avatar_label.y = (50)-15;
-		that.name_label.y = Loader.constants.RADIUS*3;
-        this.setAvatar(player.avatar);
-		that.graphics.addChild(that.avatar_label);
-		that.graphics.addChild(that.name_label);
-}
-Renderer.RendererPlayer.prototype.setAvatar = function (avatar) {
-    this.avatar_label.text = avatar;
-}
-
-
 Renderer.prototype.init = function(){
 var that = this;
 var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
@@ -102,12 +42,7 @@ graphics.lineStyle(20,0x3c312b,1);
 graphics.alpha = 1;
 graphics.drawRect(0,0,800,(600-150));
 graphics.endFill();
-/*create player 1*/
-//that.players.push(new that.playerObject("vagrant","4",that.physics.world));
-//new that.playerObject("hi",2);
-//that.controller = that.players[0];
-//that.controller = that.addPlayer("hi",2);
-//that.camera.addChild(that.players[0].graphics);
+
 
 
 /** add ball(s) **/
@@ -202,10 +137,6 @@ stage.addChild(graphics);
 
 // run the render loop
 animate();
-//this.physics.addColl
-/** BACKDOORS */
-//window.vagrant = this.players[0];
-//window.onyema = this.addPlayer("Onyema",2);
 
 function animate() {
     renderer.render(stage);	
@@ -213,7 +144,63 @@ function animate() {
 	that.physics.update();
     requestAnimationFrame( animate );
 }
-
-
 };
 
+Renderer.prototype.addPlayer = function(player){
+       var that = this;
+       p = new Renderer.RendererPlayer(player);
+             //that.graphics.addChild(p.graphics);
+            that.camera.addChild(p.graphics);
+       this.players.put(player, p);
+       
+};
+Renderer.prototype.addText = function (txt){
+    this.txt.text+= txt+"\n";
+}
+Renderer.prototype.deletePlayer = function(player){
+    /** 
+       var that = this;
+       if(that.players.hasOwnProperty(player))
+       {
+           /** pixi remove child */
+            // that.players[player] = undefined;
+      // }
+      // ***/
+};
+Renderer.prototype.renderPlayers = function(){
+    var that = this;
+    keys = that.players.keys();
+    for(i in keys)
+    {
+        item = keys[i];
+        item.update();
+        point = item.point();
+        x = point.x;
+        y = point.y;
+        
+        p = that.players.get(item).graphics.position;
+        p.x = x;
+        p.y = y;
+        
+    }
+};
+Renderer.RendererPlayer = function (player) {
+     var that = this;
+		this.graphics = new PIXI.Graphics();
+        that.graphics.position = new PIXI.Vector(0,0);
+		that.graphics.lineStyle(3,0xFFFFFF);
+		that.graphics.beginFill(0xE56E56, 1);
+		that.graphics.drawCircle(Loader.constants.RADIUS, 50,Loader.constants.RADIUS);
+		that.graphics.endFill();
+		that.name_label = new PIXI.Text(player.name,{font : '25px Arial', fill : 'white', align : 'center'});
+		that.avatar_label = new PIXI.Text("",{font : '25px Arial', fill : 'white', align : 'center'});
+		that.avatar_label.x = Loader.constants.RADIUS-7.50;
+		that.avatar_label.y = (50)-15;
+		that.name_label.y = Loader.constants.RADIUS*3;
+        this.setAvatar(player.avatar);
+		that.graphics.addChild(that.avatar_label);
+		that.graphics.addChild(that.name_label);
+}
+Renderer.RendererPlayer.prototype.setAvatar = function (avatar) {
+    this.avatar_label.text = avatar;
+};

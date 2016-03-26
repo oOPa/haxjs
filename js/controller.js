@@ -11,8 +11,7 @@ var Controller = function(player){
     }
     player.update = function()
     {
-       //console.log("gotcha")
-        return that.update();
+        return that.forces();
     }
     
    document.addEventListener('keydown', function (e) {
@@ -30,8 +29,7 @@ var Controller = function(player){
     });
 
 
-    this.update = function (params) {
-        //console.log("a");
+    this.forces = function () {
         var vec = new PIXI.Vector(0, 0);
         window.vec = new PIXI.Vector(0, 0);
         that.keys.forEach(function (key, i) {
