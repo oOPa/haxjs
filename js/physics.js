@@ -17,7 +17,7 @@ var Physics = function()
 	var that  = this;
 	this.world = new b2World(new b2Vec2(0, 0), true);
 	this.buildGround();
-    this.addCollisionDetection();
+    //this.addCollisionDetection();
 }
 Physics.prototype.addCollisionDetection = function()
 {

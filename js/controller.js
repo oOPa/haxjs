@@ -17,8 +17,7 @@ var Controller = function(player){
    document.addEventListener('keydown', function (e) {
         if (e.keyCode > 36 && e.keyCode < 41) {
             that.keys[that.Directions[e.keyCode]] = true;		
-			console.log(e.keyCode);
-            
+			console.log(e.keyCode);            
         }
     });
     document.addEventListener('keyup', function (e) {
@@ -41,10 +40,8 @@ var Controller = function(player){
         
         if (vec.length() > 0)
         {
-            //console.log(that.player.physics.body.getPosition);
             that.player.physics.body.ApplyForce(vec, that.player.physics.body.GetWorldCenter());
             console.log(that.player.point());
-
         }
         return "updated";
     }

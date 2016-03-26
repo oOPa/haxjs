@@ -1,13 +1,13 @@
-var Renderer = function(physics){
+var Renderer = function(renderFunction){
 	var that = this;
     this.players = new Hashtable();
-    this.physics = physics;
     this.init();
+    this.renderFunction = renderFunction || new Function();
 };
 Renderer.prototype.init = function(){
 var that = this;
 var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
-this.render = renderer;
+this.renderer = renderer;
 document.getElementById("game-view").appendChild(renderer.view)
 //renderer.backgroundColor = 0x718c5a;
 renderer.backgroundColor = 0x939e7f;
@@ -134,23 +134,25 @@ graphics.addChild(viewport_);
 graphics.addChild(chat);
 graphics.addChild(misc);
 stage.addChild(graphics);
+};
 
-// run the render loop
-animate();
-
-function animate() {
-    renderer.render(stage);	
-    that.renderPlayers();
-	that.physics.update();
-    requestAnimationFrame( animate );
-}
+Renderer.prototype.startRender = function ()
+{
+    var that = this;
+    // run the render loop
+    animate();
+    function animate() {
+        that.renderer.render(that.stage);	
+        that.renderFunction();
+        that.renderPlayers();
+        requestAnimationFrame( animate );
+    }
 };
 
 Renderer.prototype.addPlayer = function(player){
        var that = this;
        p = new Renderer.RendererPlayer(player);
-             //that.graphics.addChild(p.graphics);
-            that.camera.addChild(p.graphics);
+        that.camera.addChild(p.graphics);
        this.players.put(player, p);
        
 };
@@ -173,7 +175,7 @@ Renderer.prototype.renderPlayers = function(){
     for(i in keys)
     {
         item = keys[i];
-        item.update();
+        //item.update();
         point = item.point();
         x = point.x;
         y = point.y;
@@ -190,7 +192,7 @@ Renderer.RendererPlayer = function (player) {
         that.graphics.position = new PIXI.Vector(0,0);
 		that.graphics.lineStyle(3,0xFFFFFF);
 		that.graphics.beginFill(0xE56E56, 1);
-		that.graphics.drawCircle(Loader.constants.RADIUS, 50,Loader.constants.RADIUS);
+		that.graphics.drawCircle(hx.constants.Player.RADIUS, 50,hx.constants.Player.RADIUS * hx.constants.World.SCALE);
 		that.graphics.endFill();
 		that.name_label = new PIXI.Text(player.name,{font : '25px Arial', fill : 'white', align : 'center'});
 		that.avatar_label = new PIXI.Text("",{font : '25px Arial', fill : 'white', align : 'center'});
