@@ -41,7 +41,7 @@ var Controller = function(player){
         if (vec.length() > 0)
         {
             that.player.physics.body.ApplyForce(vec, that.player.physics.body.GetWorldCenter());
-            console.log(that.player.point());
+            //console.log(that.player.point());
         }
         return "updated";
     }

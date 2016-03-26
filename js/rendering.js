@@ -175,6 +175,7 @@ Renderer.prototype.renderPlayers = function(){
     for(i in keys)
     {
         item = keys[i];
+		//console.log(item.name);
         //item.update();
         point = item.point();
         x = point.x;
@@ -192,7 +193,8 @@ Renderer.RendererPlayer = function (player) {
         that.graphics.position = new PIXI.Vector(0,0);
 		that.graphics.lineStyle(3,0xFFFFFF);
 		that.graphics.beginFill(0xE56E56, 1);
-		that.graphics.drawCircle(hx.constants.Player.RADIUS, 50,hx.constants.Player.RADIUS * hx.constants.World.SCALE);
+		//that.graphics.drawCircle(hx.constants.Player.RADIUS, 50,hx.constants.Player.RADIUS * hx.constants.World.SCALE);
+        that.graphics.drawCircle(0,0,hx.constants.Player.RADIUS * hx.constants.World.SCALE);
 		that.graphics.endFill();
 		that.name_label = new PIXI.Text(player.name,{font : '25px Arial', fill : 'white', align : 'center'});
 		that.avatar_label = new PIXI.Text("",{font : '25px Arial', fill : 'white', align : 'center'});

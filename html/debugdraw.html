@@ -38,11 +38,11 @@ hx.Builder = function () {
     this.ctx = this.canvas.getContext('2d');
     this.world = this.game.physics.world;
 	//set boundary for the stadium
-    this.buildGround();
+    //this.buildGround();
 	//create the players
     this.buildPlayers();
 	//create a ball
-	this.buildBall();
+	//this.buildBall();
 	//create action listeners
     this.bindEvents();
     this.prepareDebugDraw();
@@ -74,9 +74,6 @@ hx.Builder.prototype.update = function () {
         that.update();
     });
 }
-
-
-
 
 hx.Builder.prototype.buildGround = function () {
     var fixDef = new b2FixtureDef();
@@ -111,7 +108,16 @@ hx.Builder.prototype.bindEvents = function () {
 };
 
 hx.Builder.prototype.updatePlayers = function () {
-	this.game.render();
+	 /** update player movement */
+	 var that = this.game
+            for(i in that.players)
+            {
+                item = that.players[i];
+                item.update();
+            }
+              // p = that.players[1].point();
+    //console.log(p);
+			
 };
 
 

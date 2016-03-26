@@ -16,32 +16,8 @@ var Physics = function()
 {
 	var that  = this;
 	this.world = new b2World(new b2Vec2(0, 0), true);
-	this.buildGround();
-    //this.addCollisionDetection();
 }
-Physics.prototype.addCollisionDetection = function()
-{
-    
-    b2ContactListener.BeginContact = function(contact) {
-        //console.log(contact.GetFixtureA().GetBody().GetUserData());
-        console.log("start contact\n/**");
-        console.log(contact.GetFixtureA);
-        console.log(contact.GetFixtureB)
-        console.log("*/")
-    }
-    b2ContactListener.EndContact = function(contact) {
-        //console.log(contact.GetFixtureA().GetBody().GetUserData());
-        console.log("end contact");
-    }
-    b2ContactListener.PostSolve = function(contact, impulse) {
-        //console.log(contact.GetFixtureA().GetBody().GetUserData());
-        console.log("post solve");
-    }
-    b2ContactListener.PreSolve = function(contact, oldManifold) {
-        console.log("pre solve");
-    }
-   this.world.SetContactListener(b2ContactListener);
-   }
+
 Physics.Player = function (world) {
     var bodyDef = new b2BodyDef();
     bodyDef.type = b2Body.b2_dynamicBody;
@@ -60,26 +36,11 @@ Physics.Player = function (world) {
 
     this.body = world.CreateBody(bodyDef);
     this.body.CreateFixture(fixDef);
-	// this.keys = [false,false,false,false];
 };
-
-Physics.prototype.buildGround = function () {
-    var fixDef = new b2FixtureDef();
-    fixDef.density = hx.constants.Ground.DENSITY;
-    fixDef.friction = hx.constants.Ground.FRICTION;
-    fixDef.restitution = hx.constants.Ground.RESTITUTION;
-    fixDef.shape = new b2PolygonShape();
-
-    var bodyDef = new b2BodyDef();
-    bodyDef.type = b2Body.b2_staticBody;
-
-    for (var b in hx.grounds.G2) {
-
-    }
-}
 
 Physics.prototype.update = function () {
     this.world.Step(1 / 60, 10, 10);
+       //this.world.Step(1 / 30, 10, 10);
     this.world.ClearForces();
     
 }
