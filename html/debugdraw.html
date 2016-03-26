@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<title>pixi.js example 1</title>
+<script src="../js/Box2dWeb-2.1.a.3.min.js"></script>
+<script src="../js/constants.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/0.3.14/peer.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="../js/pixi.min.js"></script>
+<script src="../js/pixi.vector.js"></script>
+<script src="../js/physics.js"></script>
+<script type="text/javascript">
+var hxDebugger = function()
+{
+ window.requestAnimFrame = (function () {
+    return  window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            function (/* function */ callback, /* DOMElement */ element) {
+                window.setTimeout(callback, 1000 / 60);
+            };
+})();
+   
+   window.canvas = document.getElementById('c');
+   window.ctx = window.canvas.getContext('2d');
+   this.physics = new Physics();
+   this.world = this.physics.world;
+   this.player1 = new Physics.hxPlayer(this.world)
+
+   this.prepareDraw();
+}
+
+
+
+hxDebugger.prototype.loadDraw = function()
+{
+    
+    var b2DebugDraw = Box2D.Dynamics.b2DebugDraw; 
+   var debugDraw = new b2DebugDraw();
+    debugDraw.SetSprite(window.ctx);
+    debugDraw.SetDrawScale(hx.constants.World.SCALE);
+    debugDraw.SetFillAlpha(1);
+    debugDraw.SetLineThickness(1.0);
+    debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+    window.physics.world.SetDebugDraw(debugDraw);    
+    update();
+}
+hxDebugger.prototype.update = function()
+{
+    var that= this;
+    this.physics.update();
+        requestAnimFrame(function () {
+        that.update();
+    });
+
+}
+</script>	
+</head>
+	
+<body style="" onload="window.physics = new Physics();loadDraw()">
+
+<div class="center-block" style="display:flex;justify-content:center;align-items:center;">
+<div id="viewport"></div>
+<canvas id="c" width="940" height="480" style="border: 1px solid black"></canvas>
+<div id="game-view"></div>
+		<div id="chat-view"></div>
+		<div id="options-view"></div>
+	</div>
+	</body>
+</html>

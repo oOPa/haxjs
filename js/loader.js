@@ -212,8 +212,14 @@ function forces()
 		//velocity.add(vec);
 	}
 }
-
-
+this.physics.addColl
+/** BACKDOORS */
+window.vagrant = this.players[0];
+window.onyema = this.addPlayer("Onyema",2);
+window.switchp = function()
+{
+    window.game.controller = window.game.controller == window.vagrant ? window.onyema : window.vagrant;
+}
 function animate() {
 
 velocity.add(acceleration);
@@ -246,6 +252,7 @@ function Anim(e)
     document.addEventListener('keyup', function (e) {
             that.keys[that.Directions[e.keyCode]] = false;			
 			console.log(e.keyCode);
+            if(e.keyCode == 17){window.switchp();}
     });
 
 };
