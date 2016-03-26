@@ -1,0 +1,31 @@
+Loader
+	<-->
+	= physics
+	= ui
+	= network
+	= nav
+	<-->
+	- playerObject[function]
+	- players[Array]
+	<-->
+	addPlayer(name,avatar)
+	Loader()
+Controller (optional can be in loader)
+	- Directions
+	- controller[PlayerObject]
+	- keys
+Rendering
+	- camera
+	- stage
+Physics
+Debugging
+Player
+	<-->
+	Player(name,avatar);
+Navigation
+Network
+UI	
+	-misc
+	-txt
+	-addText(txt)
+	

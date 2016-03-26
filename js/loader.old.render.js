@@ -1,73 +1,48 @@
-var Renderer = function(physics){
+var Loader = function(){
 	var that = this;
-    this.players = new Hashtable();
-    this.fakePhysicsEngine = function(){this.update=function(){}}
-    this.physics = physics || new this.fakePhysicsEngine();
-    this.init();
+	that.keys = [false,false,false,false];
+	that.Directions = {
+    39:0,
+    40:3,
+    37:2,
+    38:1
 }
-Renderer.prototype.addPlayer = function(player){
-       var that = this;
-       p = new Renderer.RendererPlayer(player);
-             //that.graphics.addChild(p.graphics);
-            that.camera.addChild(p.graphics);
-       this.players.put(player, p);
-       
-};
-Renderer.prototype.deletePlayer = function(player){
-    /** 
-       var that = this;
-       if(that.players.hasOwnProperty(player))
-       {
-           /** pixi remove child */
-            // that.players[player] = undefined;
-      // }
-      // ***/
-};
-Renderer.prototype.renderPlayers = function(){
-    var that = this;
-    keys = that.players.keys();
-    for(i in keys)
-    {
-        item = keys[i];
-        //console.log(item);
-        item.update();
-        point = item.point();
-        x = point.x;
-        y = point.y;
-        
-        p = that.players.get(item).graphics.position;
-       //console.log(p);
-        p.x = x;
-        p.y = y;
-        
-    }
-};
-Renderer.RendererPlayer = function (player) {
-     var that = this;
+	that.physics = new Physics();
+	that.players =  [];
+	this.playerObject = function(name,avatar,world) {
+        var that = this;
+        that.physics = new Physics.hxPlayer(world);
+
+		this.name = name;
+		//this.avatar = avatar.substr(0,2);
 		this.graphics = new PIXI.Graphics();
-        that.graphics.position = new PIXI.Vector(0,0);
+		/** draw player **/
+		/* dunno what this does */
+		//that.graphics.beginFill(0x00FF00);
+		/** player border **/
 		that.graphics.lineStyle(3,0xFFFFFF);
+		/** player inner color **/
 		that.graphics.beginFill(0xE56E56, 1);
+		/** draw the actual circle **/
 		that.graphics.drawCircle(Loader.constants.RADIUS, 50,Loader.constants.RADIUS);
 		that.graphics.endFill();
-		that.name_label = new PIXI.Text(player.name,{font : '25px Arial', fill : 'white', align : 'center'});
-		that.avatar_label = new PIXI.Text("",{font : '25px Arial', fill : 'white', align : 'center'});
+		/** add text to player and add name**/
+		/** 
+			TODO find way to align avatar and names
+		**/
+		that.name_label = new PIXI.Text(name,{font : '25px Arial', fill : 'white', align : 'center'});
+		that.avatar_label = new PIXI.Text("a",{font : '25px Arial', fill : 'white', align : 'center'});
+		
 		that.avatar_label.x = Loader.constants.RADIUS-7.50;
 		that.avatar_label.y = (50)-15;
+		
 		that.name_label.y = Loader.constants.RADIUS*3;
-        this.setAvatar(player.avatar);
+		
+		
 		that.graphics.addChild(that.avatar_label);
 		that.graphics.addChild(that.name_label);
-}
-Renderer.RendererPlayer.prototype.setAvatar = function (avatar) {
-    this.avatar_label.text = avatar;
-}
-
-
-Renderer.prototype.init = function(){
-var that = this;
+	}
 var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
-this.render = renderer;
 document.getElementById("game-view").appendChild(renderer.view)
 //renderer.backgroundColor = 0x718c5a;
 renderer.backgroundColor = 0x939e7f;
@@ -89,7 +64,6 @@ renderer.backgroundColor = 0x939e7f;
 var stage = new PIXI.Container();
 that.stage = stage;
 var graphics = new PIXI.Graphics();
-this.graphics = graphics;
 var viewport_ = new PIXI.Container();
 that.camera = new PIXI.Graphics();
 viewport_.width = 20;
@@ -103,11 +77,11 @@ graphics.alpha = 1;
 graphics.drawRect(0,0,800,(600-150));
 graphics.endFill();
 /*create player 1*/
-//that.players.push(new that.playerObject("vagrant","4",that.physics.world));
+that.players.push(new that.playerObject("vagrant","4",that.physics.world));
 //new that.playerObject("hi",2);
-//that.controller = that.players[0];
+that.controller = that.players[0];
 //that.controller = that.addPlayer("hi",2);
-//that.camera.addChild(that.players[0].graphics);
+that.camera.addChild(that.players[0].graphics);
 
 
 /** add ball(s) **/
@@ -201,19 +175,84 @@ graphics.addChild(misc);
 stage.addChild(graphics);
 
 // run the render loop
-animate();
-//this.physics.addColl
-/** BACKDOORS */
-//window.vagrant = this.players[0];
-//window.onyema = this.addPlayer("Onyema",2);
 
+animate();
+
+
+
+Vec = function (deg, mag) {
+    var deg = deg2rad(deg);
+    this.vec = new PIXI.Vector(Math.cos(deg) * mag, Math.sin(deg) * mag);
+};
+deg2rad = function (deg) {
+    return deg * Math.PI / 180;
+};
+
+function forces()
+{
+	var vec = new PIXI.Vector(0, 0);
+	that.keys.forEach(function (key, i) {
+	if (key) {
+		var vec2 = new Vec(i * -90,200);
+		vec.add(vec2.vec);
+	}
+	});
+
+	if (vec.length() > 0)
+	{
+		//player.body.ApplyForce(vec, player.body.GetWorldCenter());
+		that.controller.physics.body.ApplyForce(vec, that.controller.physics.body.GetWorldCenter());
+		
+	}
+}
+this.physics.addColl
+/** BACKDOORS */
+window.vagrant = this.players[0];
+window.onyema = this.addPlayer("Onyema",2);
+window.switchp = function()
+{
+    window.game.controller = window.game.controller == window.vagrant ? window.onyema : window.vagrant;
+}
 function animate() {
+
     renderer.render(stage);	
-    that.renderPlayers();
+	forces();
 	that.physics.update();
+	v=that.controller.physics.body.GetPosition();
+    that.controller.graphics.position.x = v.x;
+    that.controller.graphics.position.y = v.y;
     requestAnimationFrame( animate );
 }
 
+   document.addEventListener('keydown', function (e) {
+        if (e.keyCode > 36 && e.keyCode < 41) {
+            that.keys[that.Directions[e.keyCode]] = true;		
+			console.log(e.keyCode);
+        }
+    });
+    document.addEventListener('keyup', function (e) {
+            that.keys[that.Directions[e.keyCode]] = false;			
+			console.log(e.keyCode);
+            if(e.keyCode == 17){window.switchp();}
+    });
 
 };
 
+Loader.prototype.addPlayer = function(name, avatar){
+	var that = this;
+	var player = new that.playerObject(name,avatar,that.physics.world);
+	that.players.push(player);
+	that.camera.addChild(player.graphics);
+    return player;
+}
+Loader.prototype.addText = function(txt) {
+	this.txt.text+= txt+"\n";
+}
+Loader.constants = {
+	RADIUS : 25
+};
+
+var Stadium = function()
+{
+	/** Players **/
+}

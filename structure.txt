@@ -1,0 +1,20 @@
+Loader
+	- Directions
+	- camera
+	- controller
+	- keys
+	- misc
+	- physics
+	- playerObject[function]
+	- players[Array]
+	- stage
+	- txt
+	<-->
+	addPlayer(name,avatar)
+	addText(txt)
+	Loader()
+Rendering
+Physics
+Debugging
+Navigation
+Network

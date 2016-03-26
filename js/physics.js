@@ -42,7 +42,7 @@ Physics.prototype.addCollisionDetection = function()
     }
    this.world.SetContactListener(b2ContactListener);
    }
-Physics.hxPlayer = function (world) {
+Physics.Player = function (world) {
     var bodyDef = new b2BodyDef();
     bodyDef.type = b2Body.b2_dynamicBody;
 
@@ -60,7 +60,7 @@ Physics.hxPlayer = function (world) {
 
     this.body = world.CreateBody(bodyDef);
     this.body.CreateFixture(fixDef);
-	this.keys = [false,false,false,false];
+	// this.keys = [false,false,false,false];
 };
 
 Physics.prototype.buildGround = function () {
@@ -81,4 +81,12 @@ Physics.prototype.buildGround = function () {
 Physics.prototype.update = function () {
     this.world.Step(1 / 60, 10, 10);
     this.world.ClearForces();
+    
 }
+Physics.deg2rad = function (deg) {
+    return deg * Math.PI / 180;
+};
+Physics.Vec = function (deg, mag) {
+    var deg = Physics.deg2rad(deg);
+    this.vec = new PIXI.Vector(Math.cos(deg) * mag, Math.sin(deg) * mag);
+};
