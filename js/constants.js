@@ -65,3 +65,4 @@ hx.grounds.G2 = {
     bottom:[0, hx.constants.World.HEIGHT - 10, hx.constants.World.WIDTH, 10],
     left:[10, 0, 10, hx.constants.World.HEIGHT]
 };
+hx.style = {font : '15px Arial', fill : 'white'};

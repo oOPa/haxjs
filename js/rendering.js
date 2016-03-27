@@ -6,7 +6,8 @@ var Renderer = function(renderFunction){
 };
 Renderer.prototype.init = function(){
 var that = this;
-var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
+//var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
+var renderer = PIXI.autoDetectRenderer(800, 2160, { antialias: true });
 this.renderer = renderer;
 document.getElementById("game-view").appendChild(renderer.view)
 //renderer.backgroundColor = 0x718c5a;
@@ -20,6 +21,7 @@ renderer.backgroundColor = 0x939e7f;
 				camera
 					players
 			chat
+				log
 				txt
 				
 			misc
@@ -97,14 +99,22 @@ var chat = new PIXI.Graphics();
 chat.beginFill(0x3c312b);
 chat.drawRect(0,500,400,200);
 chat.endFill();
-
-txt= new PIXI.Text('* vagrant was moved to red\n',{font : '20px Arial', fill : 'white', align : 'center'});
-that.txt = txt;
-txt.y = 510;
-txt.x += 10;
 chat.x = 0;
 
+/** chat log **/
+var log = this.log = new PIXI.Text("");
+log.style = hx.style;
+log.y = 510;
+log.x += 10;
+/** user input **/
+var txt = this.txt = new PixiTextInput("");
+txt.style = hx.style;
+txt.y = 550;
+txt.x += 10;
+txt.height = 45;
+txt.width = 200;
 chat.addChild(txt);
+chat.addChild(log);
 /** misc area **/
 misc = new PIXI.Graphics();
 misc.beginFill(0x3c312b);
@@ -157,7 +167,7 @@ Renderer.prototype.addPlayer = function(player){
        
 };
 Renderer.prototype.addText = function (txt){
-    //this.txt.text+= txt+"\n";
+    this.log.text+= txt+"\n";
 }
 Renderer.prototype.deletePlayer = function(player){
     /** 

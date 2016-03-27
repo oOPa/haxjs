@@ -19,7 +19,7 @@ this.renderer = new Renderer(this.render)}
         /** default controller and player */
         window.vagrant = that.createPlayer("vagrant",20);
         window.onyema = that.createPlayer("onyema",20);
-        window.controller = new Controller(window.vagrant);
+        //window.controller = new Controller(window.vagrant);
 //		that.Ball = new Physics.Ball(that.physics.world);
         /**  */
 if(typeof Renderer != 'undefined'){
@@ -33,6 +33,7 @@ Loader.prototype.createPlayer = function(name, avatar){
 	{
 		that.renderer.addPlayer(player);
 	}
+	that.addText("* "+player.name+" was moved to red");
     return player;
 }
 Loader.prototype.addText = function(txt) {
