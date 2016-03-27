@@ -1,19 +1,3 @@
-var play = function()
-{
-	nick = document.getElementById("nickname-text").value;
-	if(nick.length >0)
-	{
-		$(".login").css({"display" : "none"})
-		/** load room list **/
-		//$(".load-roomlist").css({"display" : "inline"})		
-		$('#roomlist').append("<button onclick='loadRooms()'>Refresh<button");
-		//$('#roomlist').append("<button>Join Room<button");
-		$('#roomlist').append("<button onclick='createRoom()'>Create Room<button");
-		//$(".roomlist").css({"display" : "inline",'background-color':'#3c312b'})
-		$("#roomlist").removeClass("hide");
-		$("#roomlist").addClass("roomlist");
-	}
-}
 function loadRooms()
 {
 		rooms = window.roomlist.rooms;
@@ -22,14 +6,13 @@ function loadRooms()
 			room = rooms[i];
 			pass = room.pass ? "Yes" : "No";
 			distance = i * 20;
-			$('#roomlist-table tbody').append('<tr onclick="enterRoom(\''+room.host+'\')"><td>'+room.name+'</td><td>'+room.players+'/'+room.maxplayers+'</td><td>'+pass+'</td><td>'+distance+'</td></tr>');
+			$('#roomlist-table tbody').append('<tr class=\'clickable-row\'><td>'+room.name+'</td><td>'+room.players+'/'+room.maxplayers+'</td><td>'+pass+'</td><td>'+distance+'</td></tr>');
 		}
 }
 function enterRoom(host)
 {
 	$("#roomlist").addClass("hide");
 	var peer = new Peer({host : hx.server.host,path:"/api",port:hx.server.port,key:hx.server.key});
-	//var peer = new Peer({host : "haxjs.cloudapp.net",path:"/api",port:80,key:"peerjs"});
 	peer.on('open', function(id) {
 		console.log('My peer ID is: ' + id);
 	}); 

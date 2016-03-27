@@ -24,7 +24,13 @@ Player
 	Player(name,avatar);
 Navigation
 Network
+	-joinroom
+	-list rooms
+	-sendmessage
+	-move
+	-leave
 UI	
+	-preparegame
 	-misc
 	-txt
 	-addText(txt)
