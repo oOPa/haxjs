@@ -9,21 +9,16 @@ var Loader = function(){
                 item = that.players[i];
                 item.update();
             }
-              // p = that.players[1].point();
-    //console.log(p);
+			/** update physics **/
 			that.physics.update();
         }
-			
-		if(typeof Renderer != 'undefined'){
-this.renderer = new Renderer(this.render)}
-        /** default controller and player */
-        window.vagrant = that.createPlayer("vagrant",20);
-        window.onyema = that.createPlayer("onyema",20);
-        //window.controller = new Controller(window.vagrant);
-//		that.Ball = new Physics.Ball(that.physics.world);
-        /**  */
-if(typeof Renderer != 'undefined'){
-    this.renderer.startRender();}
+	}
+Loader.prototype.createRenderer = function()
+{
+	if(typeof Renderer != 'undefined' ){
+		this.renderer = new Renderer(this.render)
+		return this.renderer;
+	}
 }
 Loader.prototype.createPlayer = function(name, avatar){
 	var that = this;

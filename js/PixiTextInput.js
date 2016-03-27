@@ -275,7 +275,7 @@ PixiTextInput.prototype.updateCaretPosition = function() {
  * @private
  */
 PixiTextInput.prototype.updateText = function() {
-	this.textField.setText(this._text.substring(this.scrollIndex));
+	this.textField.text = (this._text.substring(this.scrollIndex));
 }
 
 /**

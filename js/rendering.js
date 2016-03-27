@@ -7,7 +7,7 @@ var Renderer = function(renderFunction){
 Renderer.prototype.init = function(){
 var that = this;
 //var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
-var renderer = PIXI.autoDetectRenderer(800, 2160, { antialias: true });
+var renderer = PIXI.autoDetectRenderer(500, 550, { antialias: false });
 this.renderer = renderer;
 document.getElementById("game-view").appendChild(renderer.view)
 //renderer.backgroundColor = 0x718c5a;
@@ -113,7 +113,7 @@ txt.y = 550;
 txt.x += 10;
 txt.height = 45;
 txt.width = 200;
-chat.addChild(txt);
+//chat.addChild(txt);
 chat.addChild(log);
 /** misc area **/
 misc = new PIXI.Graphics();

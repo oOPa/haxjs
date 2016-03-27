@@ -5,8 +5,7 @@ var play = function()
 	{
 		$(".login").css({"display" : "none"})
 		/** load room list **/
-		//$(".load-roomlist").css({"display" : "inline"})
-		
+		//$(".load-roomlist").css({"display" : "inline"})		
 		$('#roomlist').append("<button onclick='loadRooms()'>Refresh<button");
 		//$('#roomlist').append("<button>Join Room<button");
 		$('#roomlist').append("<button onclick='createRoom()'>Create Room<button");
@@ -17,7 +16,6 @@ var play = function()
 }
 function loadRooms()
 {
-	
 		rooms = window.roomlist.rooms;
 		for(i in rooms)
 		{
@@ -30,14 +28,6 @@ function loadRooms()
 function enterRoom(host)
 {
 	$("#roomlist").addClass("hide");
-	//create canvas
-	/**
-	$('#game-view').append($('<canvas>').attr({
-		'id' : 'haxball',
-		'height': '200',
-		'width' : '500'
-	}));
-	**/
 	var peer = new Peer({host : hx.server.host,path:"/api",port:hx.server.port,key:hx.server.key});
 	//var peer = new Peer({host : "haxjs.cloudapp.net",path:"/api",port:80,key:"peerjs"});
 	peer.on('open', function(id) {
@@ -48,14 +38,16 @@ function enterRoom(host)
 	
 	conn.on('open', function(){
 	console.log("connected to host!");
-	window.game = new Loader();
+		var game = window.game = new Loader();
+		var r=game.createRenderer();
+		new Controller(game.createPlayer(peer.id,20));
+		r.startRender();
 	});
 conn.on('data',function(dataConnection){
 	/** on receive data from host **/
 });
 
 
-	
 }
 var createRoom = function()
 {
@@ -65,7 +57,10 @@ var createRoom = function()
 	peer.on('open', function(id) {
 		console.log('My peer ID is: ' + id);
 		console.log('waiting for connections');
-		window.game = new Loader();
+		var game = window.game = new Loader();
+		var r=game.createRenderer();
+		new Controller(game.createPlayer("host",20));
+		r.startRender();
 	}); 
 
 	peer.on('connection', function(dataConnection) { 
@@ -73,7 +68,7 @@ var createRoom = function()
 		dataConnection.on('close',function(){console.log("DC");var that=this;window.game.addText(that.peer + "has disconnected")});
 		
 		//console.log();
-		window.game.addPlayer(dataConnection.peer,20);
+		window.game.createPlayer(dataConnection.peer,20);
 		window.game.addText(dataConnection.peer + "has joined");
 		dataConnection.on('data',function(data){
 			
