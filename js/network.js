@@ -1,7 +1,8 @@
+window.updateintervalinmilliescs = 500;
 Loader.Net = function()
 {
 	this.isHost = false;
-	//var peer;
+	this.clients = new Hashtable();
 }
 Loader.Net.prototype.getRooms = function()
 {
@@ -18,21 +19,34 @@ Loader.Net.prototype.startUpdates = function ()
 {
 	if(typeof this.timer == 'undefined')
 	{
-		this.timer = this.isHost ? setInterval(this.updateClients,1000) : setInterval(this.sendUpdatesToHost,1000);
+		this.timer = this.isHost ? setInterval(this.updateClients,updateintervalinmilliescs) : setInterval(this.sendUpdatesToHost,updateintervalinmilliescs);
 	}
 }
 Loader.Net.prototype.updateClients = function ()
 {
 	//console.log("sending updates");
 	//data = {name : 'host'}
+	updates = [];
 	n = ['host']
 	n.push(window.game.players[0].point())
 	window.first.send(n);
+	keys = net.clients.keys();
+	for(i in keys)
+	{
+		item = keys[i]
+		n = [item]
+		n.push(net.clients.get(item).point());
+		for (x in net.peer.connections){
+			con = net.peer.connections[x][0];
+			con.send(n);
+		}
+	}
+	
 	//console.log(n);
 }
 Loader.Net.prototype.sendUpdatesToHost = function ()
 {
-	//window.host.send(window.controller.keys);
+	window.host.send(window.controller.keys);
 }
 Loader.Net.prototype.updateFromHost = function (updates)
 {
@@ -71,9 +85,9 @@ Loader.Net.prototype.joinRoom = function(peer_id,callback)
 	}); 
 	return this;
 }
-Loader.Net.prototype.receiveClientData = function(data)
+Loader.Net.prototype.receiveClientData = function(con,data)
 {
-	console.log(data);
+	this.clients.get(con.peer).keys = data;
 }
 Loader.Net.prototype.sendMessage = function()
 {
@@ -108,12 +122,13 @@ Loader.Net.prototype.createRoom = function(callbacks)
 			callbacks.on_peer_connect(dataConnection.peer);
 			window.first = dataConnection;
 			dataConnection.on('close',function(){
+				window.net.clients.remove(dataConnection.peer);
 				callbacks.on_peer_dc(dataConnection);
 			});
 			
 			dataConnection.on('data',function(data){
 				//callbacks.on_peer_data(data);
-				that.receiveClientData(data);
+				that.receiveClientData(dataConnection,data);
 			});
 		});
 

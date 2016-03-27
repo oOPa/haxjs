@@ -23,7 +23,7 @@ Loader.prototype.createRenderer = function()
 }
 Loader.prototype.createPlayer = function(name, avatar){
 	var that = this;
-    var player = new that.Player(name,avatar,that.physics.world);
+    var player = new Player(name,avatar,that.physics.world);
 	that.players.push(player);
 	if(typeof this.renderer != 'undefined')
 	{

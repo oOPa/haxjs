@@ -15,7 +15,8 @@ Loader.UI.prototype.exitRoom = function()
 }
 Loader.UI.prototype.addPlayer = function(player)
 {
-	window.game.createPlayer(player,"20")
+	p = window.game.createPlayer(player,"20");
+	window.net.clients.put(player,p);
 }
 Loader.UI.prototype.joinRoom = function (host)
 {
@@ -40,7 +41,7 @@ Loader.UI.prototype.initClientRoom = function ()
 	window.game.renderer.prototype.startRender();
 	//new Controller(window.game.createPlayer(net.peer.id,"avatar"));
 	window.renderer.addPlayer('host');
-	window.renderer.addPlayer('me');
+	window.renderer.addPlayer(net.peer.id);
 	window.controller = new NetController();
 	window.net.startUpdates();
 }

@@ -54,6 +54,7 @@ Physics.Player.prototype.update = function()
         
         if (vec.length() > 0)
         {
+			console.log(this);
             that.body.ApplyForce(vec, that.body.GetWorldCenter());
             //console.log(that.player.point());
         }
