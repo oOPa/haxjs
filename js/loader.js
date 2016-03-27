@@ -13,12 +13,14 @@ var Loader = function(){
     //console.log(p);
 			that.physics.update();
         }
+			
 		if(typeof Renderer != 'undefined'){
 this.renderer = new Renderer(this.render)}
         /** default controller and player */
         window.vagrant = that.createPlayer("vagrant",20);
+        window.onyema = that.createPlayer("onyema",20);
         window.controller = new Controller(window.vagrant);
-		window.onyema = that.createPlayer("onyema",4);
+//		that.Ball = new Physics.Ball(that.physics.world);
         /**  */
 if(typeof Renderer != 'undefined'){
     this.renderer.startRender();}
@@ -43,5 +45,5 @@ Loader.prototype.addText = function(txt) {
 }
 
 Loader.constants = {
-	RADIUS : 25
-};
+	factor:50.0
+}

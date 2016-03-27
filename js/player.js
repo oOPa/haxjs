@@ -8,9 +8,10 @@ Loader.prototype.Player = function(name,avatar,world) {
             v = that.physics.body.GetPosition();
             return {x : v.x,y:v.y};
         }
-        this.updateDefault = function (){
-        };
-        this.update = function(){
-            that.updateDefault();
-        }
+        this.update = new Function();
+}
+Loader.prototype.Ball = function(world)
+{
+	var that = this;
+	this.body = new Physics.Ball(world);
 }

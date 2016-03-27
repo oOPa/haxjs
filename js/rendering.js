@@ -50,7 +50,7 @@ that.camera.beginFill(0xFFFFFF);
 // draw a circle, set the lineStyle to zero so the circle doesn't have an outline
 that.camera.lineStyle(1.5,0x000000);
 that.camera.beginFill(0xFFFFFF, 1);
-that.camera.drawCircle(500, 250,10);
+that.camera.drawCircle(500, 250,hx.constants.Ball.RADIUS);
 that.camera.endFill();
 
 /** draw stadium **/
@@ -157,7 +157,7 @@ Renderer.prototype.addPlayer = function(player){
        
 };
 Renderer.prototype.addText = function (txt){
-    this.txt.text+= txt+"\n";
+    //this.txt.text+= txt+"\n";
 }
 Renderer.prototype.deletePlayer = function(player){
     /** 
@@ -194,17 +194,17 @@ Renderer.RendererPlayer = function (player) {
 		that.graphics.lineStyle(3,0xFFFFFF);
 		that.graphics.beginFill(0xE56E56, 1);
 		//that.graphics.drawCircle(hx.constants.Player.RADIUS, 50,hx.constants.Player.RADIUS * hx.constants.World.SCALE);
-        that.graphics.drawCircle(0,0,hx.constants.Player.RADIUS * hx.constants.World.SCALE);
+        that.graphics.drawCircle(0,0,30 * hx.constants.Player.RADIUS )//* hx.constants.World.SCALE);
 		that.graphics.endFill();
-		that.name_label = new PIXI.Text(player.name,{font : '25px Arial', fill : 'white', align : 'center'});
-		that.avatar_label = new PIXI.Text("",{font : '25px Arial', fill : 'white', align : 'center'});
-		that.avatar_label.x = Loader.constants.RADIUS-7.50;
-		that.avatar_label.y = (50)-15;
-		that.name_label.y = Loader.constants.RADIUS*3;
-        this.setAvatar(player.avatar);
-		that.graphics.addChild(that.avatar_label);
-		that.graphics.addChild(that.name_label);
+		//that.name_label = new PIXI.Text(player.name,{font : '25px Arial', fill : 'white', align : 'center'});
+		//that.avatar_label = new PIXI.Text("",{font : '25px Arial', fill : 'white', align : 'center'});
+		//that.avatar_label.x = Loader.constants.RADIUS-7.50;
+		//that.avatar_label.y = (50)-15;
+		//that.name_label.y = Loader.constants.RADIUS*3;
+        //this.setAvatar(player.avatar);
+		//that.graphics.addChild(that.avatar_label);
+		//that.graphics.addChild(that.name_label);
 }
 Renderer.RendererPlayer.prototype.setAvatar = function (avatar) {
-    this.avatar_label.text = avatar;
+    //this.avatar_label.text = avatar;
 };

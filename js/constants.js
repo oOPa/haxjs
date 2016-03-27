@@ -19,7 +19,7 @@ hx.constants.Ground = {
 };
 
 hx.constants.Player = {
-    DENSITY:20,
+    DENSITY:1,
     FRICTION:0.5,
     RESTITUTION:0.2,
     AD:2,
