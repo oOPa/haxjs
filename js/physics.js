@@ -21,6 +21,7 @@ var Physics = function()
 Physics.Player = function (world) {
     var bodyDef = new b2BodyDef();
     bodyDef.type = b2Body.b2_dynamicBody;
+	this.keys = [false,false,false,false];
 
     var fixDef = new b2FixtureDef();
     //fixDef.density = hx.constants.Player.DENSITY;
@@ -39,7 +40,25 @@ Physics.Player = function (world) {
     this.body = world.CreateBody(bodyDef);
     this.body.CreateFixture(fixDef);
 };
-
+Physics.Player.prototype.update = function()
+{
+		var that = this;
+		var vec = new PIXI.Vector(0, 0);
+        window.vec = new PIXI.Vector(0, 0);
+        that.keys.forEach(function (key, i) {
+        if (key) {
+                var vec2 = new Physics.Vec(i * -90,200);
+            vec.add(vec2.vec);
+        }
+        });
+        
+        if (vec.length() > 0)
+        {
+            that.body.ApplyForce(vec, that.body.GetWorldCenter());
+            //console.log(that.player.point());
+        }
+        
+}
 Physics.prototype.update = function () {
     this.world.Step(1 / 60, 10, 10);
        //this.world.Step(1 / 30, 10, 10);

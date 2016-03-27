@@ -33,8 +33,16 @@ Loader.UI.prototype.initClientRoom = function ()
 	$('body').html("<div id='game-view'></div>");
 	$('body').css({'padding-top':'10px'});
 	/** add host **/
-	window.game.createRenderer().startRender();
-	new Controller(window.game.createPlayer(net.peer.id,"avatar"));
+	//window.game.createRenderer().startRender();
+	//window.game.renderer = new Renderer();
+	//window.game.renderer.startRender();
+	window.renderer = window.game.renderer = new NetRenderer();
+	window.game.renderer.prototype.startRender();
+	//new Controller(window.game.createPlayer(net.peer.id,"avatar"));
+	window.renderer.addPlayer('host');
+	window.renderer.addPlayer('me');
+	window.controller = new NetController();
+	window.net.startUpdates();
 }
 Loader.UI.prototype.createRoom = function ()
 {
@@ -60,6 +68,7 @@ Loader.UI.prototype.initHostRoom = function ()
 	/** add host **/
 	window.game.createRenderer().startRender();
 	new Controller(window.game.createPlayer("host","avatar"));
+	window.net.startUpdates();
 }
 Loader.UI.prototype.listRooms = function()
 {
