@@ -49,6 +49,7 @@ Loader.Net.prototype.sendMessage = function()
 Loader.Net.prototype.createRoom = function(callbacks)
 {
 	/*
+	*on_peer_init
 	*on_error
 	*on_peer_connect
 	*on_peer_dc
@@ -61,10 +62,10 @@ Loader.Net.prototype.createRoom = function(callbacks)
 	this.peer.on('open', function(id) {
 		console.log('My peer ID is: ' + id);
 		console.log('waiting for connections');
-
+		callbacks.on_peer_init();
 		that.peer.on('connection', function(dataConnection) { 
 			console.log("new peer "+dataConnection.peer+" connected");
-			callback.on_peer_connect(dataConnection.peer);
+			callbacks.on_peer_connect(dataConnection.peer);
 			dataConnection.on('close',function(){
 				callbacks.on_peer_dc(dataConnection);
 			});
