@@ -7,20 +7,26 @@ Loader.Net.prototype.getRooms = function()
 {
 	return this.roomlist;
 }
-Loader.Net.prototype.enterRoom = function(peer_id,callback)
+
+Loader.Net.prototype.joinRoom = function(peer_id,callback)
 {
+		/*
+	*on_error
+	*on_host_connect
+	*on_host_dc
+	*on_host_data
+	*/
 	var that = this;
 	this.host = peer_id;
 	this.peer = new Peer({host : hx.server.host,path:"/api",port:hx.server.port,key:hx.server.key});
 	
-	peer.on('open', function(id) {
+	this.peer.on('open', function(id) {
 		console.log('My peer ID is: ' + id);
-		that.connection = peer.connect(that.host);
-		
+		that.connection = this.connect(that.host.host);
 		that.connection.on('open', function(){
 			console.log("connected to host!");
 			//if typeof(callback) === "function") {
-			callback.sucess();
+			callbacks.on_host_connect();
 		});
 		
 		that.connection.on('data',function(dataConnection){
@@ -40,9 +46,10 @@ Loader.Net.prototype.sendMessage = function()
 		
 	}
 }
-Loader.Net.createRoom = function(callbacks)
+Loader.Net.prototype.createRoom = function(callbacks)
 {
 	/*
+	*on_error
 	*on_peer_connect
 	*on_peer_dc
 	*on_peer_data
@@ -51,7 +58,7 @@ Loader.Net.createRoom = function(callbacks)
 	this.isHost = true;
 	this.peer = new Peer('host',{host : hx.server.host,path:"/api",port:hx.server.port,key:hx.server.key});
 	
-	peer.on('open', function(id) {
+	this.peer.on('open', function(id) {
 		console.log('My peer ID is: ' + id);
 		console.log('waiting for connections');
 
@@ -68,6 +75,9 @@ Loader.Net.createRoom = function(callbacks)
 		});
 
 	}); 
-	return this;
+	this.peer.on('error',function(err){
+		callbacks.on_error(err);
+	});
+	
 };
 

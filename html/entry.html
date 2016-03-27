@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -6,8 +6,8 @@
 <!-- jQuery and Bootstrap -->
 <script src="https://code.jquery.com/jquery-2.2.0.min.js" type="text/javascript"></script>
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.2.2/css/vendor/bootstrap.min.css" >
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<!--	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.2.2/css/vendor/bootstrap.min.css" > -->
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 <!-- Javascript requirements -->
@@ -30,20 +30,28 @@
 <script src="../js/network.js"></script>	
 <script type="text/javascript">
 window.game = new Loader();
+//body { padding-top: 70px; }
+
 </script>
 <style type="text/css">
 .center-text{text-align:center;}
 body { padding-top: 70px; }
 
+#game-view {
+        width: 100%;
+		   text-align:center;
+    }
 </style>
 </head>	
 <body onload="window.ui = new Loader.UI();">
+
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
     ...
   </div>
 </nav>
-<div class="container">
+
+<div id="content" class="container">
 <div class="row">
 	<div class="col-md-4">
 		<div class="get-started well">
@@ -74,11 +82,14 @@ body { padding-top: 70px; }
 	</div>
 </div>
 </div>
+<div id="game-view"></div>
+
 <nav class="navbar navbar-default navbar-fixed-bottom">
   <div class="container">
     ...
   </div>
 </nav>
+
 </body>
 
 

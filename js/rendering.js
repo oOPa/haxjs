@@ -7,7 +7,7 @@ var Renderer = function(renderFunction){
 Renderer.prototype.init = function(){
 var that = this;
 //var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
-var renderer = PIXI.autoDetectRenderer(500, 550, { antialias: false });
+var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: false });
 this.renderer = renderer;
 document.getElementById("game-view").appendChild(renderer.view)
 //renderer.backgroundColor = 0x718c5a;
