@@ -1,4 +1,4 @@
-window.updateintervalinmilliescs = 500;
+window.updateintervalinmilliescs = 1;
 Loader.Net = function()
 {
 	this.isHost = false;
