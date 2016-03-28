@@ -5,10 +5,11 @@ Loader.UI = function()
 	this.max = 8;
 	this.listRooms();
 	this.createListeners();
-	//this.createRoom();
-	//this.initHostRoom();
 }
-
+Loader.UI.prototype.getUserName = function()
+{
+	return (this.nick = $("#nick").val());
+}
 Loader.UI.prototype.addPlayer = function(player)
 {
 	p = window.game.createPlayer(player,"20");
@@ -32,7 +33,6 @@ Loader.UI.prototype.initClientRoom = function ()
 	/** add host **/
 	window.renderer = window.game.renderer = new NetRenderer();
 	window.game.renderer.prototype.startRender();
-	//new Controller(window.game.createPlayer(net.peer.id,"avatar"));
 	window.renderer.addPlayer('host');
 	window.renderer.addPlayer(net.peer.id);
 	window.controller = new NetController();
@@ -42,9 +42,6 @@ Loader.UI.prototype.initClientRoom = function ()
 
 Loader.UI.prototype.createRoom = function ()
 {
-	/* tell server **/
-
-	/* **/
 	var that = this;
 	callbacks = {
 		on_peer_init:function(){that.createRoomDB();that.initHostRoom()},
