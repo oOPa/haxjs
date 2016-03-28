@@ -1,4 +1,4 @@
-window.updateintervalinmilliescs = 1;
+window.updateintervalinmilliescs = 5000;
 window.host_time_out_seconds = 20;
 Loader.Net = function()
 {
@@ -25,6 +25,7 @@ Loader.Net.prototype.startUpdates = function ()
 }
 Loader.Net.prototype.updateClients = function ()
 {
+	if(window.first && window.first.open){
 	//console.log("sending updates");
 	//data = {name : 'host'}
 	updates = [];
@@ -42,7 +43,7 @@ Loader.Net.prototype.updateClients = function ()
 			con.send(n);
 		}
 	}
-	
+	}
 	//console.log(n);
 }
 Loader.Net.prototype.sendUpdatesToHost = function ()
@@ -115,7 +116,7 @@ Loader.Net.prototype.createRoom = function(callbacks)
 	*/
 	var that = this;
 	this.isHost = true;
-	this.peer = new Peer('host',{host : hx.server.host,path:"/api",port:hx.server.port,key:hx.server.key});
+	this.peer = new Peer({host : hx.server.host,path:"/api",port:hx.server.port,key:hx.server.key});
 	
 	this.peer.on('open', function(id) {
 		console.log('My peer ID is: ' + id);

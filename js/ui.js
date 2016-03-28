@@ -1,21 +1,14 @@
+/** experimental **/
 Loader.UI = function()
 {
 	this.room_name = "Onyema's room";
-	this.peer = "host";
 	this.max = 8;
 	this.listRooms();
 	this.createListeners();
 	//this.createRoom();
 	//this.initHostRoom();
 }
-Loader.UI.prototype.exitRoom = function()
-{
-	$('body').html(this.cache);
-	$('body').css({'padding-top':'70px'});
-	window.net.peer.disconnect();
-	this.listRooms();
-	this.createListeners();
-}
+
 Loader.UI.prototype.addPlayer = function(player)
 {
 	p = window.game.createPlayer(player,"20");
@@ -37,9 +30,6 @@ Loader.UI.prototype.initClientRoom = function ()
 	$('body').html("<div id='game-view'></div>");
 	$('body').css({'padding-top':'10px'});
 	/** add host **/
-	//window.game.createRenderer().startRender();
-	//window.game.renderer = new Renderer();
-	//window.game.renderer.startRender();
 	window.renderer = window.game.renderer = new NetRenderer();
 	window.game.renderer.prototype.startRender();
 	//new Controller(window.game.createPlayer(net.peer.id,"avatar"));
@@ -48,32 +38,23 @@ Loader.UI.prototype.initClientRoom = function ()
 	window.controller = new NetController();
 	window.net.startUpdates();
 }
-Loader.UI.prototype.createRoomDB = function ()
-{
-			encoded_url = (encodeURI("name="+this.room_name+"&peer="+window.net.peer.id+"&max="+this.max+"&ver="+hx.version))
-	console.log(encoded_url);
-	window.shit = $.post("http://127.0.0.1:8888/create_room",encoded_url,function(a){
-		console.log(a);
-	});
-}
+
+
 Loader.UI.prototype.createRoom = function ()
 {
 	/* tell server **/
 
 	/* **/
 	var that = this;
-	callbacks = {on_peer_init:function(){that.createRoomDB();that.initHostRoom()},
-				on_error : this.hostError,
-				on_peer_connect : this.addPlayer
+	callbacks = {
+		on_peer_init:function(){that.createRoomDB();that.initHostRoom()},
+		on_error : this.hostError,
+		on_peer_connect : this.addPlayer
 	};
 	window.net = new Loader.Net();
 	window.net.createRoom(callbacks);
 }
-Loader.UI.prototype.hostError = function (err)
-{
-	console.log("unable to create room");
-	console.log(err);
-}
+
 Loader.UI.prototype.initHostRoom = function ()
 {
 	/** clear old html and place canvas **/
@@ -82,8 +63,28 @@ Loader.UI.prototype.initHostRoom = function ()
 	$('body').css({'padding-top':'10px'});
 	/** add host **/
 	window.game.createRenderer().startRender();
-	new Controller(window.game.createPlayer("host","avatar"));
+	new Controller(window.game.createPlayer(window.net.peer.id,"avatar"));
 	window.net.startUpdates();
+}
+Loader.UI.prototype.exitRoom = function()
+{
+	$('body').html(this.cache);
+	$('body').css({'padding-top':'70px'});
+	window.net.peer.disconnect();
+	this.listRooms();
+	this.createListeners();
+}
+/** unstable **/
+Loader.UI.prototype.hostError = function (err)
+{
+	console.log("unable to create room");
+	console.log(err);
+}
+/** stable **/
+
+Loader.UI.prototype.createRoomDB = function ()
+{
+	$.post("/create_room",encodeURI("name="+this.room_name+"&peer="+window.net.peer.id+"&max="+this.max+"&ver="+hx.version));
 }
 Loader.UI.prototype.listRooms = function()
 {
@@ -97,7 +98,7 @@ Loader.UI.prototype.listRooms = function()
 		});
 	})
 
-}
+};
 
 Loader.UI.prototype.createListeners = function()
 {
