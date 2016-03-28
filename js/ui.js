@@ -6,6 +6,7 @@ Loader.UI = function()
 	this.listRooms();
 	this.createListeners();
 }
+
 Loader.UI.prototype.getUserName = function()
 {
 	return (this.nick = $("#nick").val());
@@ -107,7 +108,7 @@ Loader.UI.prototype.createListeners = function()
 		that.listRooms();
 	});
 	$('#create').on('click',function(){
-		that.createRoom();
+		$('#myModal').modal().show();
 	});
 		
 	$('#roomlist-table').on('click', 'tbody tr',function(event) {
