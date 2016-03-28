@@ -3,14 +3,12 @@ var Loader = function(){
     that.players =  [];
 	that.physics = new Physics();
         Loader.prototype.render = function () {   
-		//console.log("rfufgjgrtn")
-            /** update player movement */
             for(i in that.players)
             {
                 item = that.players[i];
                 item.update();
             }
-			/** update physics **/
+
 			that.physics.update();
         }
 	}

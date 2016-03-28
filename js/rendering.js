@@ -52,7 +52,7 @@ that.camera.beginFill(0xFFFFFF);
 // draw a circle, set the lineStyle to zero so the circle doesn't have an outline
 that.camera.lineStyle(1.5,0x000000);
 that.camera.beginFill(0xFFFFFF, 1);
-that.camera.drawCircle(500, 250,hx.constants.Ball.RADIUS);
+//that.camera.drawCircle(500, 250,hx.constants.Ball.RADIUS);
 that.camera.endFill();
 
 /** draw stadium **/

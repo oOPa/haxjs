@@ -49,25 +49,36 @@ body { padding-top: 70px; }
 
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
-    ...
+   
   </div>
 </nav>
 <!-- nickname -->
-	<div class="">
-		<div class="get-started well">
-			<p class="alert get-started-message center-text">Enter a nickname to get started!</p>
-			<div class="center-block center-text">
-				<input type="text" name="nick" id="nickname" class=""> <span class="glyphicon"></span>
-			</div>
-		</div>
 
-	</div>
+<div id="nick-modal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="text-center modal-header">
+        <h4 class="modal-title">Enter nickname to get started</h4>
+      </div>
+      <div class="modal-body center-block center-text">
+	
+				<input type="text" name="nick" id="nick" onkeypress="$('#play').attr('disabled',false);">
+		
+      </div>
+      <div class="modal-footer center-text">
+        <button type="button" class="btn btn-primary" id="play" disabled>Play!</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 	<!-- -->
 <div id="content" class="container">
 <div class="row">
 
 	
-	<div class="col-md-8">
+	<div class="col-md-12">
 		<div class="panel panel-default	">
 			<div class="panel-heading">
 				<button id="create" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>  Create Room</button>
@@ -79,7 +90,7 @@ body { padding-top: 70px; }
 					<th>Room name</th>
 					<th>Players</th>
 					<th>Pass</th>
-					<th>Distance~</th>
+					<th class="pull-right">Distance~</th>
 				</thead>
 				<tbody></tbody>
 			</table>
@@ -88,7 +99,6 @@ body { padding-top: 70px; }
 	</div>
 </div>
 </div>
-<button type="button" data-toggle="modal" data-target="#myModal">Launch modal</button>
 
 <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog">
@@ -98,11 +108,11 @@ body { padding-top: 70px; }
         <h4 class="modal-title">Create room</h4>
       </div>
       <div class="modal-body">
-        <span>Room Name:</span><input type="text" name="nick" id="nickname" class="pull-right" onkeypress="ui.room_name = (this.value);console.log('wft');$('#create_room_modal').attr('disabled',false)"> <span class="glyphicon">
+        <span>Room Name:</span><input type="text" name="room" id="room" class="pull-right"> <span class="glyphicon">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" onclick="ui.createRoom()" id="create_room_modal" disabled>Create Room</button>
+        <button type="button" class="btn btn-primary" id="create_room_modal">Create Room</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -112,7 +122,7 @@ body { padding-top: 70px; }
 
 <nav class="navbar navbar-default navbar-fixed-bottom">
   <div class="container">
-    ...
+    
   </div>
 </nav>
 

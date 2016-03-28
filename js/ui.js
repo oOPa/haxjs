@@ -1,15 +1,14 @@
 /** experimental **/
 Loader.UI = function()
 {
-	this.room_name = "Onyema's room";
-	this.max = 8;
+	this.getNick();
 	this.listRooms();
 	this.createListeners();
 }
 
-Loader.UI.prototype.getUserName = function()
+Loader.UI.prototype.getNick = function()
 {
-	return (this.nick = $("#nick").val());
+	$('#nick-modal').modal().show();
 }
 Loader.UI.prototype.addPlayer = function(player)
 {
@@ -61,7 +60,7 @@ Loader.UI.prototype.initHostRoom = function ()
 	$('body').css({'padding-top':'10px'});
 	/** add host **/
 	window.game.createRenderer().startRender();
-	new Controller(window.game.createPlayer(window.net.peer.id,"avatar"));
+	new Controller(window.game.createPlayer(this.nick,"avatar"));
 	window.net.startUpdates();
 }
 Loader.UI.prototype.exitRoom = function()
@@ -108,6 +107,7 @@ Loader.UI.prototype.createListeners = function()
 		that.listRooms();
 	});
 	$('#create').on('click',function(){
+		$('#room').attr('value',that.nick + "'s room");
 		$('#myModal').modal().show();
 	});
 		
@@ -119,5 +119,11 @@ Loader.UI.prototype.createListeners = function()
 				
 		$('#roomlist-table').on('dblclick', 'tbody tr',function(event) {
 				that.joinRoom(($(this).attr("peer")))
+	});
+	$('#play').on('click',function(){
+		ui.nick=$('#nick').val();$('#nick-modal').modal('hide')
+	})
+	$('#create_room_modal').on('click',function(){
+		ui.room_name= $('#room').val();ui.createRoom();
 	});
 }
