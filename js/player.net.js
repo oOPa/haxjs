@@ -1,4 +1,4 @@
-Loader.prototype.NetPlayer = function(name,avatar) {
+Loader.Client.Player = function(name,avatar) {
         var that = this;
 		this.name = name;
 		//this.avatar = avatar.substr(0,2);
@@ -9,9 +9,4 @@ Loader.prototype.NetPlayer = function(name,avatar) {
             return {x : this.x,y:this.y};
         }
         this.update = new Function();
-}
-Loader.prototype.Ball = function(world)
-{
-	var that = this;
-	this.body = new Physics.Ball(world);
 }

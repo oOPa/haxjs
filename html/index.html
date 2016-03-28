@@ -11,8 +11,8 @@
 <script src="../js/hashtable.js"></script>	
 <script src="../js/pixi.vector.js"></script>
 <script src="../js/PixiTextInput.js"></script>
-<script src="../js/physics.js"></script>	
 <script src="../js/loader.js"></script>	
+<script src="../js/physics.js"></script>	
 <script src="../js/rendering.js"></script>	
 <script src="../js/controller.js"></script>	
 <script src="../js/player.js"></script>	
@@ -23,7 +23,7 @@ var load = function()
 	game.createRenderer().startRender();
 	window.vagrant = game.createPlayer("vagrant",20);
 	window.onyema = game.createPlayer("onyema",20);
-	window.controller = new Controller(window.vagrant);
+	window.controller = new Loader.Host.Controller(window.vagrant);
 }
 </script>
 

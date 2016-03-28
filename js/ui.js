@@ -1,6 +1,7 @@
 /** experimental **/
 Loader.UI = function()
 {
+	this.max = 8;
 	this.getNick();
 	this.listRooms();
 	this.createListeners();
@@ -12,8 +13,8 @@ Loader.UI.prototype.getNick = function()
 }
 Loader.UI.prototype.addPlayer = function(player)
 {
-	p = window.game.createPlayer(player,"20");
-	window.net.clients.put(player,p);
+	p = game.createPlayer(player,"20");
+	game.net.clients.put(player,p);
 }
 Loader.UI.prototype.joinRoom = function (host)
 {
@@ -21,8 +22,8 @@ Loader.UI.prototype.joinRoom = function (host)
 	callbacks = {on_host_connect:this.initClientRoom,
 				on_error : this.hostError,
 				};
-	window.net = new Loader.Net();
-	window.net.joinRoom(host	,callbacks);
+	game.net = new Loader.Net();
+	game.net.joinRoom(host	,callbacks);
 }
 Loader.UI.prototype.initClientRoom = function ()
 {
@@ -31,12 +32,13 @@ Loader.UI.prototype.initClientRoom = function ()
 	$('body').html("<div id='game-view'></div>");
 	$('body').css({'padding-top':'10px'});
 	/** add host **/
-	window.renderer = window.game.renderer = new NetRenderer();
-	window.game.renderer.prototype.startRender();
-	window.renderer.addPlayer('host');
-	window.renderer.addPlayer(net.peer.id);
-	window.controller = new NetController();
-	window.net.startUpdates();
+	game.renderer = new Loader.Client.Renderer();
+	/*!-- !*/
+	game.renderer.prototype.startRender();
+	game.renderer .addPlayer('host');
+	game.renderer .addPlayer(game.net.peer.id);
+	game.controller = new Loader.Client.Controller();
+	game.net.startUpdates();
 }
 
 
@@ -48,8 +50,8 @@ Loader.UI.prototype.createRoom = function ()
 		on_error : this.hostError,
 		on_peer_connect : this.addPlayer
 	};
-	window.net = new Loader.Net();
-	window.net.createRoom(callbacks);
+	game.net = new Loader.Net();
+	game.net.createRoom(callbacks);
 }
 
 Loader.UI.prototype.initHostRoom = function ()
@@ -59,15 +61,15 @@ Loader.UI.prototype.initHostRoom = function ()
 	$('body').html("<div id='game-view'></div>");
 	$('body').css({'padding-top':'10px'});
 	/** add host **/
-	window.game.createRenderer().startRender();
-	new Controller(window.game.createPlayer(this.nick,"avatar"));
-	window.net.startUpdates();
+	game.createRenderer().startRender();
+	new Loader.Host.Controller(game.createPlayer(this.nick,"avatar"));
+	game.net.startUpdates();
 }
 Loader.UI.prototype.exitRoom = function()
 {
 	$('body').html(this.cache);
 	$('body').css({'padding-top':'70px'});
-	window.net.peer.disconnect();
+	game.net.peer.disconnect();
 	this.listRooms();
 	this.createListeners();
 }
@@ -81,7 +83,7 @@ Loader.UI.prototype.hostError = function (err)
 
 Loader.UI.prototype.createRoomDB = function ()
 {
-	$.post("/create_room",encodeURI("name="+this.room_name+"&peer="+window.net.peer.id+"&max="+this.max+"&ver="+hx.version));
+	$.post("/create_room",encodeURI("name="+this.room_name+"&peer="+game.net.peer.id+"&max="+this.max+"&ver="+hx.version));
 }
 Loader.UI.prototype.listRooms = function()
 {

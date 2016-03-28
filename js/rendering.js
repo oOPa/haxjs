@@ -1,13 +1,13 @@
-var Renderer = function(renderFunction){
+Loader.Renderer = function(renderFunction){
 	var that = this;
     this.players = new Hashtable();
     this.init();
     this.renderFunction = renderFunction || new Function();
 };
-Renderer.prototype.init = function(){
+Loader.Renderer.prototype.init = function(){
 var that = this;
 //var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
-var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: false });
+var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true});
 this.renderer = renderer;
 document.getElementById("game-view").appendChild(renderer.view)
 //renderer.backgroundColor = 0x718c5a;
@@ -146,7 +146,7 @@ graphics.addChild(misc);
 stage.addChild(graphics);
 };
 
-Renderer.prototype.startRender = function ()
+Loader.Renderer.prototype.startRender = function ()
 {
     var that = this;
     // run the render loop
@@ -159,27 +159,20 @@ Renderer.prototype.startRender = function ()
     }
 };
 
-Renderer.prototype.addPlayer = function(player){
+Loader.Renderer.prototype.addPlayer = function(player){
        var that = this;
-       p = new Renderer.RendererPlayer(player);
+       p = new Loader.Renderer.RendererPlayer(player);
         that.camera.addChild(p.graphics);
        this.players.put(player, p);
        
 };
-Renderer.prototype.addText = function (txt){
+Loader.Renderer.prototype.addText = function (txt){
     this.log.text+= txt+"\n";
 }
-Renderer.prototype.deletePlayer = function(player){
-    /** 
-       var that = this;
-       if(that.players.hasOwnProperty(player))
-       {
-           /** pixi remove child */
-            // that.players[player] = undefined;
-      // }
-      // ***/
+Loader.Renderer.prototype.deletePlayer = function(player){
+
 };
-Renderer.prototype.renderPlayers = function(){
+Loader.Renderer.prototype.renderPlayers = function(){
     var that = this;
     keys = that.players.keys();
     for(i in keys)
@@ -197,7 +190,7 @@ Renderer.prototype.renderPlayers = function(){
         
     }
 };
-Renderer.RendererPlayer = function (player) {
+Loader.Renderer.RendererPlayer = function (player) {
      var that = this;
 		this.graphics = new PIXI.Graphics();
         that.graphics.position = new PIXI.Vector(0,0);
@@ -215,6 +208,6 @@ Renderer.RendererPlayer = function (player) {
 		//that.graphics.addChild(that.avatar_label);
 		//that.graphics.addChild(that.name_label);
 }
-Renderer.RendererPlayer.prototype.setAvatar = function (avatar) {
-    //this.avatar_label.text = avatar;
+Loader.Renderer.RendererPlayer.prototype.setAvatar = function (avatar) {
+
 };

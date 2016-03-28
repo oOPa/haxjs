@@ -1,4 +1,4 @@
-var NetController = function(player){
+Loader.Client.Controller = function(player){
         var that = this;
         that.keys = [false,false,false,false];
         that.Directions = hx.constants.Directions;
@@ -12,8 +12,4 @@ var NetController = function(player){
             that.keys[that.Directions[e.keyCode]] = false;			
 			console.log(e.keyCode);          
     });
-
-
-
-
 }

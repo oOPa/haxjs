@@ -12,13 +12,13 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2,
  * b2contactlistener
  */
 //var b2ContactListener = Box2d.Dynamics.b2ContactListener;
-var Physics = function()
+Loader.Physics = function()
 {
 	var that  = this;
 	this.world = new b2World(new b2Vec2(0, 0), true);
 }
 
-Physics.Player = function (world) {
+Loader.Physics.Player = function (world) {
     var bodyDef = new b2BodyDef();
     bodyDef.type = b2Body.b2_dynamicBody;
 	this.keys = [false,false,false,false];
@@ -40,14 +40,14 @@ Physics.Player = function (world) {
     this.body = world.CreateBody(bodyDef);
     this.body.CreateFixture(fixDef);
 };
-Physics.Player.prototype.update = function()
+Loader.Physics.Player.prototype.update = function()
 {
 		var that = this;
 		var vec = new PIXI.Vector(0, 0);
         window.vec = new PIXI.Vector(0, 0);
         that.keys.forEach(function (key, i) {
         if (key) {
-                var vec2 = new Physics.Vec(i * -90,200);
+                var vec2 = new Loader.Physics.Vec(i * -90,200);
             vec.add(vec2.vec);
         }
         });
@@ -60,20 +60,20 @@ Physics.Player.prototype.update = function()
         }
         
 }
-Physics.prototype.update = function () {
+Loader.Physics.prototype.update = function () {
     this.world.Step(1 / 60, 10, 10);
        //this.world.Step(1 / 30, 10, 10);
     this.world.ClearForces();
     
 }
-Physics.deg2rad = function (deg) {
+Loader.Physics.deg2rad = function (deg) {
     return deg * Math.PI / 180;
 };
-Physics.Vec = function (deg, mag) {
-    var deg = Physics.deg2rad(deg);
+Loader.Physics.Vec = function (deg, mag) {
+    var deg = Loader.Physics.deg2rad(deg);
     this.vec = new PIXI.Vector(Math.cos(deg) * mag, Math.sin(deg) * mag);
 };
-Physics.Ball = function (world) {
+Loader.Physics.Ball = function (world) {
     var bodyDef = new b2BodyDef();
     bodyDef.type = b2Body.b2_dynamicBody;
 

@@ -1,7 +1,7 @@
 var Loader = function(){
 	var that = this;
     that.players =  [];
-	that.physics = new Physics();
+	that.physics = new Loader.Physics();
         Loader.prototype.render = function () {   
             for(i in that.players)
             {
@@ -12,16 +12,15 @@ var Loader = function(){
 			that.physics.update();
         }
 	}
+Loader.Host =  {};
+Loader.Client = {};
 Loader.prototype.createRenderer = function()
 {
-	if(typeof Renderer != 'undefined' ){
-		this.renderer = new Renderer(this.render)
-		return this.renderer;
-	}
+	return (this.renderer = new Loader.Renderer(this.render));
 }
 Loader.prototype.createPlayer = function(name, avatar){
 	var that = this;
-    var player = new Player(name,avatar,that.physics.world);
+    var player = new Loader.Host.Player(name,avatar,that.physics.world);
 	that.players.push(player);
 	if(typeof this.renderer != 'undefined')
 	{
@@ -37,8 +36,4 @@ Loader.prototype.addText = function(txt) {
     else{
         return false;
     }
-}
-
-Loader.constants = {
-	factor:50.0
 }

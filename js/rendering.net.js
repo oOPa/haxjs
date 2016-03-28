@@ -1,18 +1,19 @@
 //NetRenderer.prototype.constructor=NetRenderer;
-var NetRenderer = function()
+Loader.Client.Renderer = function()
 {
-	this.prototype = new Renderer();
+	this.prototype = new Loader.Renderer();
 	this.prototype.renderPlayers = this.renderPlayers;	
+	
 }
-NetRenderer.prototype.addPlayer = function(peer_id){
+Loader.Client.Renderer.prototype.addPlayer = function(peer_id){
        var that = this;
-       p = new NetRenderer.RendererNetPlayer();
+       p = new Loader.Client.Renderer.RendererNetPlayer();
        that.prototype.camera.addChild(p.graphics);
        this.prototype.players.put(peer_id, p);
 	   
        
 };
-NetRenderer.prototype.renderPlayers = function(){
+Loader.Client.Renderer.prototype.renderPlayers = function(){
     var that = this;
     keys = that.players.keys();
     for(i in keys)
@@ -25,7 +26,7 @@ NetRenderer.prototype.renderPlayers = function(){
 
     }
 };
-NetRenderer.RendererNetPlayer = function () {
+Loader.Client.Renderer.RendererNetPlayer = function () {
      var that = this;
 		this.graphics = new PIXI.Graphics();
 		console.log(this.graphics)

@@ -1,7 +1,6 @@
-window.updateintervalinmilliescs = 5000;
-window.host_time_out_seconds = 20;
 Loader.Net = function()
 {
+	this.max = 8;
 	this.isHost = false;
 	this.clients = new Hashtable();
 }
@@ -20,42 +19,43 @@ Loader.Net.prototype.startUpdates = function ()
 {
 	if(typeof this.timer == 'undefined')
 	{
-		this.timer = this.isHost ? setInterval(this.updateClients,updateintervalinmilliescs) : setInterval(this.sendUpdatesToHost,updateintervalinmilliescs);
+		this.timer = this.isHost ? setInterval(this.updateClients,hx.intervals) : setInterval(this.sendUpdatesToHost,hx.intervals);
 	}
 }
 Loader.Net.prototype.updateClients = function ()
 {
-	if(window.first && window.first.open){
-	//console.log("sending updates");
-	//data = {name : 'host'}
-	updates = [];
 	n = ['host']
-	n.push(window.game.players[0].point())
-	window.first.send(n);
-	keys = net.clients.keys();
+	n.push(game.players[0].point())
+	if(game.first && game.first.open)
+	{
+		game.first.send(n);
+	}
+
+	keys = game.net.clients.keys();
 	for(i in keys)
 	{
 		item = keys[i]
 		n = [item]
-		n.push(net.clients.get(item).point());
-		for (x in net.peer.connections){
-			con = net.peer.connections[x][0];
+		n.push(game.net.clients.get(item).point());
+		
+		for (x in game.net.peer.connections){
+			//host	
+			con = game.net.peer.connections[x][0];
 			con.send(n);
 		}
 	}
-	}
+	
 	//console.log(n);
 }
 Loader.Net.prototype.sendUpdatesToHost = function ()
 {
-	window.host.send(window.controller.keys);
+	window.host.send(game.controller.keys);
 }
 Loader.Net.prototype.updateFromHost = function (updates)
 {
 	//console.log("sending updates");
-	//data = {name : 'host'}
-	//console.log(updates);
-	window.renderer.prototype.players.get(updates[0]).point = updates[1];
+	//data = {name : 'host'}	
+	game.renderer.prototype.players.get(updates[0]).point = updates[1];
 }
 Loader.Net.prototype.joinRoom = function(peer_id,callback)
 {
@@ -125,9 +125,9 @@ Loader.Net.prototype.createRoom = function(callbacks)
 		that.peer.on('connection', function(dataConnection) { 
 			console.log("new peer "+dataConnection.peer+" connected");
 			callbacks.on_peer_connect(dataConnection.peer);
-			window.first = dataConnection;
+			game.first = dataConnection;
 			dataConnection.on('close',function(){
-				window.net.clients.remove(dataConnection.peer);
+				game.net.clients.remove(dataConnection.peer);
 				callbacks.on_peer_dc(dataConnection);
 			});
 			
