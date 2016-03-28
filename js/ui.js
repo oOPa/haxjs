@@ -1,5 +1,8 @@
 Loader.UI = function()
 {
+	this.room_name = "Onyema's room";
+	this.peer = "host";
+	this.max = 8;
 	this.listRooms();
 	this.createListeners();
 	//this.createRoom();
@@ -7,7 +10,7 @@ Loader.UI = function()
 }
 Loader.UI.prototype.exitRoom = function()
 {
-	$('body').html(window.originalHTML);
+	$('body').html(this.cache);
 	$('body').css({'padding-top':'70px'});
 	window.net.peer.disconnect();
 	this.listRooms();
@@ -30,7 +33,7 @@ Loader.UI.prototype.joinRoom = function (host)
 Loader.UI.prototype.initClientRoom = function ()
 {
 	/** clear old html and place canvas **/
-	window.originalHTML	 = $('body').html();
+	this.cache	 = $('body').html();
 	$('body').html("<div id='game-view'></div>");
 	$('body').css({'padding-top':'10px'});
 	/** add host **/
@@ -45,10 +48,21 @@ Loader.UI.prototype.initClientRoom = function ()
 	window.controller = new NetController();
 	window.net.startUpdates();
 }
+Loader.UI.prototype.createRoomDB = function ()
+{
+			encoded_url = (encodeURI("name="+this.room_name+"&peer="+window.net.peer.id+"&max="+this.max+"&ver="+hx.version))
+	console.log(encoded_url);
+	window.shit = $.post("http://127.0.0.1:8888/create_room",encoded_url,function(a){
+		console.log(a);
+	});
+}
 Loader.UI.prototype.createRoom = function ()
 {
+	/* tell server **/
+
+	/* **/
 	var that = this;
-	callbacks = {on_peer_init:this.initHostRoom,
+	callbacks = {on_peer_init:function(){that.createRoomDB();that.initHostRoom()},
 				on_error : this.hostError,
 				on_peer_connect : this.addPlayer
 	};
@@ -63,7 +77,7 @@ Loader.UI.prototype.hostError = function (err)
 Loader.UI.prototype.initHostRoom = function ()
 {
 	/** clear old html and place canvas **/
-	window.originalHTML	 = $('body').html();
+	this.cache = $('body').html();
 	$('body').html("<div id='game-view'></div>");
 	$('body').css({'padding-top':'10px'});
 	/** add host **/
@@ -79,7 +93,7 @@ Loader.UI.prototype.listRooms = function()
 		$.each( data, function( key, val ) {
 			pass = val.pass ? "Yes" : "No";
 			distance = key * 20;
-			$('#roomlist-table tbody').append('<tr class=\'clickable-row\'><td>'+val.name+'</td><td>'+val.players+'/'+val.max+'</td><td>'+pass+'</td><td>'+distance+'</td></tr>');
+			$('#roomlist-table tbody').append('<tr peer='+val.peer+' class=\'clickable-row\'><td>'+val.name+'</td><td>'+val.players+'/'+val.max+'</td><td>'+pass+'</td><td>'+distance+'</td></tr>');
 		});
 	})
 
@@ -89,7 +103,7 @@ Loader.UI.prototype.createListeners = function()
 {
 	var that = this;
 	$('#join').on('click',function(){
-		that.joinRoom(window.roomlist.rooms[that.room_index])
+		that.joinRoom(that.selected_room)
 	});
 	$('#refresh').on('click',function(){
 		that.listRooms();
@@ -99,13 +113,12 @@ Loader.UI.prototype.createListeners = function()
 	});
 		
 	$('#roomlist-table').on('click', 'tbody tr',function(event) {
-		that.room_index = $(this).closest('tr').index()
+				that.selected_room = $(this).attr("peer");
 				$(this).addClass('active').siblings().removeClass('active');
 				$('#join').attr("disabled", false);
 	});
 				
 		$('#roomlist-table').on('dblclick', 'tbody tr',function(event) {
-				room_index = $(this).closest('tr').index()
-				that.joinRoom(window.roomlist.rooms[room_index])
+				that.joinRoom(($(this).attr("peer")))
 	});
 }

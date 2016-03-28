@@ -2,22 +2,31 @@ var ExpressPeerServer = require('peer').ExpressPeerServer;
 var express = require("express")
 var app = express();
 const MongoClient = require('mongodb').MongoClient;
+var bodyParser = require('body-parser');
+
 var that = this;
 app.use('/js', express.static('js'));
 app.get("/", function(req,res){res.sendFile(__dirname+"/html/entry.html");});
-app.get("/create_room",function (req,res){
+
+app.use(bodyParser.json());
+//app.use(bodyParser.urlencoded());
+// in latest body-parser use like below.
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.post("/create_room",function (req,res){
 	rooms = that.rooms;
 	rooms.insert({
-		name : "Enyinna's room",
-		peer : "host",
+		name : req.body['name'],
+		peer : req.body['peer'],
 		players	: 1,
-		max	:	8,
+		max	:	req.body['max'],
 		country	:	'gb',
 		lat	: "0",
 		longitude	: "0",
-		version	: "0.1",
-		pass : false;
+		version	: req.body['ver'],
+		pass : 0
 	});
+	res.end();
 });
 app.get("/get_rooms",function(req,res){
 	var cursor = that.rooms.find();
@@ -44,5 +53,5 @@ MongoClient.connect('mongodb://localhost/haxball', (err, database) => {
   // ... start the server
 	;
   if(err) {console.log(err)}
-  else{that.rooms = database.collection('rooms')}
+  else{that.rooms = database.collection('rooms');that.rooms.remove();}
 });

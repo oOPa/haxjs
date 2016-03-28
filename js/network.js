@@ -1,4 +1,5 @@
 window.updateintervalinmilliescs = 1;
+window.host_time_out_seconds = 20;
 Loader.Net = function()
 {
 	this.isHost = false;
@@ -69,7 +70,7 @@ Loader.Net.prototype.joinRoom = function(peer_id,callback)
 	
 	this.peer.on('open', function(id) {
 		console.log('My peer ID is: ' + id);
-		that.connection = this.connect(that.host.host);
+		that.connection = this.connect(that.host);
 		that.connection.on('open', function(){
 			console.log("connected to host!");
 			window.host = that.connection;
@@ -82,6 +83,9 @@ Loader.Net.prototype.joinRoom = function(peer_id,callback)
 			//console.log(dataConnection);
 			that.updateFromHost(dataConnection);
 		});
+		that.connection.on('error',function(err){
+			console.log(err)
+		})
 	}); 
 	return this;
 }
