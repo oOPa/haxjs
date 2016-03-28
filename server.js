@@ -1,25 +1,48 @@
 var ExpressPeerServer = require('peer').ExpressPeerServer;
 var express = require("express")
-app = express();
-//app.use(express.static('.'));
-/**
-app.get("/js/Box2dWeb-2.1.a.3.min.js", function(req,res){res.sendFile(__dirname+"/js/Box2dWeb-2.1.a.3.min.js");});
-app.get("/js/loader.js", function(req,res){res.sendFile(__dirname+"/js/loader.js");});
-app.get("/js/fake-rooms.js", function(req,res){res.sendFile(__dirname+"/js/fake-rooms.js");});
-app.get("/js/constants.js", function(req,res){res.sendFile(__dirname+"/js/constants.js");});
-app.get("/js/navigation.js", function(req,res){res.sendFile(__dirname+"/js/navigation.js");});
-app.get("/js/pixi.min.js", function(req,res){res.sendFile(__dirname+"/js/pixi.min.js");});
-app.get("/js/pixi.vector.js", function(req,res){res.sendFile(__dirname+"/js/pixi.vector.js");});
-**/
+var app = express();
+const MongoClient = require('mongodb').MongoClient;
+var that = this;
 app.use('/js', express.static('js'));
-
 app.get("/", function(req,res){res.sendFile(__dirname+"/html/entry.html");});
 app.get("/create_room",function (req,res){
-	
-})
+	rooms = that.rooms;
+	rooms.insert({
+		name : "Enyinna's room",
+		peer : "host",
+		players	: 1,
+		max	:	8,
+		country	:	'gb',
+		lat	: "0",
+		longitude	: "0",
+		version	: "0.1",
+		pass : false;
+	});
+});
+app.get("/get_rooms",function(req,res){
+	var cursor = that.rooms.find();
+	res.contentType("application/json");
+	var firstItem=true;
+	cursor.each(function(err,item){
+		if(item == null) {
+		res.end(firstItem ? '[' : '' + ']');
+        return;
+    }
+		res.write(firstItem ? (firstItem=false,'[') : ',');
+		res.write(JSON.stringify(item));
+	});
+});
 
 server = app.listen(process.env.port || 8888);
 var options = {
     debug: true
 };
 app.use('/api', ExpressPeerServer(server, options));
+
+
+MongoClient.connect('mongodb://localhost/haxball', (err, database) => {
+  // ... start the server
+	;
+  if(err) {console.log(err)}
+  else{that.rooms = database.collection('rooms')}
+});

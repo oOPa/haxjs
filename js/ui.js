@@ -71,6 +71,19 @@ Loader.UI.prototype.initHostRoom = function ()
 	new Controller(window.game.createPlayer("host","avatar"));
 	window.net.startUpdates();
 }
+Loader.UI.prototype.listNet = function()
+{
+	$.getJSON( "/get_rooms", function( data ) {
+	var items = [];
+
+		$.each( data, function( key, val ) {
+			pass = val.pass ? "Yes" : "No";
+			distance = key * 20;
+			$('#roomlist-table tbody').append('<tr class=\'clickable-row\'><td>'+val.name+'</td><td>'+val.players+'/'+val.max+'</td><td>'+pass+'</td><td>'+distance+'</td></tr>');
+		});
+	})
+
+}
 Loader.UI.prototype.listRooms = function()
 {
 	rooms = window.roomlist.rooms;
