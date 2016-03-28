@@ -1,19 +1,22 @@
+var that = this;
+
 var ExpressPeerServer = require('peer').ExpressPeerServer;
 var express = require("express")
 var app = express();
 const MongoClient = require('mongodb').MongoClient;
 var bodyParser = require('body-parser');
 
-var that = this;
-app.use('/js', express.static('js'));
-app.get("/", function(req,res){res.sendFile(__dirname+"/html/entry.html");});
 
 app.use(bodyParser.json());
-//app.use(bodyParser.urlencoded());
-// in latest body-parser use like below.
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post("/create_room",function (req,res){
+var options = {
+    debug: true
+};
+
+/** Room management **/
+var create_room = function (req,res)
+{
 	rooms = that.rooms;
 	rooms.insert({
 		name : req.body['name'],
@@ -27,8 +30,9 @@ app.post("/create_room",function (req,res){
 		pass : 0
 	});
 	res.end();
-});
-app.get("/get_rooms",function(req,res){
+}
+var get_rooms = function(req,res)
+{
 	var cursor = that.rooms.find();
 	res.contentType("application/json");
 	var firstItem=true;
@@ -40,15 +44,21 @@ app.get("/get_rooms",function(req,res){
 		res.write(firstItem ? (firstItem=false,'[') : ',');
 		res.write(JSON.stringify(item));
 	});
-});
-
+}
+var remove_player = function(peer) {
+	x = that.rooms.remove({"peer":{"$eq":peer}});
+}
+/** routes **/
+app.post("/create_room",create_room);
+app.get("/get_rooms",get_rooms);
+app.get("/", function(req,res){res.sendFile(__dirname+"/html/entry.html");});
+app.use('/js', express.static('js'));
+/** load servers **/
 server = app.listen(process.env.port || 8888);
-var options = {
-    debug: true
-};
-app.use('/api', ExpressPeerServer(server, options));
-
-
+var epe = ExpressPeerServer(server, options)
+epe.on('disconnect',remove_player)
+app.use('/api',epe);
+/**DATABASE connection**/
 MongoClient.connect('mongodb://localhost/haxball', (err, database) => {
   // ... start the server
 	;
