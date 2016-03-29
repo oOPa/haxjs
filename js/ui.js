@@ -35,8 +35,9 @@ Loader.UI.prototype.initClientRoom = function ()
 	game.renderer = new Loader.Client.Renderer();
 	/*!-- !*/
 	game.renderer.prototype.startRender();
-	game.renderer .addPlayer('host');
-	game.renderer .addPlayer(game.net.peer.id);
+	console.log(game.ui.nick);
+	game.renderer .addPlayer('host','host');
+	game.renderer .addPlayer(game.net.peer.id,game.ui.nick);
 	game.controller = new Loader.Client.Controller();
 	game.net.startUpdates();
 }
@@ -123,9 +124,9 @@ Loader.UI.prototype.createListeners = function()
 				that.joinRoom(($(this).attr("peer")))
 	});
 	$('#play').on('click',function(){
-		ui.nick=$('#nick').val();$('#nick-modal').modal('hide')
+		that.nick=$('#nick').val();$('#nick-modal').modal('hide')
 	})
 	$('#create_room_modal').on('click',function(){
-		ui.room_name= $('#room').val();ui.createRoom();
+		that.room_name= $('#room').val();that.createRoom();
 	});
 }

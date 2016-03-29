@@ -38,3 +38,4 @@ hx.constants.Directions = {
 
 
 hx.style = {font : '15px Arial', fill : 'white'};
+hx.label_size = 10;

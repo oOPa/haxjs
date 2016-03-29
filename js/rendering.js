@@ -199,14 +199,14 @@ Loader.Renderer.RendererPlayer = function (player) {
 		//that.graphics.drawCircle(hx.constants.Player.RADIUS, 50,hx.constants.Player.RADIUS * hx.constants.World.SCALE);
         that.graphics.drawCircle(0,0,30 * hx.constants.Player.RADIUS )//* hx.constants.World.SCALE);
 		that.graphics.endFill();
-		//that.name_label = new PIXI.Text(player.name,{font : '25px Arial', fill : 'white', align : 'center'});
+		that.name_label = new PIXI.Text(player.name,{font : '25px Arial', fill : 'white', align : 'center'});
 		//that.avatar_label = new PIXI.Text("",{font : '25px Arial', fill : 'white', align : 'center'});
 		//that.avatar_label.x = Loader.constants.RADIUS-7.50;
 		//that.avatar_label.y = (50)-15;
-		//that.name_label.y = Loader.constants.RADIUS*3;
+		that.name_label.y = 30 * hx.constants.Player.RADIUS;
         //this.setAvatar(player.avatar);
 		//that.graphics.addChild(that.avatar_label);
-		//that.graphics.addChild(that.name_label);
+		that.graphics.addChild(that.name_label);
 }
 Loader.Renderer.RendererPlayer.prototype.setAvatar = function (avatar) {
 
