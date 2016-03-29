@@ -51,8 +51,12 @@ var remove_player = function(peer) {
 /** routes **/
 app.post("/create_room",create_room);
 app.get("/get_rooms",get_rooms);
-app.get("/", function(req,res){res.sendFile('entry_cdn.html',{root : '../html'});});
-app.use('/js', express.static('../js'));
+app.get("/", 							function(req,res){res.sendFile(__dirname+'/index.html')});
+app.get("/js/Box2dWeb-2.1.a.3.min.js", function(req,res){res.sendFile(__dirname+'/Box2dWeb-2.1.a.3.min.js')});
+app.get("/js/constants.js", function(req,res){res.sendFile(__dirname+'/constants.js')});
+app.get("/js/loader.min.js", function(req,res){res.sendFile(__dirname+'/loader.min.js')});
+app.get("/js/pixi.vector.js", function(req,res){res.sendFile(__dirname+'/pixi.vector.js')});
+app.get("/js/hashtable.js", function(req,res){res.sendFile(__dirname+'/hashtable.js')});
 /** load servers **/
 server = app.listen(process.env.port || 8888);
 var epe = ExpressPeerServer(server, options)
