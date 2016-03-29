@@ -1,6 +1,6 @@
 Loader.Host.Player = function(name,avatar,world) {
         var that = this;
-		this.keys = [false,false,false,false]
+		this.keys = [false,false,false,false];
         this.physics = new Loader.Physics.Player(world);
 		this.name = name;
 		//this.avatar = avatar.substr(0,2);

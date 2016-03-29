@@ -31,7 +31,7 @@ Loader.prototype.createPlayer = function(name, avatar){
 }
 Loader.prototype.addText = function(txt) {
     if(this.renderer){
-        this.renderer.addText(txt)
+        this.renderer.addText(txt);
     }
     else{
         return false;

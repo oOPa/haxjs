@@ -3,25 +3,25 @@ Loader.Net = function()
 	this.max = 8;
 	this.isHost = false;
 	this.clients = new Hashtable();
-}
+};
 Loader.Net.prototype.getRooms = function()
 {
 	return this.roomlist;
-}
+};
 Loader.Net.prototype.stopUpdates = function ()
 {
 	if(typeof this.timer != 'undefined')
 	{
-		clearInterval(this.timer)
+		clearInterval(this.timer);
 	}
-}
+};
 Loader.Net.prototype.startUpdates = function ()
 {
 	if(typeof this.timer == 'undefined')
 	{
 		this.timer = this.isHost ? setInterval(this.updateClients,hx.intervals) : setInterval(this.sendUpdatesToHost,hx.intervals);
 	}
-}
+};
 Loader.Net.prototype.updateClients = function ()
 {
 	n = ['host']
@@ -46,17 +46,17 @@ Loader.Net.prototype.updateClients = function ()
 	}
 	
 	//console.log(n);
-}
+};
 Loader.Net.prototype.sendUpdatesToHost = function ()
 {
 	window.host.send(game.controller.keys);
-}
+};
 Loader.Net.prototype.updateFromHost = function (updates)
 {
 	//console.log("sending updates");
 	//data = {name : 'host'}	
 	game.renderer.prototype.players.get(updates[0]).point = updates[1];
-}
+};
 Loader.Net.prototype.joinRoom = function(peer_id,callback)
 {
 		/*
@@ -89,11 +89,11 @@ Loader.Net.prototype.joinRoom = function(peer_id,callback)
 		})
 	}); 
 	return this;
-}
+};
 Loader.Net.prototype.receiveClientData = function(con,data)
 {
 	this.clients.get(con.peer).keys = data;
-}
+};
 Loader.Net.prototype.sendMessage = function()
 {
 	if(this.isHost)
@@ -104,7 +104,7 @@ Loader.Net.prototype.sendMessage = function()
 	{
 		
 	}
-}
+};
 Loader.Net.prototype.createRoom = function(callbacks)
 {
 	/*
@@ -143,4 +143,3 @@ Loader.Net.prototype.createRoom = function(callbacks)
 	});
 	
 };
-

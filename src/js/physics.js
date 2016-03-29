@@ -16,7 +16,7 @@ Loader.Physics = function()
 {
 	var that  = this;
 	this.world = new b2World(new b2Vec2(0, 0), true);
-}
+};
 
 Loader.Physics.Player = function (world) {
     var bodyDef = new b2BodyDef();
@@ -59,13 +59,13 @@ Loader.Physics.Player.prototype.update = function()
             //console.log(that.player.point());
         }
         
-}
+};
 Loader.Physics.prototype.update = function () {
     this.world.Step(1 / 60, 10, 10);
        //this.world.Step(1 / 30, 10, 10);
     this.world.ClearForces();
     
-}
+};
 Loader.Physics.deg2rad = function (deg) {
     return deg * Math.PI / 180;
 };
@@ -91,4 +91,4 @@ Loader.Physics.Ball = function (world) {
 
     this.body = world.CreateBody(bodyDef);
     this.body.CreateFixture(fixDef);
-}
+};

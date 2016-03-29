@@ -12,4 +12,4 @@ Loader.Client.Controller = function(player){
             that.keys[that.Directions[e.keyCode]] = false;			
 			console.log(e.keyCode);          
     });
-}
+};

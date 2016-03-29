@@ -14,4 +14,4 @@ Loader.Host.Controller = function(player){
 
     });
 
-}
+};

@@ -5,23 +5,23 @@ Loader.UI = function()
 	this.getNick();
 	this.listRooms();
 	this.createListeners();
-}
+};
 
 Loader.UI.prototype.getNick = function()
 {
 	$('#nick-modal').modal().show();
-}
+};
 Loader.UI.prototype.addPlayer = function(player)
 {
 	p = game.createPlayer(player,"20");
 	game.net.clients.put(player,p);
-}
+};
 Loader.UI.prototype.playerDC = function (con)
 {
 	console.log(con);
 	game.net.clients.remove(con.peer);
 	game.addText("* "+con.peer+"has left");
-}
+};
 Loader.UI.prototype.joinRoom = function (host)
 {
 	var that = this;
@@ -30,7 +30,7 @@ Loader.UI.prototype.joinRoom = function (host)
 				};
 	game.net = new Loader.Net();
 	game.net.joinRoom(host	,callbacks);
-}
+};
 Loader.UI.prototype.initClientRoom = function ()
 {
 	/** clear old html and place canvas **/
@@ -46,7 +46,7 @@ Loader.UI.prototype.initClientRoom = function ()
 	game.renderer .addPlayer(game.net.peer.id,game.ui.nick);
 	game.controller = new Loader.Client.Controller();
 	game.net.startUpdates();
-}
+};
 
 
 Loader.UI.prototype.createRoom = function ()
@@ -60,7 +60,7 @@ Loader.UI.prototype.createRoom = function ()
 	};
 	game.net = new Loader.Net();
 	game.net.createRoom(callbacks);
-}
+};
 
 Loader.UI.prototype.initHostRoom = function ()
 {
@@ -72,7 +72,7 @@ Loader.UI.prototype.initHostRoom = function ()
 	game.createRenderer().startRender();
 	new Loader.Host.Controller(game.createPlayer(this.nick,"avatar"));
 	game.net.startUpdates();
-}
+};
 Loader.UI.prototype.exitRoom = function()
 {
 	$('body').html(this.cache);
@@ -80,19 +80,19 @@ Loader.UI.prototype.exitRoom = function()
 	game.net.peer.disconnect();
 	this.listRooms();
 	this.createListeners();
-}
+};
 /** unstable **/
 Loader.UI.prototype.hostError = function (err)
 {
 	console.log("unable to create room");
 	console.log(err);
-}
+};
 /** stable **/
 
 Loader.UI.prototype.createRoomDB = function ()
 {
 	$.post("/create_room",encodeURI("name="+this.room_name+"&peer="+game.net.peer.id+"&max="+this.max+"&ver="+hx.version));
-}
+};
 Loader.UI.prototype.listRooms = function()
 {
 	$.getJSON( "/get_rooms", function( data ) {
@@ -111,7 +111,7 @@ Loader.UI.prototype.createListeners = function()
 {
 	var that = this;
 	$('#join').on('click',function(){
-		that.joinRoom(that.selected_room)
+		that.joinRoom(that.selected_room);
 	});
 	$('#refresh').on('click',function(){
 		that.listRooms();
@@ -128,10 +128,10 @@ Loader.UI.prototype.createListeners = function()
 	});
 				
 		$('#roomlist-table').on('dblclick', 'tbody tr',function(event) {
-				that.joinRoom(($(this).attr("peer")))
+				that.joinRoom(($(this).attr("peer")));
 	});
 	$('#play').on('click',function(){
-		that.nick=$('#nick').val();$('#nick-modal').modal('hide')
+		that.nick=$('#nick').val();$('#nick-modal').modal('hide');
 	})
 	$('#create_room_modal').on('click',function(){
 		that.room_name= $('#room').val();that.createRoom();

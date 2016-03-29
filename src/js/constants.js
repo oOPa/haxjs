@@ -34,7 +34,7 @@ hx.constants.Directions = {
     40:3,
     37:2,
     38:1
-}
+};
 
 
 hx.style = {font : '15px Arial', fill : 'white'};
