@@ -1,4 +1,4 @@
-var Loader = function(){
+var Loader = function () {
 	var that = this;
     that.players =  [];
 	that.physics = new Loader.Physics();
@@ -141,7 +141,7 @@ Loader.Net.prototype.joinRoom = function(peer_id,callback)
 	this.peer.on('open', function(id) {
 		console.log('My peer ID is: ' + id);
 		that.connection = this.connect(that.host);
-		that.connection.on('open', function(){
+		that.connection.on('open', function () {
 			console.log("connected to host!");
 			window.host = that.connection;
 			//if typeof(callback) === "function") {
@@ -195,7 +195,7 @@ Loader.Net.prototype.createRoom = function(callbacks)
 			console.log("new peer "+dataConnection.peer+" connected");
 			callbacks.on_peer_connect(dataConnection.peer);
 			game.first = dataConnection;
-			dataConnection.on('close',function(){
+			dataConnection.on('close',function () {
 				game.net.clients.remove(dataConnection.peer);
 				callbacks.on_peer_dc(dataConnection);
 			});
@@ -313,7 +313,7 @@ Loader.Physics.Ball = function (world) {
 		this.name = name;
 		//this.avatar = avatar.substr(0,2);
         this.avatar = avatar;
-        this.point = function(){
+        this.point = function () {
             v = that.physics.body.GetPosition();
             return {x : v.x,y:v.y};
         }
@@ -343,7 +343,7 @@ Loader.Client.Player = function(name,avatar) {
         this.avatar = avatar;
 		this.x = 0;
 		this.y = 0;
-        this.point = function(){
+        this.point = function () {
             return {x : this.x,y:this.y};
         }
         this.update = new Function();
@@ -354,7 +354,7 @@ Loader.Renderer = function(renderFunction){
     this.init();
     this.renderFunction = renderFunction || new Function();
 };
-Loader.Renderer.prototype.init = function(){
+Loader.Renderer.prototype.init = function () {
 var that = this;
 //var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
 var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true});
@@ -524,7 +524,7 @@ Loader.Renderer.prototype.addText = function (txt){
 Loader.Renderer.prototype.deletePlayer = function(player){
 
 };
-Loader.Renderer.prototype.renderPlayers = function(){
+Loader.Renderer.prototype.renderPlayers = function () {
     var that = this;
     keys = that.players.keys();
     for(i in keys)
@@ -578,7 +578,7 @@ Loader.Client.Renderer.prototype.addPlayer = function(peer_id,name){
 	   
        
 };
-Loader.Client.Renderer.prototype.renderPlayers = function(){
+Loader.Client.Renderer.prototype.renderPlayers = function () {
     var that = this;
     keys = that.players.keys();
     for(i in keys)
@@ -663,7 +663,7 @@ Loader.UI.prototype.createRoom = function ()
 {
 	var that = this;
 	callbacks = {
-		on_peer_init:function(){that.createRoomDB();that.initHostRoom()},
+		on_peer_init:function () {that.createRoomDB();that.initHostRoom()},
 		on_error : this.hostError,
 		on_peer_connect : this.addPlayer,
 		on_peer_dc : this.playerDC
@@ -720,13 +720,13 @@ Loader.UI.prototype.listRooms = function()
 Loader.UI.prototype.createListeners = function()
 {
 	var that = this;
-	$('#join').on('click',function(){
+	$('#join').on('click',function () {
 		that.joinRoom(that.selected_room)
 	});
-	$('#refresh').on('click',function(){
+	$('#refresh').on('click',function () {
 		that.listRooms();
 	});
-	$('#create').on('click',function(){
+	$('#create').on('click',function () {
 		$('#room').attr('value',that.nick + "'s room");
 		$('#myModal').modal().show();
 	});
@@ -740,10 +740,10 @@ Loader.UI.prototype.createListeners = function()
 		$('#roomlist-table').on('dblclick', 'tbody tr',function(event) {
 				that.joinRoom(($(this).attr("peer")))
 	});
-	$('#play').on('click',function(){
+	$('#play').on('click',function () {
 		that.nick=$('#nick').val();$('#nick-modal').modal('hide')
 	})
-	$('#create_room_modal').on('click',function(){
+	$('#create_room_modal').on('click',function () {
 		that.room_name= $('#room').val();that.createRoom();
 	});
 }
