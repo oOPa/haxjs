@@ -16,11 +16,17 @@ Loader.UI.prototype.addPlayer = function(player)
 	p = game.createPlayer(player,"20");
 	game.net.clients.put(player,p);
 }
+Loader.UI.prototype.playerDC = function (con)
+{
+	console.log(con);
+	game.net.clients.remove(con.peer);
+	game.addText("* "+con.peer+"has left");
+}
 Loader.UI.prototype.joinRoom = function (host)
 {
 	var that = this;
 	callbacks = {on_host_connect:this.initClientRoom,
-				on_error : this.hostError,
+				on_error : this.hostError
 				};
 	game.net = new Loader.Net();
 	game.net.joinRoom(host	,callbacks);
@@ -49,7 +55,8 @@ Loader.UI.prototype.createRoom = function ()
 	callbacks = {
 		on_peer_init:function(){that.createRoomDB();that.initHostRoom()},
 		on_error : this.hostError,
-		on_peer_connect : this.addPlayer
+		on_peer_connect : this.addPlayer,
+		on_peer_dc : this.playerDC
 	};
 	game.net = new Loader.Net();
 	game.net.createRoom(callbacks);
