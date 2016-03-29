@@ -29,7 +29,6 @@ Loader.Client.Renderer.prototype.renderPlayers = function(){
 Loader.Client.Renderer.RendererNetPlayer = function (name) {
      var that = this;
 		this.graphics = new PIXI.Graphics();
-		console.log(this.graphics)
         that.graphics.position = new PIXI.Vector(0,0);
 		that.graphics.lineStyle(3,0xFFFFFF);
 		that.graphics.beginFill(0xE56E56, 1);

@@ -107,12 +107,14 @@ log.style = hx.style;
 log.y = 510;
 log.x += 10;
 /** user input **/
+/**
 var txt = this.txt = new PixiTextInput("");
 txt.style = hx.style;
 txt.y = 550;
 txt.x += 10;
 txt.height = 45;
 txt.width = 200;
+**/
 //chat.addChild(txt);
 chat.addChild(log);
 /** misc area **/
