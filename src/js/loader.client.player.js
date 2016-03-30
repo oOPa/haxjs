@@ -9,4 +9,4 @@ Loader.Client.Player = function(name,avatar) {
             return {x : this.x,y:this.y};
         }
         this.update = new Function();
-}
+};

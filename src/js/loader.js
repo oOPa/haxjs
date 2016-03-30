@@ -11,13 +11,13 @@ var Loader = function(){
 
 			that.physics.update();
         }
-	}
+	};
 Loader.Host =  {};
 Loader.Client = {};
 Loader.prototype.createRenderer = function()
 {
 	return (this.renderer = new Loader.Renderer(this.render));
-}
+};
 Loader.prototype.createPlayer = function(name, avatar){
 	var that = this;
     var player = new Loader.Host.Player(name,avatar,that.physics.world);
@@ -28,7 +28,7 @@ Loader.prototype.createPlayer = function(name, avatar){
 	}
 	that.addText("* "+player.name+" was moved to red");
     return player;
-}
+};
 Loader.prototype.addText = function(txt) {
     if(this.renderer){
         this.renderer.addText(txt);
@@ -36,4 +36,4 @@ Loader.prototype.addText = function(txt) {
     else{
         return false;
     }
-}
+};

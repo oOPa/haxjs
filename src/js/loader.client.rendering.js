@@ -4,7 +4,7 @@ Loader.Client.Renderer = function()
 	this.prototype = new Loader.Renderer();
 	this.prototype.renderPlayers = this.renderPlayers;	
 	
-}
+};
 Loader.Client.Renderer.prototype.addPlayer = function(peer_id,name){
        var that = this;
        p = new Loader.Client.Renderer.RendererNetPlayer(name);
@@ -42,4 +42,4 @@ Loader.Client.Renderer.RendererNetPlayer = function (name) {
 		this.point = {x:0,y:0};
 				that.graphics.addChild(that.name_label);
 
-}
+};

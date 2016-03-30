@@ -1,4 +1,4 @@
-var Loader = function () {
+var Loader = function(){
 	var that = this;
     that.players =  [];
 	that.physics = new Loader.Physics();
@@ -11,13 +11,13 @@ var Loader = function () {
 
 			that.physics.update();
         }
-	}
+	};
 Loader.Host =  {};
 Loader.Client = {};
 Loader.prototype.createRenderer = function()
 {
 	return (this.renderer = new Loader.Renderer(this.render));
-}
+};
 Loader.prototype.createPlayer = function(name, avatar){
 	var that = this;
     var player = new Loader.Host.Player(name,avatar,that.physics.world);
@@ -28,15 +28,90 @@ Loader.prototype.createPlayer = function(name, avatar){
 	}
 	that.addText("* "+player.name+" was moved to red");
     return player;
-}
+};
 Loader.prototype.addText = function(txt) {
     if(this.renderer){
-        this.renderer.addText(txt)
+        this.renderer.addText(txt);
     }
     else{
         return false;
     }
-}
+};
+
+Loader.Client.Player = function(name,avatar) {
+        var that = this;
+		this.name = name;
+		//this.avatar = avatar.substr(0,2);
+        this.avatar = avatar;
+		this.x = 0;
+		this.y = 0;
+        this.point = function(){
+            return {x : this.x,y:this.y};
+        }
+        this.update = new Function();
+};
+
+//NetRenderer.prototype.constructor=NetRenderer;
+Loader.Client.Renderer = function()
+{
+	this.prototype = new Loader.Renderer();
+	this.prototype.renderPlayers = this.renderPlayers;	
+	
+};
+Loader.Client.Renderer.prototype.addPlayer = function(peer_id,name){
+       var that = this;
+       p = new Loader.Client.Renderer.RendererNetPlayer(name);
+       that.prototype.camera.addChild(p.graphics);
+       this.prototype.players.put(peer_id, p);
+	   
+       
+};
+Loader.Client.Renderer.prototype.renderPlayers = function(){
+    var that = this;
+    keys = that.players.keys();
+    for(i in keys)
+    {
+        item = that.players.get(keys[i]);
+        point = item.point;
+        
+        item.graphics.position.x = point.x;
+        item.graphics.position.y = point.y;
+
+    }
+};
+Loader.Client.Renderer.RendererNetPlayer = function (name) {
+     var that = this;
+		this.graphics = new PIXI.Graphics();
+        that.graphics.position = new PIXI.Vector(0,0);
+		that.graphics.lineStyle(3,0xFFFFFF);
+		that.graphics.beginFill(0xE56E56, 1);
+		//that.graphics.drawCircle(hx.constants.Player.RADIUS, 50,hx.constants.Player.RADIUS * hx.constants.World.SCALE);
+        that.graphics.drawCircle(0,0,30 * hx.constants.Player.RADIUS )//* hx.constants.World.SCALE);
+		that.name_label = new PIXI.Text(name,{font : '25px Arial', fill : 'white', align : 'center'});
+		that.name_label.y = 30 * hx.constants.Player.RADIUS;
+
+		that.graphics.endFill();
+		
+		this.point = {x:0,y:0};
+				that.graphics.addChild(that.name_label);
+
+};
+
+Loader.Client.Controller = function(player){
+        var that = this;
+        that.keys = [false,false,false,false];
+        that.Directions = hx.constants.Directions;
+		document.addEventListener('keydown', function (e) {
+        if (e.keyCode > 36 && e.keyCode < 41) {
+            that.keys[that.Directions[e.keyCode]] = true;		
+			console.log(e.keyCode);            
+        }
+		});
+		document.addEventListener('keyup', function (e) {
+            that.keys[that.Directions[e.keyCode]] = false;			
+			console.log(e.keyCode);          
+    });
+};
 Loader.Host.Controller = function(player){
         var that = this;
         this.player = player;
@@ -53,44 +128,62 @@ Loader.Host.Controller = function(player){
 
     });
 
-}Loader.Client.Controller = function(player){
+};/** host controller ***/
+Loader.Host.Player = function(name,avatar,world) {
         var that = this;
-        that.keys = [false,false,false,false];
-        that.Directions = hx.constants.Directions;
-		document.addEventListener('keydown', function (e) {
-        if (e.keyCode > 36 && e.keyCode < 41) {
-            that.keys[that.Directions[e.keyCode]] = true;		
-			console.log(e.keyCode);            
+		this.keys = [false,false,false,false];
+        this.physics = new Loader.Physics.Player(world);
+		this.name = name;
+		//this.avatar = avatar.substr(0,2);
+        this.avatar = avatar;
+        this.point = function(){
+            v = that.physics.body.GetPosition();
+            return {x : v.x,y:v.y};
         }
-		});
-		document.addEventListener('keyup', function (e) {
-            that.keys[that.Directions[e.keyCode]] = false;			
-			console.log(e.keyCode);          
-    });
-}Loader.Net = function()
+        this.update = function () {
+
+			        var vec = new PIXI.Vector(0, 0);
+        window.vec = new PIXI.Vector(0, 0);
+        that.keys.forEach(function (key, i) {
+        if (key) {
+                var vec2 = new Loader.Physics.Vec(i * -90,200);
+            vec.add(vec2.vec);
+        }
+        });
+        
+        if (vec.length() > 0)
+        {
+            that.physics.body.ApplyForce(vec, that.physics.body.GetWorldCenter());
+
+        }
+        return "updated";
+		}
+};
+
+Loader.Net = function()
 {
 	this.max = 8;
 	this.isHost = false;
 	this.clients = new Hashtable();
-}
+};
 Loader.Net.prototype.getRooms = function()
 {
 	return this.roomlist;
-}
+};
 Loader.Net.prototype.stopUpdates = function ()
 {
 	if(typeof this.timer != 'undefined')
 	{
-		clearInterval(this.timer)
+		clearInterval(this.timer);
 	}
-}
+};
 Loader.Net.prototype.startUpdates = function ()
 {
 	if(typeof this.timer == 'undefined')
 	{
 		this.timer = this.isHost ? setInterval(this.updateClients,hx.intervals) : setInterval(this.sendUpdatesToHost,hx.intervals);
 	}
-}
+};
 Loader.Net.prototype.updateClients = function ()
 {
 	n = ['host']
@@ -115,17 +208,17 @@ Loader.Net.prototype.updateClients = function ()
 	}
 	
 	//console.log(n);
-}
+};
 Loader.Net.prototype.sendUpdatesToHost = function ()
 {
 	window.host.send(game.controller.keys);
-}
+};
 Loader.Net.prototype.updateFromHost = function (updates)
 {
 	//console.log("sending updates");
 	//data = {name : 'host'}	
 	game.renderer.prototype.players.get(updates[0]).point = updates[1];
-}
+};
 Loader.Net.prototype.joinRoom = function(peer_id,callback)
 {
 		/*
@@ -141,7 +234,7 @@ Loader.Net.prototype.joinRoom = function(peer_id,callback)
 	this.peer.on('open', function(id) {
 		console.log('My peer ID is: ' + id);
 		that.connection = this.connect(that.host);
-		that.connection.on('open', function () {
+		that.connection.on('open', function(){
 			console.log("connected to host!");
 			window.host = that.connection;
 			//if typeof(callback) === "function") {
@@ -158,11 +251,11 @@ Loader.Net.prototype.joinRoom = function(peer_id,callback)
 		})
 	}); 
 	return this;
-}
+};
 Loader.Net.prototype.receiveClientData = function(con,data)
 {
 	this.clients.get(con.peer).keys = data;
-}
+};
 Loader.Net.prototype.sendMessage = function()
 {
 	if(this.isHost)
@@ -173,7 +266,7 @@ Loader.Net.prototype.sendMessage = function()
 	{
 		
 	}
-}
+};
 Loader.Net.prototype.createRoom = function(callbacks)
 {
 	/*
@@ -195,7 +288,7 @@ Loader.Net.prototype.createRoom = function(callbacks)
 			console.log("new peer "+dataConnection.peer+" connected");
 			callbacks.on_peer_connect(dataConnection.peer);
 			game.first = dataConnection;
-			dataConnection.on('close',function () {
+			dataConnection.on('close',function(){
 				game.net.clients.remove(dataConnection.peer);
 				callbacks.on_peer_dc(dataConnection);
 			});
@@ -212,7 +305,6 @@ Loader.Net.prototype.createRoom = function(callbacks)
 	});
 	
 };
-
 var b2Vec2 = Box2D.Common.Math.b2Vec2,
     b2BodyDef = Box2D.Dynamics.b2BodyDef,
     b2Body = Box2D.Dynamics.b2Body,
@@ -231,7 +323,7 @@ Loader.Physics = function()
 {
 	var that  = this;
 	this.world = new b2World(new b2Vec2(0, 0), true);
-}
+};
 
 Loader.Physics.Player = function (world) {
     var bodyDef = new b2BodyDef();
@@ -274,13 +366,13 @@ Loader.Physics.Player.prototype.update = function()
             //console.log(that.player.point());
         }
         
-}
+};
 Loader.Physics.prototype.update = function () {
     this.world.Step(1 / 60, 10, 10);
        //this.world.Step(1 / 30, 10, 10);
     this.world.ClearForces();
     
-}
+};
 Loader.Physics.deg2rad = function (deg) {
     return deg * Math.PI / 180;
 };
@@ -306,55 +398,14 @@ Loader.Physics.Ball = function (world) {
 
     this.body = world.CreateBody(bodyDef);
     this.body.CreateFixture(fixDef);
-}Loader.Host.Player = function(name,avatar,world) {
-        var that = this;
-		this.keys = [false,false,false,false]
-        this.physics = new Loader.Physics.Player(world);
-		this.name = name;
-		//this.avatar = avatar.substr(0,2);
-        this.avatar = avatar;
-        this.point = function () {
-            v = that.physics.body.GetPosition();
-            return {x : v.x,y:v.y};
-        }
-        this.update = function () {
-
-			        var vec = new PIXI.Vector(0, 0);
-        window.vec = new PIXI.Vector(0, 0);
-        that.keys.forEach(function (key, i) {
-        if (key) {
-                var vec2 = new Loader.Physics.Vec(i * -90,200);
-            vec.add(vec2.vec);
-        }
-        });
-        
-        if (vec.length() > 0)
-        {
-            that.physics.body.ApplyForce(vec, that.physics.body.GetWorldCenter());
-
-        }
-        return "updated";
-		}
-}
-Loader.Client.Player = function(name,avatar) {
-        var that = this;
-		this.name = name;
-		//this.avatar = avatar.substr(0,2);
-        this.avatar = avatar;
-		this.x = 0;
-		this.y = 0;
-        this.point = function () {
-            return {x : this.x,y:this.y};
-        }
-        this.update = new Function();
-}
+};
 Loader.Renderer = function(renderFunction){
 	var that = this;
     this.players = new Hashtable();
     this.init();
     this.renderFunction = renderFunction || new Function();
 };
-Loader.Renderer.prototype.init = function () {
+Loader.Renderer.prototype.init = function(){
 var that = this;
 //var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
 var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true});
@@ -524,7 +575,7 @@ Loader.Renderer.prototype.addText = function (txt){
 Loader.Renderer.prototype.deletePlayer = function(player){
 
 };
-Loader.Renderer.prototype.renderPlayers = function () {
+Loader.Renderer.prototype.renderPlayers = function(){
     var that = this;
     keys = that.players.keys();
     for(i in keys)
@@ -563,51 +614,7 @@ Loader.Renderer.RendererPlayer = function (player) {
 Loader.Renderer.RendererPlayer.prototype.setAvatar = function (avatar) {
 
 };
-//NetRenderer.prototype.constructor=NetRenderer;
-Loader.Client.Renderer = function()
-{
-	this.prototype = new Loader.Renderer();
-	this.prototype.renderPlayers = this.renderPlayers;	
-	
-}
-Loader.Client.Renderer.prototype.addPlayer = function(peer_id,name){
-       var that = this;
-       p = new Loader.Client.Renderer.RendererNetPlayer(name);
-       that.prototype.camera.addChild(p.graphics);
-       this.prototype.players.put(peer_id, p);
-	   
-       
-};
-Loader.Client.Renderer.prototype.renderPlayers = function () {
-    var that = this;
-    keys = that.players.keys();
-    for(i in keys)
-    {
-        item = that.players.get(keys[i]);
-        point = item.point;
-        
-        item.graphics.position.x = point.x;
-        item.graphics.position.y = point.y;
 
-    }
-};
-Loader.Client.Renderer.RendererNetPlayer = function (name) {
-     var that = this;
-		this.graphics = new PIXI.Graphics();
-        that.graphics.position = new PIXI.Vector(0,0);
-		that.graphics.lineStyle(3,0xFFFFFF);
-		that.graphics.beginFill(0xE56E56, 1);
-		//that.graphics.drawCircle(hx.constants.Player.RADIUS, 50,hx.constants.Player.RADIUS * hx.constants.World.SCALE);
-        that.graphics.drawCircle(0,0,30 * hx.constants.Player.RADIUS )//* hx.constants.World.SCALE);
-		that.name_label = new PIXI.Text(name,{font : '25px Arial', fill : 'white', align : 'center'});
-		that.name_label.y = 30 * hx.constants.Player.RADIUS;
-
-		that.graphics.endFill();
-		
-		this.point = {x:0,y:0};
-				that.graphics.addChild(that.name_label);
-
-}
 /** experimental **/
 Loader.UI = function()
 {
@@ -615,23 +622,23 @@ Loader.UI = function()
 	this.getNick();
 	this.listRooms();
 	this.createListeners();
-}
+};
 
 Loader.UI.prototype.getNick = function()
 {
 	$('#nick-modal').modal().show();
-}
+};
 Loader.UI.prototype.addPlayer = function(player)
 {
 	p = game.createPlayer(player,"20");
 	game.net.clients.put(player,p);
-}
+};
 Loader.UI.prototype.playerDC = function (con)
 {
 	console.log(con);
 	game.net.clients.remove(con.peer);
 	game.addText("* "+con.peer+"has left");
-}
+};
 Loader.UI.prototype.joinRoom = function (host)
 {
 	var that = this;
@@ -640,7 +647,7 @@ Loader.UI.prototype.joinRoom = function (host)
 				};
 	game.net = new Loader.Net();
 	game.net.joinRoom(host	,callbacks);
-}
+};
 Loader.UI.prototype.initClientRoom = function ()
 {
 	/** clear old html and place canvas **/
@@ -656,21 +663,21 @@ Loader.UI.prototype.initClientRoom = function ()
 	game.renderer .addPlayer(game.net.peer.id,game.ui.nick);
 	game.controller = new Loader.Client.Controller();
 	game.net.startUpdates();
-}
+};
 
 
 Loader.UI.prototype.createRoom = function ()
 {
 	var that = this;
 	callbacks = {
-		on_peer_init:function () {that.createRoomDB();that.initHostRoom()},
+		on_peer_init:function(){that.createRoomDB();that.initHostRoom()},
 		on_error : this.hostError,
 		on_peer_connect : this.addPlayer,
 		on_peer_dc : this.playerDC
 	};
 	game.net = new Loader.Net();
 	game.net.createRoom(callbacks);
-}
+};
 
 Loader.UI.prototype.initHostRoom = function ()
 {
@@ -682,7 +689,7 @@ Loader.UI.prototype.initHostRoom = function ()
 	game.createRenderer().startRender();
 	new Loader.Host.Controller(game.createPlayer(this.nick,"avatar"));
 	game.net.startUpdates();
-}
+};
 Loader.UI.prototype.exitRoom = function()
 {
 	$('body').html(this.cache);
@@ -690,19 +697,19 @@ Loader.UI.prototype.exitRoom = function()
 	game.net.peer.disconnect();
 	this.listRooms();
 	this.createListeners();
-}
+};
 /** unstable **/
 Loader.UI.prototype.hostError = function (err)
 {
 	console.log("unable to create room");
 	console.log(err);
-}
+};
 /** stable **/
 
 Loader.UI.prototype.createRoomDB = function ()
 {
 	$.post("/create_room",encodeURI("name="+this.room_name+"&peer="+game.net.peer.id+"&max="+this.max+"&ver="+hx.version));
-}
+};
 Loader.UI.prototype.listRooms = function()
 {
 	$.getJSON( "/get_rooms", function( data ) {
@@ -720,13 +727,13 @@ Loader.UI.prototype.listRooms = function()
 Loader.UI.prototype.createListeners = function()
 {
 	var that = this;
-	$('#join').on('click',function () {
-		that.joinRoom(that.selected_room)
+	$('#join').on('click',function(){
+		that.joinRoom(that.selected_room);
 	});
-	$('#refresh').on('click',function () {
+	$('#refresh').on('click',function(){
 		that.listRooms();
 	});
-	$('#create').on('click',function () {
+	$('#create').on('click',function(){
 		$('#room').attr('value',that.nick + "'s room");
 		$('#myModal').modal().show();
 	});
@@ -738,12 +745,12 @@ Loader.UI.prototype.createListeners = function()
 	});
 				
 		$('#roomlist-table').on('dblclick', 'tbody tr',function(event) {
-				that.joinRoom(($(this).attr("peer")))
+				that.joinRoom(($(this).attr("peer")));
 	});
-	$('#play').on('click',function () {
-		that.nick=$('#nick').val();$('#nick-modal').modal('hide')
+	$('#play').on('click',function(){
+		that.nick=$('#nick').val();$('#nick-modal').modal('hide');
 	})
-	$('#create_room_modal').on('click',function () {
+	$('#create_room_modal').on('click',function(){
 		that.room_name= $('#room').val();that.createRoom();
 	});
 }

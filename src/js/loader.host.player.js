@@ -27,4 +27,4 @@ Loader.Host.Player = function(name,avatar,world) {
         }
         return "updated";
 		}
-}
+};
