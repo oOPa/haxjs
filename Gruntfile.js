@@ -41,7 +41,7 @@ module.exports = function(grunt) {
     
 	copy: {
 		main: {
-			expand: true,
+			expand: false,
 			src: 'src/html/entry.html',
 			dest: '<%= distFolder %>/index.html',
 		}
@@ -56,5 +56,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   // Register our own custom task alias.
-  grunt.registerTask('default', ['concat','uglify','force']);
+  grunt.registerTask('default', ['copy']);
 };	
