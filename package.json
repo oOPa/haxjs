@@ -1,23 +1,26 @@
 {
   "name": "haxjs",
   "version": "0.0.1",
-  "description": "",
-  "main": "bin\\app.js",
+  "description": "An haxball.com clone in html5",
   "scripts": {
+    "start": "node bin/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/oOPa/haxjs.git"
-  },
-  "dependencies": {
-    "express": ">= 4.0.0",
-    "peer": ">= 0.0.1"
-  },
-  "author": "haxjs.net",
+  "keywords": [
+    "haxball",
+    "haxjs",
+    "peer",
+    "p2p",
+    "mongo",
+    "game",
+    "multiplayer"
+  ],
+  "author": "oOPa",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/oOPa/haxjs/issues"
-  },
-  "homepage": "https://github.com/oOPa/haxjs#readme"
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "express": "^4.13.4",
+    "mongodb": "^2.1.14",
+    "peer": "^0.2.8"
+  }
 }
