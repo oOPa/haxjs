@@ -44,7 +44,14 @@ module.exports = function(grunt) {
 			expand: false,
 			src: 'src/html/entry.html',
 			dest: '<%= distFolder %>/index.html',
+		},
+		route: {
+			expand: false,
+			src: 'src/app.js',
+			dest: '<%= distFolder %>/app.js',
 		}
+		
+		
 	}
 	
   }); // The end of grunt.initConfig
@@ -56,5 +63,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   // Register our own custom task alias.
-  grunt.registerTask('default', ['copy']);
+  grunt.registerTask('default', ['concat','uglify','copy']);
 };	
