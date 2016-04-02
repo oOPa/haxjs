@@ -31,9 +31,21 @@ var load = function()
 	window.vagrant = game.createPlayer("vagrant",20);
 	window.onyema = game.createPlayer("onyema",20);
 	window.controller = new Loader.Host.Controller(window.vagrant);
+	game.chat = new Chat();
 }
 </script>
 
+<script type="text/javascript">
+/** Chat code goes here **/
+var Chat =  function()
+{
+
+}
+Chat.prototype.send = function ()
+{
+
+}
+</script>
 </head>
 	
 <body style="background-color:rgb(147,158,127)" onload="load()">
@@ -44,5 +56,6 @@ var load = function()
 		<div id="chat-view"></div>
 		<div id="options-view"></div>
 	</div>
+	<div id="chat"><input type="text" id="chat-text-field"/><button onclick="game.chat.sendChat()">Send</button></div>
 	</body>
 </html>
