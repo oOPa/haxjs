@@ -7,6 +7,7 @@
 <script src="../js/misc/pixi.min.js"></script>
 <script src="../js/misc/hashtable.js"></script>	
 <script src="../js/misc/pixi.vector.js"></script>
+<script src="../js/misc/peerjs.min.js"></script>
 
 
 <script src="../js/constants.js"></script>
@@ -41,9 +42,20 @@ var Chat =  function()
 {
 
 }
-Chat.prototype.send = function ()
+Chat.prototype.send = function (peer,message)
+{
+	
+}
+Chat.prototype.onReceiveMessage = function (message,sender)
 {
 
+}
+Chat.prototype._masterSend = function (message_type,argument)
+{
+	for(i in this.peers)
+	{
+		//
+	}
 }
 </script>
 </head>
