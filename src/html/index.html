@@ -30,8 +30,9 @@ var load = function()
 	var game = window.game = new Loader();	
 	game.createRenderer().startRender();
 	window.vagrant = game.createPlayer("vagrant",20);
-	window.onyema = game.createPlayer("onyema",20);
+	//window.onyema = game.createPlayer("onyema",20);
 	window.controller = new Loader.Host.Controller(window.vagrant);
+	game.buildBall();
 	game.chat = new Chat();
 }
 </script>

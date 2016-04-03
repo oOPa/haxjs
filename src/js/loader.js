@@ -29,6 +29,12 @@ Loader.prototype.createPlayer = function(name, avatar){
 	that.addText("* "+player.name+" was moved to red");
     return player;
 };
+Loader.prototype.buildBall = function()
+{
+    var that = this;
+    var ball = new Loader.Physics.DefaultBall(that.physics.world);
+    that.renderer.addBall(ball);
+}
 Loader.prototype.addText = function(txt) {
     if(this.renderer){
         this.renderer.addText(txt);

@@ -35,7 +35,15 @@ hx.constants.Directions = {
     37:2,
     38:1
 };
-
+hx.constants.Ball = {
+        RADIUS:0.25,
+        DENSITY:0.001,
+        RESTITUTION:5
+}
+hx.scale = 
+{
+    FACTOR:30
+}
 
 hx.style = {font : '15px Arial', fill : 'white'};
 hx.label_size = 10;

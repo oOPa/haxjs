@@ -1,10 +1,11 @@
 Loader.Renderer = function(renderFunction){
 	var that = this;
     this.players = new Hashtable();
+    this.balls   = new Hashtable();
     this.init();
     this.renderFunction = renderFunction || new Function();
 };
-Loader.Renderer.prototype.init = function(){
+Loader.Renderer.prototype.init = function () {
 var that = this;
 //var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
 var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true});
@@ -19,6 +20,7 @@ renderer.backgroundColor = 0x939e7f;
 		graphics
 			viewport_
 				camera
+                    ball
 					players
 			chat
 				log
@@ -115,13 +117,7 @@ stage.addChild(graphics);
 /** draw the nets goals and everying in between **/
 Loader.Renderer.prototype.drawBalls = function()
 {
-    var that = this;
-    that.camera.beginFill(0xFFFFFF);
-    // draw a circle, set the lineStyle to zero so the circle doesn't have an outline
-    that.camera.lineStyle(1.5,0x000000);
-    that.camera.beginFill(0xFFFFFF, 1);
-    //that.camera.drawCircle(500, 250,hx.constants.Ball.RADIUS);
-    that.camera.endFill();
+
 }
 Loader.Renderer.prototype.drawNets = function()
 {
@@ -173,6 +169,7 @@ Loader.Renderer.prototype.startRender = function ()
         that.renderer.render(that.stage);	
         that.renderFunction();
         that.renderPlayers();
+        that.renderBalls();
         requestAnimationFrame( animate );
     }
 };
@@ -184,12 +181,17 @@ Loader.Renderer.prototype.addPlayer = function(player){
        this.players.put(player, p);
        
 };
+Loader.Renderer.prototype.addBall = function(ball){
+       var that = this;
+       b = new Loader.Renderer.RendererBall(ball);
+       that.camera.addChild(b.graphics);
+       this.balls.put(ball, b);
+       
+};
 Loader.Renderer.prototype.addText = function (txt){
     this.log.text+= txt+"\n";
 }
-Loader.Renderer.prototype.deletePlayer = function(player){
 
-};
 Loader.Renderer.prototype.renderPlayers = function(){
     var that = this;
     keys = that.players.keys();
@@ -208,6 +210,39 @@ Loader.Renderer.prototype.renderPlayers = function(){
         
     }
 };
+Loader.Renderer.prototype.renderBalls = function(){
+    
+    var that = this;
+    keys = that.balls.keys();
+    for(i in keys)
+    {
+        item = keys[i];
+        //console.log(item.name);
+        //item.update();
+        point = item.point();
+        x = point.x;
+        y = point.y;
+        
+        p = that.balls.get(item).graphics.position;
+        p.x = x;
+        p.y = y;
+        
+    }
+    
+};
+Loader.Renderer.RendererBall = function (ball) {
+    var that = this;
+    this.graphics = new PIXI.Graphics();
+    that.graphics.beginFill(0xFFFFFF);
+    // draw a circle, set the lineStyle to zero so the circle doesn't have an outline
+    that.graphics.lineStyle(1.5,0x000000);
+    that.graphics.beginFill(0xFFFFFF, 1);
+    //that.graphics.drawCircle(500, 250,hx.scale.FACTOR * hx.constants.Ball.RADIUS);
+    //that.graphics.drawCircle(500, 250,30*hx.constants.Player.RADIUS);
+    that.graphics.drawCircle(0,0,30*hx.constants.Ball.RADIUS);
+    //that.graphics.drawCircle(500, 250,10);
+    that.graphics.endFill();
+}
 Loader.Renderer.RendererPlayer = function (player) {
      var that = this;
 		this.graphics = new PIXI.Graphics();
@@ -226,6 +261,3 @@ Loader.Renderer.RendererPlayer = function (player) {
 		//that.graphics.addChild(that.avatar_label);
 		that.graphics.addChild(that.name_label);
 }
-Loader.Renderer.RendererPlayer.prototype.setAvatar = function (avatar) {
-
-};
