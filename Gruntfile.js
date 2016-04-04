@@ -34,24 +34,33 @@ module.exports = function(grunt) {
 		},
         my_target: {
           files: {
-            '<%= distFolder %>/loader.min.js': ['<%= distFolder %>/loader.full.js']
+            '<%= distFolder %>/js/loader.min.js': ['<%= distFolder %>/loader.full.js']
           }
         }
       },
     
-	copy: {
+	sync :{
 		main: {
+			expand:true,
+			flatten:true,
+			src: 'src/js/misc/*.js',
+			dest: '<%= distFolder %>/js'		
+		},
+		index: {
 			expand: false,
 			src: 'src/html/entry.html',
-			dest: '<%= distFolder %>/index.html',
+			dest: '<%= distFolder %>/html/index.html',
 		},
-		route: {
+		routes: {
 			expand: false,
 			src: 'src/app.js',
 			dest: '<%= distFolder %>/app.js',
+		},
+		constants: {
+			expand: false,
+			src: 'src/js/constants.js',
+			dest: '<%= distFolder %>/js/constants.js',
 		}
-		
-		
 	}
 	
   }); // The end of grunt.initConfig
@@ -61,7 +70,8 @@ module.exports = function(grunt) {
   // This will do a lookup similar to node's require() function.
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-uglify'); 
+  grunt.loadNpmTasks('grunt-sync');
   // Register our own custom task alias.
-  grunt.registerTask('default', ['concat','uglify','copy']);
+  grunt.registerTask('default', ['concat','uglify','sync']);
 };	

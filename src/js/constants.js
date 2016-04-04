@@ -1,8 +1,8 @@
 var hx = {};
 hx.constants = {};
 hx.server = {};
-hx.server.host = "haxjs-port.cloudapp.net";
-hx.server.port = 80;
+hx.server.host = "localhost";
+hx.server.port = 8888;
 hx.server.key = "peerjs";
 hx.version = 0.1;
 hx.intervals = 1;

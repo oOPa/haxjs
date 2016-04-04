@@ -71,7 +71,7 @@ Loader.Net.prototype.joinRoom = function(peer_id,callback)
 	
 	this.peer.on('open', function(id) {
 		console.log('My peer ID is: ' + id);
-		that.connection = this.connect(that.host);
+		that.connection = this.connect(that.host,{metadata:game.ui.nick});
 		that.connection.on('open', function(){
 			console.log("connected to host!");
 			window.host = that.connection;
@@ -124,7 +124,7 @@ Loader.Net.prototype.createRoom = function(callbacks)
 		callbacks.on_peer_init();
 		that.peer.on('connection', function(dataConnection) { 
 			console.log("new peer "+dataConnection.peer+" connected");
-			callbacks.on_peer_connect(dataConnection.peer);
+			callbacks.on_peer_connect(dataConnection.peer,dataConnection.metadata);
 			game.first = dataConnection;
 			dataConnection.on('close',function(){
 				game.net.clients.remove(dataConnection.peer);

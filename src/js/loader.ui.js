@@ -2,7 +2,8 @@
 Loader.UI = function()
 {
 	this.max = 8;
-	this.getNick();
+	//this.getNick();
+	this.nick = "enyinna";
 	this.listRooms();
 	this.createListeners();
 };
@@ -11,16 +12,16 @@ Loader.UI.prototype.getNick = function()
 {
 	$('#nick-modal').modal().show();
 };
-Loader.UI.prototype.addPlayer = function(player)
+Loader.UI.prototype.addPlayer = function(player,nick)
 {
-	p = game.createPlayer(player,"20");
+	p = game.createPlayer(nick,"20");
 	game.net.clients.put(player,p);
 };
 Loader.UI.prototype.playerDC = function (con)
 {
 	console.log(con);
 	game.net.clients.remove(con.peer);
-	game.addText("* "+con.peer+"has left");
+	game.addText("* "+con.metadata+"has left");
 };
 Loader.UI.prototype.joinRoom = function (host)
 {
@@ -61,15 +62,36 @@ Loader.UI.prototype.createRoom = function ()
 	game.net = new Loader.Net();
 	game.net.createRoom(callbacks);
 };
-
+Loader.UI.prototype.sendMessage = function ()
+{
+	msg = $("#chat-text").val();
+	$("#chat-text").empty();
+	console.log(msg);	
+	game.addText(this.nick+":"+msg);
+}
 Loader.UI.prototype.initHostRoom = function ()
 {
+	var that = this;
 	/** clear old html and place canvas **/
 	this.cache = $('body').html();
 	$('body').html("<div id='game-view'></div>");
 	$('body').css({'padding-top':'10px'});
 	/** add host **/
 	game.createRenderer().startRender();
+	//add chat
+	var chat_div = document.createElement("div");
+	chat_div.classList.add("center-block")
+	var c = document.createElement("input");
+	c.setAttribute("id","chat-text");
+	var send = document.createElement("button");
+	send.appendChild(document.createTextNode("Send"));
+	send.setAttribute("id","chat-send");
+	chat_div.appendChild(c);
+	chat_div.appendChild(send);
+	document.body.appendChild(chat_div);
+	$("#chat-send").on('click',function(){
+		that.sendMessage();
+	});
 	new Loader.Host.Controller(game.createPlayer(this.nick,"avatar"));
 	game.net.startUpdates();
 };

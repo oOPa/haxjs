@@ -49,8 +49,6 @@ graphics.endFill();
 
 
 
-/** add ball(s) **/
-this.drawBalls();
 /** draw stadium **/
 this.drawStadium();
 //draw post(s)
@@ -115,10 +113,6 @@ graphics.addChild(misc);
 stage.addChild(graphics);
 };
 /** draw the nets goals and everying in between **/
-Loader.Renderer.prototype.drawBalls = function()
-{
-
-}
 Loader.Renderer.prototype.drawNets = function()
 {
     var that = this;
@@ -128,16 +122,16 @@ that.camera.arc(90-10,177+20,25,Math.PI,(3/2)*Math.PI)
 that.camera.endFill();
 
 /** second arc **/
-that.camera.lineStyle(2,0x000000);
-that.camera.beginFill(0x0000FF, 1);
+//that.camera.lineStyle(2,0x000000);
+//that.camera.beginFill(0x0000FF, 1);
 that.camera.arc(90-10,177+173,25,Math.PI/2,(2/2)*Math.PI)
-that.camera.endFill();
+//that.camera.endFill();
 
 //goal back net
-that.camera.lineStyle(2,0x000000);
-that.camera.moveTo(55,197);
-that.camera.lineTo(55,350);
-that.camera.endFill();
+//that.camera.lineStyle(2,0x000000);
+//that.camera.moveTo(55,197);
+//that.camera.lineTo(55,350);
+//that.camera.endFill();
 }
 Loader.Renderer.prototype.drawPosts = function()
 {

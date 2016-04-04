@@ -53,7 +53,7 @@ var remove_player = function(peer) {
 
 app.post("/create_room",create_room);
 app.get("/get_rooms",get_rooms);
-app.get("/", 							function(req,res){res.sendFile(__dirname+'/html/index.html')});
+app.get("/", 							function(req,res){res.sendFile(__dirname+'/html/entry.debug.html')});
 
 /*
 app.get("/js/Box2dWeb-2.1.a.3.min.js", function(req,res){res.sendFile(__dirname+'/Box2dWeb-2.1.a.3.min.js')});
@@ -64,7 +64,7 @@ app.get("/js/hashtable.js", function(req,res){res.sendFile(__dirname+'/hashtable
 
 */
 app.use('/js', express.static('js'));
-
+app.use('/js/misc', express.static('js/misc'));
 /** load servers **/
 server = app.listen(process.env.port || 8888);
 var epe = ExpressPeerServer(server, options)
