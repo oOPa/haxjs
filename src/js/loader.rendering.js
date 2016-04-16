@@ -187,7 +187,6 @@ Loader.Renderer.prototype.addBall = function(ball){
        
 };
 
-
 Loader.Renderer.prototype.renderPlayers = function(){
     var that = this;
     keys = that.players.keys();

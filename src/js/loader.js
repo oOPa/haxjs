@@ -1,6 +1,7 @@
 var Loader = function(){
 	var that = this;
     that.players =  [];
+	that.logger = new Loader.Logger();
 	that.physics = new Loader.Physics();
         Loader.prototype.render = function () {   
             for(i in that.players)
@@ -36,10 +37,6 @@ Loader.prototype.buildBall = function()
     that.renderer.addBall(ball);
 }
 Loader.prototype.addText = function(txt) {
-    if(this.renderer){
-        this.renderer.addText(txt);
-    }
-    else{
-        return false;
-    }
+	this.logger.addChat(txt);
 };
+
