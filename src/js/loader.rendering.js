@@ -55,61 +55,19 @@ this.drawStadium();
 this.drawPosts();
 //draw nets
 this.drawNets();
-
+//this.drawChat();
+//this.drawMisc();
 
 /** chat and misc **/
 /** add chat area **/
-var chat = new PIXI.Graphics();
-//var chatContent = new PIXI.DisplayObjectContainer();
-chat.beginFill(0x3c312b);
-chat.drawRect(0,500,400,200);
-chat.endFill();
-chat.x = 0;
 
-/** chat log **/
-var log = this.log = new PIXI.Text("");
-log.style = hx.style;
-log.y = 510;
-log.x += 10;
-/** user input **/
-/**
-var txt = this.txt = new PixiTextInput("");
-txt.style = hx.style;
-txt.y = 550;
-txt.x += 10;
-txt.height = 45;
-txt.width = 200;
-**/
-//chat.addChild(txt);
-chat.addChild(log);
 /** misc area **/
-misc = new PIXI.Graphics();
-misc.beginFill(0x3c312b);
-misc_pos = { x : 700, y:500};
-misc.drawRect(misc_pos.x,misc_pos.y,100,200);
-misc.endFill();
-that.misc = misc;
-/* menu buttons */
-misc.beginFill(0x604E44);
-misc.drawRect(misc_pos.x, 500, 75, 30);
-misc.drawRect(misc_pos.x, 550, 75,30);
-var menuTxt =  new PIXI.Text('Menu (esc)',{font : '15px Arial', fill : 'white', align : 'center'});
-var optTxt =  new PIXI.Text('Options',{font : '15px Arial', fill : 'white', align : 'center'});
-menuTxt.x = misc_pos.x;
-menuTxt.y = 500;
 
-optTxt.x = misc_pos.x;;
-optTxt.y = 550;
-//604E44
-misc.addChild(menuTxt);
-misc.addChild(optTxt);
-misc.endFill();
 // present **/
 
 viewport_.addChild(that.camera);
 graphics.addChild(viewport_);
-graphics.addChild(chat);
-graphics.addChild(misc);
+
 stage.addChild(graphics);
 };
 /** draw the nets goals and everying in between **/
@@ -132,6 +90,52 @@ that.camera.arc(90-10,177+173,25,Math.PI/2,(2/2)*Math.PI)
 //that.camera.moveTo(55,197);
 //that.camera.lineTo(55,350);
 //that.camera.endFill();
+}
+Loader.Renderer.prototype.drawMisc = function()
+{
+	var that =this;
+	that.misc = misc = new PIXI.Graphics();
+misc.beginFill(0x3c312b);
+misc_pos = { x : 700, y:500};
+misc.drawRect(misc_pos.x,misc_pos.y,100,200);
+misc.endFill();
+that.misc = misc;
+/* menu buttons */
+misc.beginFill(0x604E44);
+misc.drawRect(misc_pos.x, 500, 75, 30);
+misc.drawRect(misc_pos.x, 550, 75,30);
+var menuTxt =  new PIXI.Text('Menu (esc)',{font : '15px Arial', fill : 'white', align : 'center'});
+var optTxt =  new PIXI.Text('Options',{font : '15px Arial', fill : 'white', align : 'center'});
+menuTxt.x = misc_pos.x;
+menuTxt.y = 500;
+
+optTxt.x = misc_pos.x;;
+optTxt.y = 550;
+//604E44
+misc.addChild(menuTxt);
+misc.addChild(optTxt);
+misc.endFill();
+that.graphics.addChild(misc);
+}
+Loader.Renderer.prototype.drawChat = function()
+{
+	var that =this;
+	var chat = that.chat = new PIXI.Graphics();
+//var chatContent = new PIXI.DisplayObjectContainer();
+chat.beginFill(0x3c312b);
+chat.drawRect(0,500,400,200);
+chat.endFill();
+chat.x = 0;
+
+/** chat log **/
+var log = this.log = new PIXI.Text("");
+log.style = hx.style;
+log.y = 510;
+log.x += 10;
+
+//chat.addChild(txt);
+chat.addChild(log);
+that.graphics.addChild(this.chat);
 }
 Loader.Renderer.prototype.drawPosts = function()
 {
