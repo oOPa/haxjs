@@ -186,9 +186,7 @@ Loader.Renderer.prototype.addBall = function(ball){
        this.balls.put(ball, b);
        
 };
-Loader.Renderer.prototype.addText = function (txt){
-    this.log.text+= txt+"\n";
-}
+
 
 Loader.Renderer.prototype.renderPlayers = function(){
     var that = this;
