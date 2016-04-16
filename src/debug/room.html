@@ -3,36 +3,42 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>hax.js - Play</title>
+	
 <!-- jQuery and Bootstrap -->
 <script src="https://code.jquery.com/jquery-2.2.0.min.js" type="text/javascript"></script>
 <!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-<!--	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.2.2/css/vendor/bootstrap.min.css" > -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.2.2/css/vendor/bootstrap.min.css" >
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
 <!-- Javascript requirements -->
-<script src="../js/Box2dWeb-2.1.a.3.min.js"></script>
-<script src="http://cdn.peerjs.com/0.3/peer.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/3.0.10/pixi.min.js"></script>
-<script src="../js/pixi.vector.js"></script>
-<script src="../js/PixiTextInput.js"></script>
-<!-- hashtable -->
-<script src="../js/hashtable.js"></script>	
-<!-- haxjs loaders -->
+<!-- Box2d -->
+<script src="../js/misc/Box2dWeb-2.1.a.3.min.js"></script>
+<script src="../js/misc/peer.min.js"></script>
+<script src="../js/misc/pixi.min.js"></script>
+<!-- hashtable.js -->
+<script src="../js/misc/hashtable.js"></script>	
+<!-- load game -->
+<!-- game constant variables -->
+<script src="../js/constants.js"></script>
+<!-- the rest of the game -->
+<script src="../js/misc/pixi.vector.js"></script>
+<script src="constants.js"></script>
 <script src="../js/loader.js"></script>	
-<script src="../js/physics.js"></script>	
-<script src="../js/rendering.js"></script>	
-<script src="../js/controller.js"></script>	
-<script src="../js/player.js"></script>	
-<script src="../js/constants.js"></script>	
-<script src="../js/ui.js"></script>	
-<script src="../js/network.js"></script>	
-<script src="../js/rendering.net.js"></script>	
-<script src="../js/controller-net.js"></script>	
+<script src="../js/loader.net.js"></script>
+<script src="../js/loader.ui.js"></script>
+<script src="../js/loader.physics.js"></script>
+<script src="../js/loader.rendering.js"></script>	
+<script src="../js/loader.client.controller.js"></script>	
+<script src="../js/loader.client.player.js"></script>	
+<script src="../js/loader.client.rendering.js"></script>	
+<script src="../js/loader.host.player.js"></script>	
+<script src="../js/loader.host.controller.js"></script>	
+<script src="debug.js"></script>
 <script type="text/javascript">
 window.game = new Loader();
-//body { padding-top: 70px; }
-
 </script>
 <style type="text/css">
 .center-text{text-align:center;}
@@ -44,7 +50,7 @@ body { padding-top: 70px; }
     }
 </style>
 </head>	
-<body onload="game.ui = new Loader.UI();">
+<body onload="game.ui = new Loader.UI();game.debug = new Loader.Debug('1')">
 
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
