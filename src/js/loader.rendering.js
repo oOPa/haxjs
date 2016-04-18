@@ -180,7 +180,11 @@ Loader.Renderer.prototype.addPlayer = function(player){
        
 };
 Loader.Renderer.prototype.addBall = function(ball){
-       var that = this;
+	if(ball == null)
+	{
+		ball = new Loader.Physics.DefaultBall(game.physics.world);
+	}
+	var that = this;
        b = new Loader.Renderer.RendererBall(ball);
        that.camera.addChild(b.graphics);
        this.balls.put(ball, b);
@@ -211,13 +215,13 @@ Loader.Renderer.prototype.renderBalls = function(){
     keys = that.balls.keys();
     for(i in keys)
     {
+		//game.logger.log("balls")
         item = keys[i];
         //console.log(item.name);
         //item.update();
         point = item.point();
         x = point.x;
         y = point.y;
-        
         p = that.balls.get(item).graphics.position;
         p.x = x;
         p.y = y;

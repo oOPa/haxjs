@@ -91,8 +91,8 @@ Loader.Physics.DefaultBall = function (world) {
     bodyDef.position.x = 100 / hx.constants.World.SCALE;
     bodyDef.position.y = 100 / hx.constants.World.SCALE;
     
-    //bodyDef.position.x = 0;
-    //bodyDef.position.y = 0;
+    bodyDef.position.x = 50;
+    bodyDef.position.y = 50;
     bodyDef.linearDamping = hx.constants.Player.LD;
     bodyDef.angularDamping = hx.constants.Player.AD;
 

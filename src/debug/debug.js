@@ -9,6 +9,13 @@ Loader.Debug = function(type)
 	
 	if(this.type == 1)
 	{
+		/** CREATE ROOM **/
 		game.ui.createRoom();
+	}
+	else if(this.type == 2)
+	{
+		/** JOIN A CREATED ROOM **/
+		game.ui.nick = 'player2'
+		game.ui.joinRoom("pi7cq659rfs3v7vi");
 	}
 }
