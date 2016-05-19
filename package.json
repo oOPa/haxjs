@@ -1,0 +1,16 @@
+{
+  "name": "haxjs-es6",
+  "version": "0.0.1",
+  "description": "A 2d multiplayer Haxball clone written in HTML5",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/ogwerz/haxjs-es6-porting.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/ogwerz/haxjs-es6-porting#readme"
+}

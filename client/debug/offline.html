@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<title>pixi.js example 1</title>
+<script src="../js/misc/Box2dWeb-2.1.a.3.min.js"></script>
+<script src="../js/misc/pixi.min.js"></script>
+<script src="../js/misc/hashtable.js"></script>	
+<script src="../js/misc/pixi.vector.js"></script>
+<script src="../js/misc/peerjs.min.js"></script>
+
+
+<script src="../js/constants.js"></script>
+
+<script src="../js/loader.js"></script>
+<script src="../js/loader.physics.js"></script>	
+<script src="../js/loader.ui.js"></script>	
+<script src="../js/loader.net.js"></script>
+<script src="../js/loader.rendering.js"></script>	
+<script src="../js/loader.client.controller.js"></script>
+<script src="../js/loader.client.player.js"></script>
+<script src="../js/loader.client.rendering.js"></script>		
+<script src="../js/loader.host.controller.js"></script>	
+<script src="../js/loader.host.player.js"></script>	
+
+
+<script type="text/javascript">
+var load = function()
+{
+	var game = window.game = new Loader();	
+	game.createRenderer().startRender();
+	window.vagrant = game.createPlayer("vagrant",20);
+	//window.onyema = game.createPlayer("onyema",20);
+	window.controller = new Loader.Host.Controller(window.vagrant);
+	game.buildBall();
+	game.chat = new Chat();
+}
+</script>
+
+<script type="text/javascript">
+/** Chat code goes here **/
+var Chat =  function()
+{
+
+}
+Chat.prototype.send = function (peer,message)
+{
+	
+}
+Chat.prototype.onReceiveMessage = function (message,sender)
+{
+
+}
+Chat.prototype._masterSend = function (message_type,argument)
+{
+	for(i in this.peers)
+	{
+		//
+	}
+}
+</script>
+</head>
+	
+<body style="background-color:rgb(147,158,127)" onload="load()">
+
+<div class="center-block" style="display:flex;justify-content:center;align-items:center;">
+<div id="viewport"></div>
+<div id="game-view"></div>
+		<div id="chat-view"></div>
+		<div id="options-view"></div>
+	</div>
+	<div id="chat"><input type="text" id="chat-text-field"/><button onclick="game.chat.sendChat()">Send</button></div>
+	</body>
+</html>
