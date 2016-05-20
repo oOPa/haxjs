@@ -12,5 +12,13 @@
   },
   "author": "",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/ogwerz/haxjs-es6-porting#readme"
+  "homepage": "https://bitbucket.org/ogwerz/haxjs-es6-porting#readme",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.9.0"
+  },
+  "dependencies": {
+    "mongodb": "^2.1.19",
+    "peer": "^0.2.8",
+    "peerjs": "^0.3.14"
+  }
 }
