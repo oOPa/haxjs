@@ -3,10 +3,7 @@
   "version": "0.0.1",
   "description": "A 2d multiplayer Haxball clone written in HTML5",
   "main": "app.js",
-  "scripts": {
-    "compile": "babel client/src/js/ -d lib",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+ssh://git@bitbucket.org/ogwerz/haxjs-es6-porting.git"
