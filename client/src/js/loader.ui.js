@@ -1,56 +1,63 @@
 /** experimental **/
-Loader.UI = function()
+class HaxballUI
+{
+	constructor(){
+
+	}
+load()
 {
 	this.max = 8;
-	//this.getNick();
-	this.nick = "enyinna";
+	this.nick = "DEFAULT NICKNAME";
 	this.listRooms();
-	this.createListeners();
-};
-
-Loader.UI.prototype.getNick = function()
+	this.createListeners();	
+}
+unload()
+{
+	
+}
+getNick()
 {
 	$('#nick-modal').modal().show();
 };
-Loader.UI.prototype.addPlayer = function(player,nick)
+addPlayer (player,nick)
 {
 	p = game.createPlayer(nick,"20");
 	game.net.clients.put(player,p);
 };
-Loader.UI.prototype.playerDC = function (con)
+playerDC (con)
 {
 	console.log(con);
 	game.net.clients.remove(con.peer);
 	game.addText("* "+con.metadata+"has left");
 };
-Loader.UI.prototype.joinRoom = function (host)
+/** more efficient callbacks needed **/
+joinRoom (host)
 {
 	var that = this;
 	callbacks = {on_host_connect:this.initClientRoom,
 				on_error : this.hostError
 				};
-	game.net = new Loader.Net();
+	game.net = new HaxballNet();
 	game.net.joinRoom(host	,callbacks);
 };
-Loader.UI.prototype.initClientRoom = function ()
+initClientRoom ()
 {
 	/** clear old html and place canvas **/
 	this.cache	 = $('body').html();
 	$('body').html("<div id='game-view'></div>");
 	$('body').css({'padding-top':'10px'});
 	/** add host **/
-	game.renderer = new Loader.Client.Renderer();
+	game.renderer = new RendererClient();
 	/*!-- !*/
 	game.renderer.prototype.startRender();
 	console.log(game.ui.nick);
 	game.renderer .addPlayer('host','host');
 	game.renderer .addPlayer(game.net.peer.id,game.ui.nick);
-	game.controller = new Loader.Client.Controller();
+	game.controller = new ControllerClient();
 	game.net.startUpdates();
-};
+}
 
-
-Loader.UI.prototype.createRoom = function ()
+createRoom ()
 {
 	var that = this;
 	callbacks = {
@@ -59,17 +66,17 @@ Loader.UI.prototype.createRoom = function ()
 		on_peer_connect : this.addPlayer,
 		on_peer_dc : this.playerDC
 	};
-	game.net = new Loader.Net();
+	game.net = new HaxballNet();
 	game.net.createRoom(callbacks);
 };
-Loader.UI.prototype.sendMessage = function ()
+sendMessage ()
 {
 	msg = $("#chat-text").val();
 	$("#chat-text").empty();
 	console.log(msg);	
 	game.addText(this.nick+":"+msg);
 }
-Loader.UI.prototype.initHostRoom = function ()
+initHostRoom ()
 {
 	var that = this;
 	/** clear old html and place canvas **/
@@ -92,10 +99,10 @@ Loader.UI.prototype.initHostRoom = function ()
 	$("#chat-send").on('click',function(){
 		that.sendMessage();
 	});
-	new Loader.Host.Controller(game.createPlayer(this.nick,"avatar"));
+	new ControllerHost(game.createPlayer(this.nick,"avatar"));
 	game.net.startUpdates();
 };
-Loader.UI.prototype.exitRoom = function()
+exitRoom()
 {
 	$('body').html(this.cache);
 	$('body').css({'padding-top':'70px'});
@@ -104,18 +111,17 @@ Loader.UI.prototype.exitRoom = function()
 	this.createListeners();
 };
 /** unstable **/
-Loader.UI.prototype.hostError = function (err)
+hostError (err)
 {
 	console.log("unable to create room");
 	console.log(err);
 };
 /** stable **/
-
-Loader.UI.prototype.createRoomDB = function ()
+createRoomDB  ()
 {
 	$.post("/create_room",encodeURI("name="+this.room_name+"&peer="+game.net.peer.id+"&max="+this.max+"&ver="+hx.version));
 };
-Loader.UI.prototype.listRooms = function()
+listRooms ()
 {
 	$.getJSON( "/get_rooms", function( data ) {
 	var items = [];
@@ -128,8 +134,7 @@ Loader.UI.prototype.listRooms = function()
 	})
 
 };
-
-Loader.UI.prototype.createListeners = function()
+createListeners ()
 {
 	var that = this;
 	$('#join').on('click',function(){
@@ -158,4 +163,5 @@ Loader.UI.prototype.createListeners = function()
 	$('#create_room_modal').on('click',function(){
 		that.room_name= $('#room').val();that.createRoom();
 	});
+}
 }

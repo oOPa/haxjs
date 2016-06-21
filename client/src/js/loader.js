@@ -1,42 +1,41 @@
-var Loader = function(){
-	var that = this;
-    that.players =  [];
-	that.logger = new Loader.Logger();
-	that.physics = new Loader.Physics();
-        Loader.prototype.render = function () {   
-            for(i in that.players)
+class Haxball{
+	constructor(){
+    this.players =  [];
+	this.logger = new HaxballLogger();
+	this.physics = new HaxballPhysics();
+	}
+    render () {   
+            for(i in this.players)
             {
-                item = that.players[i];
+                item = this.players[i];
                 item.update();
             }
-
-			that.physics.update();
+			this.physics.update();
         }
-	};
-Loader.Host =  {};
-Loader.Client = {};
-Loader.prototype.createRenderer = function()
-{
-	return (this.renderer = new Loader.Renderer(this.render));
-};
-Loader.prototype.createPlayer = function(name, avatar){
-	var that = this;
-    var player = new Loader.Host.Player(name,avatar,that.physics.world);
-	that.players.push(player);
+	createRenderer(){
+			return (this.renderer = new HaxballRenderer(this.render));
+	}
+	createPlayer(){
+    var player = new Loader.Host.Player(name,avatar,this.physics.world);
+	this.players.push(player);
 	if(typeof this.renderer != 'undefined')
 	{
-		that.renderer.addPlayer(player);
+		this.renderer.addPlayer(player);
 	}
-	that.addText("* "+player.name+" was moved to red");
+	this.addText("* "+player.name+" was moved to red");
     return player;
-};
-Loader.prototype.buildBall = function()
-{
-    var that = this;
-    var ball = new Loader.Physics.DefaultBall(that.physics.world);
-    that.renderer.addBall(ball);
+	}
+	buildBall(){
+    	var ball = new Loader.Physics.DefaultBall(this.physics.world);
+    	this.renderer.addBall(ball);
+	}
+	addText(txt){
+			this.logger.addChat(txt);
 }
-Loader.prototype.addText = function(txt) {
-	this.logger.addChat(txt);
-};
+	};
+	
+Loader.Host =  {};
+Loader.Client = {};
+
+
 

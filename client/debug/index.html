@@ -37,7 +37,7 @@
 <script src="../src/js/loader.net.js"></script>	
 
 <script type="text/javascript">
-window.game = new Loader();
+window.haxball = new Haxball();
 </script>
 <style type="text/css">
 .center-text{text-align:center;}
@@ -49,7 +49,7 @@ body { padding-top: 70px; }
     }
 </style>
 </head>	
-<body onload="game.ui = new Loader.UI();">
+<body onload="haxball.ui = new HaxballUI();haxball.ui.load();">
 
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">

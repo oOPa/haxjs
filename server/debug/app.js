@@ -54,7 +54,7 @@ app.get("/get_rooms",get_rooms);
 /** **/
 app.get("/", function(req,res){res.sendFile('index.html', {root:"../../client/debug"})});
 app.use('/shared', express.static('../../shared'));
-app.use('/src/js', express.static('../../client/src/js'));
+app.use('/src/js', express.static('../../lib'));
 /** load servers **/
 server = app.listen(process.env.port || 8888);
 var epe = ExpressPeerServer(server, options)
