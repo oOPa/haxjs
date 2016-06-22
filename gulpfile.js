@@ -9,7 +9,7 @@ gulp.task("compile", function() {
 		.pipe(gulp.dest("dist/js"));
 });
 gulp.task("copy", function() {
-    gulp.src(['src/js/app.js','src/index.html'])
+    gulp.src(['src/app.js','src/index.html'])
     .pipe(gulp.dest('dist'));
 });
 
