@@ -4,16 +4,21 @@ class Haxball{
 		this.players = [];
 		this.logger = new Logger();
 		this.physics = new Physics();
+		console.log(this.render);
 	}
 	
     render ()
 	{
-		for(i in this.players)
+		/** change this */
+		var that = haxball;
+		for(i in that.players)
 		{
-                let item = this.players[i];
+                let item = that.players[i];
+				//console.log(item);
                 item.update();
 		}
-			this.physics.update();
+			//console.log(this);
+			that.physics.update();
 	}
 	createRenderer ()
 	{
@@ -21,16 +26,19 @@ class Haxball{
 	}
 	createPlayer ()
 	{
-    	var player = new HostPlayer(name,avatar,this.physics.world);
+		var that = haxball;
+    	let player = new HostPlayer(name,avatar,that.physics.world);
 		this.players.push(player);
 		
-		if(typeof this.renderer != 'undefined')
+		if(typeof that.renderer != 'undefined')
 		{
 			this.renderer.addPlayer(player);
 		}
 		
 		this.addText("* "+player.name+" was moved to red");
-    	return player;
+    	console.log(" creating new player player here")
+		return player;
+		
 	}
 	buildBall ()
 	{

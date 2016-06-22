@@ -5,15 +5,15 @@ class ControllerClient{
         this.addActionListeners();
     }
     addActionListeners(){
-		document.addEventListener('keydown', function (e) {
+		document.addEventListener('keydown',  (e) => {
         if (e.keyCode > 36 && e.keyCode < 41) {
-            that.keys[that.Directions[e.keyCode]] = true;		
+            this.keys[this.Directions[e.keyCode]] = true;		
 			console.log(e.keyCode);            
         }
         
 		});
-		document.addEventListener('keyup', function (e) {
-            that.keys[that.Directions[e.keyCode]] = false;			
+		document.addEventListener('keyup', (e) => {
+            this.keys[this.Directions[e.keyCode]] = false;			
 			console.log(e.keyCode);          
     });
     }

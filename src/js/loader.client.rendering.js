@@ -1,4 +1,3 @@
-//NetRenderer.prototype.constructor=NetRenderer;
 class ClientRenderer {
     constructor()
 {
@@ -8,17 +7,18 @@ class ClientRenderer {
 }
 addPlayer (peer_id,name){
        var that = this;
-       p = new Loader.Client.Renderer.RendererNetPlayer(name);
+       let p = new RendererNetPlayer(name);
        that.prototype.camera.addChild(p.graphics);
        this.prototype.players.put(peer_id, p);	   
        };
+       
 renderPlayers(){
     var that = this;
-    keys = that.players.keys();
+    let keys = that.players.keys();
     for(i in keys)
     {
-        item = that.players.get(keys[i]);
-        point = item.point;
+        let item = that.players.get(keys[i]);
+        let point = item.point;
         
         item.graphics.position.x = point.x;
         item.graphics.position.y = point.y;

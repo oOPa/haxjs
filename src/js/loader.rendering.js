@@ -177,17 +177,17 @@ addBall (ball){
 
 renderPlayers (){
     var that = this;
-    keys = that.players.keys();
+    let keys = that.players.keys();
     for(i in keys)
     {
-        item = keys[i];
+        let item = keys[i];
 		//console.log(item.name);
         //item.update();
-        point = item.point();
+        let point = item.point();
         x = point.x;
         y = point.y;
         
-        p = that.players.get(item).graphics.position;
+        let p = that.players.get(item).graphics.position;
         p.x = x;
         p.y = y;
         
@@ -196,17 +196,17 @@ renderPlayers (){
 renderBalls (){
     
     var that = this;
-    keys = that.balls.keys();
+    let keys = that.balls.keys();
     for(i in keys)
     {
 		//game.logger.log("balls")
-        item = keys[i];
+        let item = keys[i];
         //console.log(item.name);
         //item.update();
-        point = item.point();
-        x = point.x;
-        y = point.y;
-        p = that.balls.get(item).graphics.position;
+        let point = item.point();
+        let x = point.x;
+        let y = point.y;
+        let p = that.balls.get(item).graphics.position;
         p.x = x;
         p.y = y;
         

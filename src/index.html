@@ -24,7 +24,9 @@
 <!-- game constant variables -->
 <script src="./js/constants.js"></script>
 <!-- the rest of the game -->
+<script src="./js/loader.ui.js"></script>	
 <script src="./js/loader.js"></script>
+<script src="./js/utils.js"></script>
 <script src="./js/loader.client.controller.js"></script>	
 <script src="./js/loader.client.player.js"></script>	
 <script src="./js/loader.client.rendering.js"></script>	
@@ -33,7 +35,6 @@
 <script src="./js/loader.logger.js"></script>	
 <script src="./js/loader.physics.js"></script>	
 <script src="./js/loader.rendering.js"></script>	
-<script src="./js/loader.ui.js"></script>	
 <script src="./js/loader.net.js"></script>	
 
 <script type="text/javascript">
@@ -49,7 +50,7 @@ body { padding-top: 70px; }
     }
 </style>
 </head>	
-<body onload="haxball.ui = new HaxballUI();haxball.ui.load();">
+<body onload="window.haxball.ui = new HaxballUI();window.haxball.ui.load();">
 
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">

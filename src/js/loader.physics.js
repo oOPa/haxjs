@@ -18,13 +18,17 @@ class Physics
 	var that  = this;
 	this.world = new b2World(new b2Vec2(0, 0), true);
     }
-    update () {
+    
+    
+}
+Physics.prototype.update=function()
+{
+   
     this.world.Step(1 / 60, 10, 10);
        //this.world.Step(1 / 30, 10, 10);
     this.world.ClearForces();
-    }
+    
 }
-
 class PhysicsPlayer {
     
     constructor (world) {
@@ -53,10 +57,10 @@ update ()
 {
 		var that = this;
 		var vec = new PIXI.Vector(0, 0);
-        window.vec = new PIXI.Vector(0, 0);
+        //window.vec = new PIXI.Vector(0, 0);
         that.keys.forEach(function (key, i) {
         if (key) {
-                var vec2 = new Loader.Physics.Vec(i * -90,200);
+                var vec2 = new Utils.Vec(i * -90,200);
             vec.add(vec2.vec);
         }
         });

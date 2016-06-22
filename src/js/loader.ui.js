@@ -1,16 +1,17 @@
-/** experimental **/
-class HaxballUI
-{
-	constructor(){
-
-	}
-load()
-{
-	this.max = 8;
-	this.nick = "DEFAULT NICKNAME";
-	this.listRooms();
-	this.createListeners();	
+class HaxballUI{
+	 constructor() {
+		 console.log(this);
+		 this.load();
+	 }
+	load()
+	{
+		this.max = 8;
+		this.nick = "DEFAULT NICKNAME";
+		this.listRooms();
+		this.createListeners();	
+	};
 }
+class hb{	
 unload()
 {
 	
@@ -18,18 +19,18 @@ unload()
 getNick()
 {
 	$('#nick-modal').modal().show();
-};
+}
 addPlayer (player,nick)
 {
 	p = haxball.createPlayer(nick,"20");
 	haxball.net.clients.put(player,p);
-};
+}
 playerDC (con)
 {
 	console.log(con);
 	haxball.net.clients.remove(con.peer);
 	haxball.addText("* "+con.metadata+"has left");
-};
+}
 /** more efficient callbacks needed **/
 joinRoom (host)
 {
@@ -39,7 +40,7 @@ joinRoom (host)
 				};
 	haxball.net = new Net();
 	haxball.net.joinRoom(host	,callbacks);
-};
+}
 initClientRoom ()
 {
 	/** clear old html and place canvas **/
@@ -47,7 +48,7 @@ initClientRoom ()
 	$('body').html("<div id='game-view'></div>");
 	$('body').css({'padding-top':'10px'});
 	/** add host **/
-	haxball.renderer = new RendererClient();
+	haxball.renderer = new ClientRenderer();
 	/*!-- !*/
 	haxball.renderer.prototype.startRender();
 	console.log(haxball.ui.nick);
@@ -70,7 +71,7 @@ createRoom ()
 	};
 	haxball.net = new Net();
 	haxball.net.createRoom(callbacks);
-};
+}
 sendMessage ()
 {
 	msg = $("#chat-text").val();
@@ -103,7 +104,7 @@ initHostRoom ()
 	});
 	new ControllerHost(haxball.createPlayer(this.nick,"avatar"));
 	haxball.net.startUpdates();
-};
+}
 exitRoom()
 {
 	$('body').html(this.cache);
@@ -111,18 +112,18 @@ exitRoom()
 	haxball.net.peer.disconnect();
 	this.listRooms();
 	this.createListeners();
-};
+}
 /** unstable **/
 hostError (err)
 {
 	console.log("unable to create room");
 	console.log(err);
-};
+}
 /** stable **/
 createRoomDB  ()
 {
 	$.post("/create_room",encodeURI("name="+this.room_name+"&peer="+haxball.net.peer.id+"&max="+this.max+"&ver="+hx.version));
-};
+}
 listRooms ()
 {
 	$.getJSON( "/get_rooms", function( data ) {
@@ -134,7 +135,7 @@ listRooms ()
 		});
 	})
 
-};
+}
 createListeners ()
 {
 	var that = this;
@@ -165,4 +166,9 @@ createListeners ()
 		that.room_name= $('#room').val();that.createRoom();
 	});
 }
+}
+
+export function sum(x,y)
+{
+	return x+y;
 }

@@ -6,7 +6,6 @@ var app = express();
 const MongoClient = require('mongodb').MongoClient;
 var bodyParser = require('body-parser');
 
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

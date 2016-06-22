@@ -60,7 +60,7 @@ updateFromHost (updates)
 	//data = {name : 'host'}	
 	haxball.renderer.prototype.players.get(updates[0]).point = updates[1];
 };
-joinRoom (peer_id,callback)
+joinRoom (peer_id,callbacks)
 {
 		/*
 	*on_error
