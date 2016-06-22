@@ -1,4 +1,4 @@
-Loader.Host.Controller = function(player){
+ControllerHost = function(player){
         var that = this;
         this.player = player;
 

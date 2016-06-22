@@ -1,4 +1,4 @@
-Loader.Host.Player = function(name,avatar,world) {
+var HostPlayer = function(name,avatar,world) {
         var that = this;
 		this.keys = [false,false,false,false];
         this.physics = new Loader.Physics.Player(world);

@@ -1,11 +1,13 @@
-Loader.Renderer = function(renderFunction){
+class Renderer {
+
+ constructor (renderFunction){
 	var that = this;
     this.players = new Hashtable();
     this.balls   = new Hashtable();
     this.init();
     this.renderFunction = renderFunction || new Function();
-};
-Loader.Renderer.prototype.init = function () {
+}
+init  () {
 var that = this;
 //var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
 var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true});
@@ -13,23 +15,6 @@ this.renderer = renderer;
 document.getElementById("game-view").appendChild(renderer.view)
 //renderer.backgroundColor = 0x718c5a;
 renderer.backgroundColor = 0x939e7f;
-
-// create the root of the scene graph
-/**
-	stage
-		graphics
-			viewport_
-				camera
-                    ball
-					players
-			chat
-				log
-				txt
-				
-			misc
-				menuTxt
-				optTxt
-**/
 var stage = new PIXI.Container();
 that.stage = stage;
 var graphics = new PIXI.Graphics();
@@ -41,7 +26,6 @@ viewport_.height = 20;
 viewport_.x=0;
 viewport_.y=0
 /** viewport border ***/
-//graphics.beginFill(0x3c312b);
 graphics.lineStyle(20,0x3c312b,1);
 graphics.alpha = 1;
 graphics.drawRect(0,0,800,(600-150));
@@ -71,7 +55,7 @@ graphics.addChild(viewport_);
 stage.addChild(graphics);
 };
 /** draw the nets goals and everying in between **/
-Loader.Renderer.prototype.drawNets = function()
+drawNets ()
 {
     var that = this;
 that.camera.lineStyle(2,0x000000);
@@ -91,7 +75,7 @@ that.camera.arc(90-10,177+173,25,Math.PI/2,(2/2)*Math.PI)
 //that.camera.lineTo(55,350);
 //that.camera.endFill();
 }
-Loader.Renderer.prototype.drawMisc = function()
+drawMisc ()
 {
 	var that =this;
 	that.misc = misc = new PIXI.Graphics();
@@ -117,7 +101,7 @@ misc.addChild(optTxt);
 misc.endFill();
 that.graphics.addChild(misc);
 }
-Loader.Renderer.prototype.drawChat = function()
+drawChat ()
 {
 	var that =this;
 	var chat = that.chat = new PIXI.Graphics();
@@ -137,7 +121,7 @@ log.x += 10;
 chat.addChild(log);
 that.graphics.addChild(this.chat);
 }
-Loader.Renderer.prototype.drawPosts = function()
+drawPosts ()
 {
     var that = this;
     that.camera.lineStyle(2,0x000000);
@@ -149,7 +133,7 @@ Loader.Renderer.prototype.drawPosts = function()
     that.camera.drawCircle(90, 170,10);
     that.camera.endFill();
 }
-Loader.Renderer.prototype.drawStadium = function()
+drawStadium ()
 {
     var that = this;
     that.camera.lineStyle(3,0xFFFFFF,0.5);
@@ -158,7 +142,7 @@ Loader.Renderer.prototype.drawStadium = function()
     that.camera.endFill();
 }
 /** start rendering **/
-Loader.Renderer.prototype.startRender = function ()
+startRender ()
 {
     var that = this;
     // run the render loop
@@ -172,26 +156,26 @@ Loader.Renderer.prototype.startRender = function ()
     }
 };
 
-Loader.Renderer.prototype.addPlayer = function(player){
+addPlayer (player){
        var that = this;
-       p = new Loader.Renderer.RendererPlayer(player);
+       p = new RendererPlayer(player);
         that.camera.addChild(p.graphics);
        this.players.put(player, p);
        
 };
-Loader.Renderer.prototype.addBall = function(ball){
+addBall (ball){
 	if(ball == null)
 	{
-		ball = new Loader.Physics.DefaultBall(game.physics.world);
+		ball = new DefaultBall(game.physics.world);
 	}
 	var that = this;
-       b = new Loader.Renderer.RendererBall(ball);
+       b = new RendererBall(ball);
        that.camera.addChild(b.graphics);
        this.balls.put(ball, b);
        
 };
 
-Loader.Renderer.prototype.renderPlayers = function(){
+renderPlayers (){
     var that = this;
     keys = that.players.keys();
     for(i in keys)
@@ -209,7 +193,7 @@ Loader.Renderer.prototype.renderPlayers = function(){
         
     }
 };
-Loader.Renderer.prototype.renderBalls = function(){
+renderBalls (){
     
     var that = this;
     keys = that.balls.keys();
@@ -228,8 +212,9 @@ Loader.Renderer.prototype.renderBalls = function(){
         
     }
     
-};
-Loader.Renderer.RendererBall = function (ball) {
+}}
+class RendererBall {
+     constructor (ball) {
     var that = this;
     this.graphics = new PIXI.Graphics();
     that.graphics.beginFill(0xFFFFFF);
@@ -241,8 +226,9 @@ Loader.Renderer.RendererBall = function (ball) {
     that.graphics.drawCircle(0,0,30*hx.constants.Ball.RADIUS);
     //that.graphics.drawCircle(500, 250,10);
     that.graphics.endFill();
-}
-Loader.Renderer.RendererPlayer = function (player) {
+}}
+class RendererPlayer {
+     constructor (player) {
      var that = this;
 		this.graphics = new PIXI.Graphics();
         that.graphics.position = new PIXI.Vector(0,0);
@@ -259,4 +245,5 @@ Loader.Renderer.RendererPlayer = function (player) {
         //this.setAvatar(player.avatar);
 		//that.graphics.addChild(that.avatar_label);
 		that.graphics.addChild(that.name_label);
+}
 }

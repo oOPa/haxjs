@@ -4,7 +4,7 @@ var watch = require("gulp-watch");
 var gutil = require("gulp-util");
 
 gulp.task("compile", function() {
-	return gulp.src(["src/js/*","!src/js/app.js"])
+	return gulp.src(["src/js/*","!src/js/app.js","!src/js/shared"])
 		.pipe(babel())
 		.pipe(gulp.dest("dist/js"));
 });

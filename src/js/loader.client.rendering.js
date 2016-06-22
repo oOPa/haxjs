@@ -1,19 +1,18 @@
 //NetRenderer.prototype.constructor=NetRenderer;
-Loader.Client.Renderer = function()
+class ClientRenderer {
+    constructor()
 {
-	this.prototype = new Loader.Renderer();
+	this.prototype = new Renderer();
 	this.prototype.renderPlayers = this.renderPlayers;	
 	
-};
-Loader.Client.Renderer.prototype.addPlayer = function(peer_id,name){
+}
+addPlayer (peer_id,name){
        var that = this;
        p = new Loader.Client.Renderer.RendererNetPlayer(name);
        that.prototype.camera.addChild(p.graphics);
-       this.prototype.players.put(peer_id, p);
-	   
-       
-};
-Loader.Client.Renderer.prototype.renderPlayers = function(){
+       this.prototype.players.put(peer_id, p);	   
+       };
+renderPlayers(){
     var that = this;
     keys = that.players.keys();
     for(i in keys)
@@ -26,7 +25,9 @@ Loader.Client.Renderer.prototype.renderPlayers = function(){
 
     }
 };
-Loader.Client.Renderer.RendererNetPlayer = function (name) {
+}
+class RendererNetPlayer  {
+    constructor(){
      var that = this;
 		this.graphics = new PIXI.Graphics();
         that.graphics.position = new PIXI.Vector(0,0);
@@ -42,4 +43,5 @@ Loader.Client.Renderer.RendererNetPlayer = function (name) {
 		this.point = {x:0,y:0};
 				that.graphics.addChild(that.name_label);
 
-};
+}
+}

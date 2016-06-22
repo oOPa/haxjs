@@ -12,13 +12,22 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2,
  * b2contactlistener
  */
 //var b2ContactListener = Box2d.Dynamics.b2ContactListener;
-Loader.Physics = function()
+class Physics
 {
+    constructor(){
 	var that  = this;
 	this.world = new b2World(new b2Vec2(0, 0), true);
-};
+    }
+    update () {
+    this.world.Step(1 / 60, 10, 10);
+       //this.world.Step(1 / 30, 10, 10);
+    this.world.ClearForces();
+    }
+}
 
-Loader.Physics.Player = function (world) {
+class PhysicsPlayer {
+    
+    constructor (world) {
     var bodyDef = new b2BodyDef();
     bodyDef.type = b2Body.b2_dynamicBody;
 	this.keys = [false,false,false,false];
@@ -39,8 +48,8 @@ Loader.Physics.Player = function (world) {
 
     this.body = world.CreateBody(bodyDef);
     this.body.CreateFixture(fixDef);
-};
-Loader.Physics.Player.prototype.update = function()
+}
+update ()
 {
 		var that = this;
 		var vec = new PIXI.Vector(0, 0);
@@ -59,21 +68,11 @@ Loader.Physics.Player.prototype.update = function()
             //console.log(that.player.point());
         }
         
-};
-Loader.Physics.prototype.update = function () {
-    this.world.Step(1 / 60, 10, 10);
-       //this.world.Step(1 / 30, 10, 10);
-    this.world.ClearForces();
-    
-};
-Loader.Physics.deg2rad = function (deg) {
-    return deg * Math.PI / 180;
-};
-Loader.Physics.Vec = function (deg, mag) {
-    var deg = Loader.Physics.deg2rad(deg);
-    this.vec = new PIXI.Vector(Math.cos(deg) * mag, Math.sin(deg) * mag);
-};
-Loader.Physics.DefaultBall = function (world) {
+}
+
+}
+class DefaultBall {
+    constructor (world) {
     var that = this;
     this.point = function(){
             v = that.body.GetPosition();
@@ -98,4 +97,5 @@ Loader.Physics.DefaultBall = function (world) {
 
     this.body = world.CreateBody(bodyDef);
     this.body.CreateFixture(fixDef);
-};
+}
+}

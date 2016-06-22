@@ -1,12 +1,12 @@
-Loader.Logger = function()
+var Logger = function()
 {
 	
 }
-Loader.Logger.prototype.addChat = function(txt)
+Logger.prototype.addChat = function(txt)
 {
 	this.log(txt);
 }
-Loader.Logger.prototype.log = function(txt)
+Logger.prototype.log = function(txt)
 {
 	console.log("haxjs: "+txt)
 }

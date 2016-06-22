@@ -1,63 +1,66 @@
-Loader.Net = function()
+class Net
 {
+	constructor()
+	{
 	this.max = 8;
 	this.isHost = false;
 	this.clients = new Hashtable();
-};
-Loader.Net.prototype.getRooms = function()
+	}
+
+getRooms ()
 {
 	return this.roomlist;
 };
-Loader.Net.prototype.stopUpdates = function ()
+stopUpdates ()
 {
 	if(typeof this.timer != 'undefined')
 	{
 		clearInterval(this.timer);
 	}
 };
-Loader.Net.prototype.startUpdates = function ()
+startUpdates ()
 {
 	if(typeof this.timer == 'undefined')
 	{
 		this.timer = this.isHost ? setInterval(this.updateClients,hx.intervals) : setInterval(this.sendUpdatesToHost,hx.intervals);
 	}
 };
-Loader.Net.prototype.updateClients = function ()
+updateClients ()
 {
 	n = ['host']
-	n.push(game.players[0].point())
-	if(game.first && game.first.open)
+	n.push(haxball.players[0].point())
+	if(haxball.first && haxball.first.open)
 	{
-		game.first.send(n);
+		haxball.first.send(n);
 	}
 
-	keys = game.net.clients.keys();
+	keys = haxball.net.clients.keys();
 	for(i in keys)
 	{
 		item = keys[i]
 		n = [item]
-		n.push(game.net.clients.get(item).point());
+		n.push(haxball.net.clients.get(item).point());
 		
-		for (x in game.net.peer.connections){
+		for (x in haxball.net.peer.connections){
 			//host	
-			con = game.net.peer.connections[x][0];
+			con = haxball.net.peer.connections[x][0];
 			con.send(n);
 		}
 	}
 	
 	//console.log(n);
 };
-Loader.Net.prototype.sendUpdatesToHost = function ()
+sendUpdatesToHost ()
 {
-	window.host.send(game.controller.keys);
+	window.host.send(haxball.controller.keys);
 };
-Loader.Net.prototype.updateFromHost = function (updates)
+updateFromHost (updates)
 {
 	//console.log("sending updates");
 	//data = {name : 'host'}	
-	game.renderer.prototype.players.get(updates[0]).point = updates[1];
+	haxball.renderer.prototype.players.get(updates[0]).point = updates[1];
 };
-Loader.Net.prototype.joinRoom = function(peer_id,callback)
+joinRoom (peer_id,callback)
 {
 		/*
 	*on_error
@@ -71,7 +74,7 @@ Loader.Net.prototype.joinRoom = function(peer_id,callback)
 	
 	this.peer.on('open', function(id) {
 		console.log('My peer ID is: ' + id);
-		that.connection = this.connect(that.host,{metadata:game.ui.nick});
+		that.connection = this.connect(that.host,{metadata:haxball.ui.nick});
 		that.connection.on('open', function(){
 			console.log("connected to host!");
 			window.host = that.connection;
@@ -90,11 +93,11 @@ Loader.Net.prototype.joinRoom = function(peer_id,callback)
 	}); 
 	return this;
 };
-Loader.Net.prototype.receiveClientData = function(con,data)
+receiveClientData (con,data)
 {
 	this.clients.get(con.peer).keys = data;
 };
-Loader.Net.prototype.sendMessage = function()
+sendMessage ()
 {
 	if(this.isHost)
 	{
@@ -105,7 +108,7 @@ Loader.Net.prototype.sendMessage = function()
 		
 	}
 };
-Loader.Net.prototype.createRoom = function(callbacks)
+createRoom (callbacks)
 {
 	/*
 	*on_peer_init
@@ -125,9 +128,9 @@ Loader.Net.prototype.createRoom = function(callbacks)
 		that.peer.on('connection', function(dataConnection) { 
 			console.log("new peer "+dataConnection.peer+" connected");
 			callbacks.on_peer_connect(dataConnection.peer,dataConnection.metadata);
-			game.first = dataConnection;
+			haxball.first = dataConnection;
 			dataConnection.on('close',function(){
-				game.net.clients.remove(dataConnection.peer);
+				haxball.net.clients.remove(dataConnection.peer);
 				callbacks.on_peer_dc(dataConnection);
 			});
 			
@@ -143,3 +146,4 @@ Loader.Net.prototype.createRoom = function(callbacks)
 	});
 	
 };
+}

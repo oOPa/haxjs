@@ -1,4 +1,5 @@
-Loader.Client.Player = function(name,avatar) {
+class Player {
+     constructor(name,avatar) {
         var that = this;
 		this.name = name;
 		//this.avatar = avatar.substr(0,2);
@@ -8,5 +9,7 @@ Loader.Client.Player = function(name,avatar) {
         this.point = function(){
             return {x : this.x,y:this.y};
         }
-        this.update = new Function();
-};
+        this.update = new Function();   
+    }   
+}
+
