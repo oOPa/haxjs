@@ -27,6 +27,9 @@ gulp.task("sync", function() {
 		.pipe(gulp.dest(JS_DEST));
 });
 
+gulp.task("shared", function(){
+	return gulp.src("shared/*.js").pipe(gulp.dest("dist/shared"));
+})
 gulp.task("copy", function() {
     gulp.src(['src/app.js','src/index.html'])
     .pipe(gulp.dest('dist'));

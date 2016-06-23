@@ -1,4 +1,4 @@
-class HaxballUI{
+export class HaxballUI{
 	 constructor() {
 		 console.log(this);
 		 this.load();

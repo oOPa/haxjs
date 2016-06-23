@@ -1,4 +1,7 @@
-class Haxball{
+var Logger = require("./loader.logger.js").Logger;
+var Physics = require("./loader.physics.js").Physics;
+
+export class Haxball{
 	
 	constructor(){
 		this.players = [];
@@ -50,6 +53,4 @@ class Haxball{
 		this.logger.addChat(txt);
 	}
 };
-
-
 
