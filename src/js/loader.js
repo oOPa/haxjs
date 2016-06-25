@@ -7,7 +7,6 @@ export class Haxball{
 		this.players = [];
 		this.logger = new Logger();
 		this.physics = new Physics();
-		console.log(this.render);
 	}
 	
     render ()
