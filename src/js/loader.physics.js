@@ -12,7 +12,7 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2,
  * b2contactlistener
  */
 //var b2ContactListener = Box2d.Dynamics.b2ContactListener;
-export class Physics
+class Physics
 {
     constructor(){
 	var that  = this;

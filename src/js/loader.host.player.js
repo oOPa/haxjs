@@ -1,9 +1,8 @@
 var HostPlayer = function(name,avatar,world) {
         var that = this;
 		this.keys = [false,false,false,false];
-        this.physics = new Loader.Physics.Player(world);
+        this.physics = new PhysicsPlayer(world);
 		this.name = name;
-		//this.avatar = avatar.substr(0,2);
         this.avatar = avatar;
         this.point = function(){
             v = that.physics.body.GetPosition();
@@ -15,7 +14,7 @@ var HostPlayer = function(name,avatar,world) {
         window.vec = new PIXI.Vector(0, 0);
         that.keys.forEach(function (key, i) {
         if (key) {
-                var vec2 = new Loader.Physics.Vec(i * -90,200);
+                var vec2 = new Vec(i * -90,200);
             vec.add(vec2.vec);
         }
         });

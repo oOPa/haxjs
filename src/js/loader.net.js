@@ -27,21 +27,21 @@ startUpdates ()
 };
 updateClients ()
 {
-	n = ['host']
+	var n = ['host']
 	n.push(haxball.players[0].point())
 	if(haxball.first && haxball.first.open)
 	{
 		haxball.first.send(n);
 	}
 
-	keys = haxball.net.clients.keys();
+	var keys = haxball.net.clients.keys();
 	for(i in keys)
 	{
-		item = keys[i]
-		n = [item]
+		var item = keys[i]
+		var n = [item]
 		n.push(haxball.net.clients.get(item).point());
 		
-		for (x in haxball.net.peer.connections){
+		for (var x in haxball.net.peer.connections){
 			//host	
 			con = haxball.net.peer.connections[x][0];
 			con.send(n);

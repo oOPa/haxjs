@@ -1,15 +1,12 @@
-var Logger = require("./loader.logger.js").Logger;
-var Physics = require("./loader.physics.js").Physics;
-
-export class Haxball{
+var Haxball = function(){
 	
-	constructor(){
+	
 		this.players = [];
 		this.logger = new Logger();
 		this.physics = new Physics();
 	}
 	
-    render ()
+Haxball.prototype.render = function ()
 	{
 		/** change this */
 		var that = haxball;
@@ -22,14 +19,14 @@ export class Haxball{
 			//console.log(this);
 			that.physics.update();
 	}
-	createRenderer ()
+Haxball.prototype.createRenderer = function ()
 	{
 		return (this.renderer = new Renderer(this.render));
 	}
-	createPlayer ()
+Haxball.prototype.createPlayer = function(name,avatar)
 	{
 		var that = haxball;
-    	let player = new HostPlayer(name,avatar,that.physics.world);
+    	var player = new HostPlayer(name,avatar,that.physics.world);
 		this.players.push(player);
 		
 		if(typeof that.renderer != 'undefined')
@@ -42,14 +39,14 @@ export class Haxball{
 		return player;
 		
 	}
-	buildBall ()
+Haxball.prototype.buildBall =function ()
 	{
     	var ball = new DefaultBall(this.physics.world);
     	this.renderer.addBall(ball);
 	}
-	addText(txt)
+Haxball.prototype.addText = function (txt)
 	{
 		this.logger.addChat(txt);
 	}
-};
+
 

@@ -1,14 +1,9 @@
 
-class Vec
-    {
-    constructor (deg, mag) {
-    var deg = Physics.deg2rad(deg);
+var Vec = function (deg, mag) {
+    var deg = deg2rad(deg);
     this.vec = new PIXI.Vector(Math.cos(deg) * mag, Math.sin(deg) * mag);
     }
-}
-class Utils
-{
-    static deg2rad (deg) {
+
+var deg2rad = function (deg) {
         return deg * Math.PI / 180;
-    }
 }

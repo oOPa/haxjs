@@ -1,38 +1,33 @@
-export class HaxballUI{
-	 constructor() {
-		 console.log(this);
-		 this.load();
-	 }
-	load()
+var HaxballUI = function()
+{
+	this.load();
+}
+HaxballUI.prototype.load = function()
 	{
 		this.max = 8;
 		this.nick = "DEFAULT NICKNAME";
 		this.listRooms();
 		this.createListeners();	
 	};
-}
-class hb{	
-unload()
-{
-	
-}
-getNick()
+
+
+HaxballUI.prototype.getNick = function()
 {
 	$('#nick-modal').modal().show();
 }
-addPlayer (player,nick)
+HaxballUI.prototype.addPlayer =function (player,nick)
 {
 	p = haxball.createPlayer(nick,"20");
 	haxball.net.clients.put(player,p);
 }
-playerDC (con)
+HaxballUI.prototype.playerDC =function (con)
 {
 	console.log(con);
 	haxball.net.clients.remove(con.peer);
 	haxball.addText("* "+con.metadata+"has left");
 }
 /** more efficient callbacks needed **/
-joinRoom (host)
+HaxballUI.prototype.joinRoom =function(host)
 {
 	var that = this;
 	let callbacks = {on_host_connect:this.initClientRoom,
@@ -41,7 +36,7 @@ joinRoom (host)
 	haxball.net = new Net();
 	haxball.net.joinRoom(host	,callbacks);
 }
-initClientRoom ()
+HaxballUI.prototype.initClientRoom=function ()
 {
 	/** clear old html and place canvas **/
 	this.cache	 = $('body').html();
@@ -55,10 +50,10 @@ initClientRoom ()
 	haxball.renderer .addPlayer('host','host');
 	haxball.renderer .addPlayer(haxball.net.peer.id,haxball.ui.nick);
 	haxball.controller = new ControllerClient();
-	haxball.net.startUpdates();
+	//haxball.net.startUpdates();
 }
 
-createRoom ()
+HaxballUI.prototype.createRoom =function()
 {
 	/** use promises */
 	var that = this;
@@ -72,14 +67,14 @@ createRoom ()
 	haxball.net = new Net();
 	haxball.net.createRoom(callbacks);
 }
-sendMessage ()
+HaxballUI.prototype.sendMessage=function ()
 {
 	msg = $("#chat-text").val();
 	$("#chat-text").empty();
 	console.log(msg);	
 	haxball.addText(this.nick+":"+msg);
 }
-initHostRoom ()
+HaxballUI.prototype.initHostRoom =function()
 {
 	var that = this;
 	/** clear old html and place canvas **/
@@ -105,7 +100,7 @@ initHostRoom ()
 	new ControllerHost(haxball.createPlayer(this.nick,"avatar"));
 	haxball.net.startUpdates();
 }
-exitRoom()
+HaxballUI.prototype.exitRoom =function()
 {
 	$('body').html(this.cache);
 	$('body').css({'padding-top':'70px'});
@@ -114,17 +109,17 @@ exitRoom()
 	this.createListeners();
 }
 /** unstable **/
-hostError (err)
+HaxballUI.prototype.hostError=function (err)
 {
 	console.log("unable to create room");
 	console.log(err);
 }
 /** stable **/
-createRoomDB  ()
+HaxballUI.prototype.createRoomDB =function ()
 {
 	$.post("/create_room",encodeURI("name="+this.room_name+"&peer="+haxball.net.peer.id+"&max="+this.max+"&ver="+hx.version));
 }
-listRooms ()
+HaxballUI.prototype.listRooms =function()
 {
 	$.getJSON( "/get_rooms", function( data ) {
 	var items = [];
@@ -136,7 +131,7 @@ listRooms ()
 	})
 
 }
-createListeners ()
+HaxballUI.prototype.createListeners=function ()
 {
 	var that = this;
 	$('#join').on('click',function(){
@@ -166,9 +161,4 @@ createListeners ()
 		that.room_name= $('#room').val();that.createRoom();
 	});
 }
-}
 
-export function sum(x,y)
-{
-	return x+y;
-}

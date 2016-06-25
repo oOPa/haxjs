@@ -6,8 +6,8 @@ var changedInPlace = require('gulp-changed-in-place');
 var newer = require('gulp-newer');
 
 const DEST = "dist"
-const JS_SOURCE = ["src/js/*","!src/js/shared"];
-const JS_SHARED = ["src/js/shared"];
+const JS_SOURCE = "src/js/*";
+const JS_SHARED = "src/shared";
 const JS_DEST = DEST+"/js";
 const JS_ENTRY = "src/app.js";
 const HTML_ENTRY = "src/index.html";
@@ -20,6 +20,11 @@ gulp.task("compile", function() {
 		.pipe(gulp.dest("dist/js"));
 });
 
+gulp.task("compile-es5", function() {
+	return gulp.src(JS_SOURCE)
+		.pipe(gulp.dest(JS_DEST));
+});
+
 gulp.task("sync", function() {
 	return gulp.src(["src/js/*","!src/js/app.js","!src/js/shared"])
 		.pipe(newer(JS_DEST))
@@ -28,7 +33,7 @@ gulp.task("sync", function() {
 });
 
 gulp.task("shared", function(){
-	return gulp.src("shared/*.js").pipe(gulp.dest("dist/shared"));
+	return gulp.src("src/shared/*.js").pipe(gulp.dest("dist/shared"));
 })
 gulp.task("copy", function() {
     gulp.src(['src/app.js','src/index.html'])
@@ -37,11 +42,10 @@ gulp.task("copy", function() {
 
 /** not repeating subsequently for html_entry and js_entry **/
 gulp.task("watch", function(){
-	watch(JS_SOURCE,printChanged)	
-		.pipe(babel())
+	watch("src/js",printChanged)	
 		.pipe(gulp.dest(JS_DEST));
 	watch(JS_ENTRY,printChanged).pipe(gulp.dest(DEST));
 	watch(HTML_ENTRY,printChanged).pipe(gulp.dest(DEST));
 });
 
-gulp.task("default", ['compile','copy']);
+gulp.task("default", ['compile-es5','copy','shared']);

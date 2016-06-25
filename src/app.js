@@ -51,7 +51,8 @@ var remove_player = function(peer) {
 app.post("/create_room",create_room);
 app.get("/get_rooms",get_rooms);
 app.get("/", 							function(req,res){res.sendFile(__dirname+'/index.html')});
-app.get("/js/bundle.js", 							function(req,res){res.sendFile(__dirname+'/bundle.js')});
+//app.get("/js/bundle.js", 							function(req,res){res.sendFile(__dirname+'/bundle.js')});
+app.use('/js', express.static('js'));
 app.use('/shared', express.static('shared'));
 /** load servers **/
 server = app.listen(process.env.port || 8888);

@@ -21,8 +21,19 @@
 <!-- hashtable.js -->
 <script src="./shared/hashtable.js"></script>	
 <!-- load game -->
-<script src="./js/bundle.js"></script>	
-
+<script src="./js/constants.js"></script>
+<script src="./js/utils.js"></script>
+<script src="./js/loader.client.controller.js"></script>
+<script src="./js/loader.client.player.js"></script>
+<script src="./js/loader.client.rendering.js"></script>
+<script src="./js/loader.host.controller.js"></script>
+<script src="./js/loader.host.player.js"></script>
+<script src="./js/loader.js"></script>
+<script src="./js/loader.logger.js"></script>
+<script src="./js/loader.net.js"></script>
+<script src="./js/loader.physics.js"></script>
+<script src="./js/loader.rendering.js"></script>
+<script src="./js/loader.ui.js"></script>
 <style type="text/css">
 .center-text{text-align:center;}
 body { padding-top: 70px; }
@@ -33,8 +44,7 @@ body { padding-top: 70px; }
     }
 </style>
 </head>	
-<body>
-
+<body onload="(window.haxball = new Haxball()).ui = new HaxballUI();">
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
    

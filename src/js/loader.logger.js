@@ -1,12 +1,11 @@
-export class Logger
-{
-	addChat (txt)
+var Logger = function() {}
+Logger.prototype.addChat = function (txt)
 	{
 		this.log(txt);
 	}
 
-	log (txt)
+Logger.prototype.log = function (txt)
 	{
 		console.log("haxjs: "+txt)
 	}
-}
+

@@ -158,7 +158,7 @@ startRender ()
 
 addPlayer (player){
        var that = this;
-       p = new RendererPlayer(player);
+       var p = new RendererPlayer(player);
         that.camera.addChild(p.graphics);
        this.players.put(player, p);
        
@@ -180,14 +180,14 @@ renderPlayers (){
     let keys = that.players.keys();
     for(i in keys)
     {
-        let item = keys[i];
+        var item = keys[i];
 		//console.log(item.name);
         //item.update();
-        let point = item.point();
-        x = point.x;
-        y = point.y;
+        var point = item.point();
+        var x = point.x;
+        var y = point.y;
         
-        let p = that.players.get(item).graphics.position;
+        var p = that.players.get(item).graphics.position;
         p.x = x;
         p.y = y;
         
