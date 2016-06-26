@@ -1,10 +1,8 @@
 var Haxball = function(){
-	
-	
 		this.players = [];
 		this.logger = new Logger();
 		this.physics = new Physics();
-	}
+}
 	
 Haxball.prototype.render = function ()
 	{

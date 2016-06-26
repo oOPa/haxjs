@@ -3,13 +3,13 @@ class ClientRenderer {
 {
 	this.prototype = new Renderer();
 	this.prototype.renderPlayers = this.renderPlayers;	
-	
 }
-addPlayer (peer_id,name){
+addPlayer (player){
        var that = this;
-       let p = new RendererNetPlayer(name);
+       var p = new RendererNetPlayer(player.name);
        that.prototype.camera.addChild(p.graphics);
-       this.prototype.players.put(peer_id, p);	   
+       this.prototype.players.put(player.peer,player);
+       this.player.render = p;	   
        };
        
 renderPlayers(){
@@ -19,15 +19,15 @@ renderPlayers(){
     {
         let item = that.players.get(keys[i]);
         let point = item.point;
-        
-        item.graphics.position.x = point.x;
-        item.graphics.position.y = point.y;
+        var render_graphics = item.render.graphics;
+        render_graphics.position.x = point.x;
+        render_graphics.position.y = point.y;
 
     }
 };
 }
 class RendererNetPlayer  {
-    constructor(){
+    constructor(name,avatar){
      var that = this;
 		this.graphics = new PIXI.Graphics();
         that.graphics.position = new PIXI.Vector(0,0);
@@ -37,11 +37,8 @@ class RendererNetPlayer  {
         that.graphics.drawCircle(0,0,30 * hx.constants.Player.RADIUS )//* hx.constants.World.SCALE);
 		that.name_label = new PIXI.Text(name,{font : '25px Arial', fill : 'white', align : 'center'});
 		that.name_label.y = 30 * hx.constants.Player.RADIUS;
-
 		that.graphics.endFill();
-		
-		this.point = {x:0,y:0};
-				that.graphics.addChild(that.name_label);
+		that.graphics.addChild(that.name_label);
 
 }
 }

@@ -47,8 +47,8 @@ HaxballUI.prototype.initClientRoom=function ()
 	/*!-- !*/
 	haxball.renderer.prototype.startRender();
 	console.log(haxball.ui.nick);
-	haxball.renderer .addPlayer('host','host');
-	haxball.renderer .addPlayer(haxball.net.peer.id,haxball.ui.nick);
+	haxball.renderer .addPlayer(new NetPlayer('host','host'));
+	haxball.renderer .addPlayer(new NetPlayer(haxball.net.peer.id,haxball.ui.nick,haxball.net.peer.id));
 	haxball.controller = new ControllerClient();
 	haxball.net.startUpdates.apply();
 }

@@ -25,7 +25,9 @@ Net.prototype.startUpdates = function ()
 }
 Net.prototype.sendUpdatesToHost = function ()
 {
-	window.host.send(haxball.controller.keys);
+	return;
+	//window.host.send(haxball.controller.keys);
+	//window.host.send([hx.network.pack,haxball.]);
 }
 Net.prototype.updateFromHost = function (updates)
 {
@@ -62,7 +64,12 @@ Net.prototype.joinRoom = function(peer_id,callbacks)
 
 Net.prototype.receiveClientData = function(con,data)
 {
-	this.clients.get(con.peer).keys = data;
+	return;
+	if(data[0] == hx.network.pack)
+	{
+		console.log(data);	
+	}
+	//this.clients.get(con.peer).keys = data;
 };
 Net.prototype.sendMessage = function ()
 {
@@ -107,7 +114,6 @@ Net.prototype.createRoom = function(callbacks)
 	});
 	
 };
-
 
 Net.prototype.updateClients = function()
 {

@@ -5,7 +5,7 @@ hx.server.host = "localhost";
 hx.server.port = 8888;
 hx.server.key = "peerjs";
 hx.version = 0.1;
-hx.intervals = 100;
+hx.intervals = 10000;
 hx.constants.World = {
     FRICTION:0.1,
     SCALE:30,
@@ -47,3 +47,7 @@ hx.scale =
 
 hx.style = {font : '15px Arial', fill : 'white'};
 hx.label_size = 10;
+
+hx.network = {
+    PACK:1
+}
