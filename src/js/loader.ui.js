@@ -17,7 +17,7 @@ HaxballUI.prototype.getNick = function()
 }
 HaxballUI.prototype.addPlayer =function (player,nick)
 {
-	p = haxball.createPlayer(nick,"20");
+	var p = haxball.createPlayer(nick,"20");
 	haxball.net.clients.put(player,p);
 }
 HaxballUI.prototype.playerDC =function (con)
@@ -50,7 +50,7 @@ HaxballUI.prototype.initClientRoom=function ()
 	haxball.renderer .addPlayer('host','host');
 	haxball.renderer .addPlayer(haxball.net.peer.id,haxball.ui.nick);
 	haxball.controller = new ControllerClient();
-	//haxball.net.startUpdates();
+	haxball.net.startUpdates.apply();
 }
 
 HaxballUI.prototype.createRoom =function()
@@ -98,7 +98,7 @@ HaxballUI.prototype.initHostRoom =function()
 		that.sendMessage();
 	});
 	new ControllerHost(haxball.createPlayer(this.nick,"avatar"));
-	haxball.net.startUpdates();
+	haxball.net.startUpdates.apply();
 }
 HaxballUI.prototype.exitRoom =function()
 {
