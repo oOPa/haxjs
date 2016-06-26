@@ -126,11 +126,11 @@ Net.prototype.updateClients = function()
 	{
 		var item = keys[i]
 		var n = [item]
-		n.push(haxball.net.clients.get(item).point());
+		n.push(that.clients.get(item).point());
 		
-		for (var x in haxball.net.peer.connections){
+		for (var x in that.peer.connections){
 			//host	
-			var con = haxball.net.peer.connections[x][0];
+			var con = that.peer.connections[x][0];
 			con.send(n);
 		}
 	}
