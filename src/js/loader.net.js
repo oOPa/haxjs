@@ -31,34 +31,29 @@ Net.prototype.sendUpdatesToHost = function ()
 }
 Net.prototype.updateFromHost = function (updates)
 {
-	//console.log("sending updates");
-	//data = {name : 'host'}	
 	haxball.renderer.prototype.players.get(updates[0]).point = updates[1];
 };
-Net.prototype.joinRoom = function(peer_id,callbacks)
+Net.prototype.joinRoom = function(peer_id,resolve,reject)
 {
-	
 	var that = this;
 	this.host = peer_id;
 	this.peer = new Peer({host : hx.server.host,path:"/api",port:hx.server.port,key:hx.server.key});
-	
 	this.peer.on('open', function(id) {
-		console.log('My peer ID is: ' + id);
+		haxball.logger.log('My peer ID is: ' + id);
 		that.connection = this.connect(that.host,{metadata:haxball.ui.nick});
+		
 		that.connection.on('open', function(){
 			console.log("connected to host!");
 			window.host = that.connection;
-	
-			callbacks.on_host_connect();
+			resolve();
 		});
 		
 		that.connection.on('data',function(dataConnection){
-		
 			that.updateFromHost(dataConnection);
 		});
 		that.connection.on('error',function(err){
-			console.log(err)
-		})
+			reject(err);
+		});
 	}); 
 }
 
@@ -82,23 +77,26 @@ Net.prototype.sendMessage = function ()
 		
 	}
 };
-Net.prototype.createRoom = function(callbacks)
+Net.prototype.createRoom = function()
 {
 
 	var that = this;
 	this.isHost = true;
 	this.peer = new Peer({host : hx.server.host,path:"/api",port:hx.server.port,key:hx.server.key});
 	
-	this.peer.on('open', function(id) {
+	this.peer.on('open', function(id)
+	{
+		
 		console.log('My peer ID is: ' + id);
 		console.log('waiting for connections');
-		callbacks.on_peer_init();
-		that.peer.on('connection', function(dataConnection) { 
+		callbacks.on_peer_init.apply();
+		that.peer.on('connection', function(dataConnection)
+		{ 
 			console.log("new peer "+dataConnection.peer+" connected");
 			callbacks.on_peer_connect(dataConnection.peer,dataConnection.metadata);
-			haxball.first = dataConnection;
+			
 			dataConnection.on('close',function(){
-				haxball.net.clients.remove(dataConnection.peer);
+				that.clients.remove(dataConnection.peer);
 				callbacks.on_peer_dc(dataConnection);
 			});
 			

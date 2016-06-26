@@ -1,10 +1,10 @@
 class Renderer {
 
- constructor (physics){
+ constructor (){
 	var that = this;
     this.players = new Hashtable();
     this.balls   = new Hashtable();
-    this.physics = physics;
+    this.physics = new Physics();
     this.init();
 }
 init  () {
@@ -157,10 +157,18 @@ startRender ()
 };
 
 addPlayer (player){
+    
+       var that = this;
+       var p = new RendererPlayer(player);
+       this.camera.addChild(p.graphics);
+       this.players.put(player.peer_id,player);
+       player.render = p;	  
+       /* 
        var that = this;
        var p = new RendererPlayer(player);
        this.camera.addChild(p.graphics);
        this.players.put(player, p);
+       */
        
 };
 addBall (ball){
@@ -179,9 +187,7 @@ doPhysics()
     var keys = this.players.keys();
 	for(i in keys)
 	{
-		//var item = this.players.get(keys[i]);
-        var item = keys[i];
-        //console.log(item);
+		var item = this.players.get(keys[i]);
 		item.update();
 	}
 	this.physics.update();   
@@ -192,13 +198,13 @@ renderPlayers (){
     for(i in keys)
     {
         var item = keys[i];
-		//console.log(item.name);
-        //item.update();
-        var point = item.point();
+        var player = that.players.get(item);
+        
+        var point = player.point();
         var x = point.x;
         var y = point.y;
         
-        var p = that.players.get(item).graphics.position;
+        var p = player.render.graphics.position;
         p.x = x;
         p.y = y;
         
