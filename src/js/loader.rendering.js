@@ -1,11 +1,11 @@
 class Renderer {
 
- constructor (renderFunction){
+ constructor (physics){
 	var that = this;
     this.players = new Hashtable();
     this.balls   = new Hashtable();
+    this.physics = physics;
     this.init();
-    this.renderFunction = renderFunction || new Function();
 }
 init  () {
 var that = this;
@@ -148,8 +148,8 @@ startRender ()
     // run the render loop
     animate();
     function animate() {
-        that.renderer.render(that.stage);	
-        that.renderFunction();
+        that.renderer.render(that.stage);
+        that.doPhysics.call(that);	
         that.renderPlayers();
         that.renderBalls();
         requestAnimationFrame( animate );
@@ -159,7 +159,7 @@ startRender ()
 addPlayer (player){
        var that = this;
        var p = new RendererPlayer(player);
-        that.camera.addChild(p.graphics);
+       this.camera.addChild(p.graphics);
        this.players.put(player, p);
        
 };
@@ -174,7 +174,18 @@ addBall (ball){
        this.balls.put(ball, b);
        
 };
-
+doPhysics()
+{
+    var keys = this.players.keys();
+	for(i in keys)
+	{
+		//var item = this.players.get(keys[i]);
+        var item = keys[i];
+        //console.log(item);
+		item.update();
+	}
+	this.physics.update();   
+}
 renderPlayers (){
     var that = this;
     let keys = that.players.keys();

@@ -1,4 +1,4 @@
-class ControllerHost{
+class Controller{
      constructor(player){
         this.player = player;
 
@@ -14,5 +14,5 @@ class ControllerHost{
 
     });
 
-}/** host controller ***/
+}
 }

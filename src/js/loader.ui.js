@@ -47,9 +47,8 @@ HaxballUI.prototype.initClientRoom=function ()
 	/*!-- !*/
 	haxball.renderer.prototype.startRender();
 	console.log(haxball.ui.nick);
-	haxball.renderer .addPlayer(new NetPlayer('host','host'));
-	haxball.renderer .addPlayer(new NetPlayer(haxball.net.peer.id,haxball.ui.nick,haxball.net.peer.id));
-	haxball.controller = new ControllerClient();
+	//haxball.renderer.addPlayer(new NetPlayer('host','host'));
+	haxball.controller = new ControllerClient(haxball.createPlayer(haxball.ui.nick,haxball.ui.nick,haxball.net.peer));
 	haxball.net.startUpdates.apply();
 }
 
@@ -97,7 +96,7 @@ HaxballUI.prototype.initHostRoom =function()
 	$("#chat-send").on('click',function(){
 		that.sendMessage();
 	});
-	new ControllerHost(haxball.createPlayer(this.nick,"avatar"));
+	new Controller(haxball.createPlayer(this.nick,"avatar"));
 	haxball.net.startUpdates.apply();
 }
 HaxballUI.prototype.exitRoom =function()
