@@ -7,6 +7,20 @@ class Renderer {
     this.physics = new Physics();
     this.init();
 }
+createPlayer (name,avatar,peer_id)
+{
+	var player = new NetPlayer(name,avatar,this.physics.world,peer_id);
+	this.players.push(player);
+	this.renderer.addPlayer(player);
+	this.addText("* "+player.name+" was moved to red");
+	return player;
+}
+buildBall ()
+{
+	var ball = new DefaultBall(this.physics.world);
+	this.addBall(ball);
+}
+
 init  () {
 var that = this;
 //var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });

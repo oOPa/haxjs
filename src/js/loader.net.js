@@ -31,15 +31,16 @@ Net.prototype.sendUpdatesToHost = function ()
 }
 Net.prototype.updateFromHost = function (updates)
 {
-	haxball.renderer.prototype.players.get(updates[0]).point = updates[1];
+	//haxball.renderer.prototype.players.get(updates[0]).point = updates[1];
 };
 Net.prototype.joinRoom = function(peer_id,resolve,reject)
 {
 	var that = this;
 	this.host = peer_id;
 	this.peer = new Peer({host : hx.server.host,path:"/api",port:hx.server.port,key:hx.server.key});
-	this.peer.on('open', function(id) {
-		haxball.logger.log('My peer ID is: ' + id);
+	this.peer.on('open', function(id) 
+	{
+		console.log('My peer ID is: ' + id);
 		that.connection = this.connect(that.host,{metadata:haxball.ui.nick});
 		
 		that.connection.on('open', function(){

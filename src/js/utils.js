@@ -12,3 +12,23 @@ var Pack = function(velocity,position)
     this.velocity = velocity;
     this.position = position;
 }
+var PlayerStore = function ()
+{
+    this.clients = new Hashtable();
+}
+PlayerStore.prototype.addPlayer = function(player,key)
+{
+    this.clients.put(key,player);
+}
+PlayerStore.prototype.RemovePlayer = function()
+{
+    
+}
+PlayerStore.prototype.getPlayers = function()
+{
+    
+}
+var PlayerIterator = function()
+{
+    
+}
