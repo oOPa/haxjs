@@ -16,19 +16,44 @@ var PlayerStore = function ()
 {
     this.clients = new Hashtable();
 }
-PlayerStore.prototype.addPlayer = function(player,key)
+PlayerStore.prototype.setAvatar = function(peer_id)
+{
+    this.clients.get(peer_id).setAvatar
+}
+PlayerStore.prototype.createPlayer = function(player,key)
 {
     this.clients.put(key,player);
 }
+/**
+ * Net needs player
+ * velocity
+ * direction
+ * avatar
+ * 
+ * Renderer needs player
+ * RendererPlyer
+ */
 PlayerStore.prototype.RemovePlayer = function()
 {
     
 }
 PlayerStore.prototype.getPlayers = function()
 {
-    
+    return this.clients.keys();
 }
 var PlayerIterator = function()
 {
     
+}
+PlayerStore.prototype.createPlayer = function(name,avatar)
+{
+        var player = new NetPlayer(name,avatar);
+        this.players.push(player);
+        this.renderer.addPlayer(player);
+        return player;
+}
+PlayerStore.prototype.buildBall =function ()
+{
+        var ball = new DefaultBall(this.physics.world);
+        this.renderer.addBall(ball);
 }

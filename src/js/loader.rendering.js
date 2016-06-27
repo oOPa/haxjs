@@ -4,6 +4,7 @@ class Renderer {
 	var that = this;
     this.players = new Hashtable();
     this.balls   = new Hashtable();
+    this.store = new PlayerStore();
     this.physics = new Physics();
     this.init();
 }
@@ -169,21 +170,15 @@ startRender ()
         requestAnimationFrame( animate );
     }
 };
-
+updateAvatar(player)
+{
+    this.players.get(player).updateAvatar(player.avatar);
+}
 addPlayer (player){
-    
        var that = this;
        var p = new RendererPlayer(player);
        this.camera.addChild(p.graphics);
-       this.players.put(player.peer_id,player);
-       player.render = p;	  
-       /* 
-       var that = this;
-       var p = new RendererPlayer(player);
-       this.camera.addChild(p.graphics);
-       this.players.put(player, p);
-       */
-       
+       this.players.put(player,p);       
 };
 addBall (ball){
 	if(ball == null)
@@ -276,5 +271,10 @@ class RendererPlayer {
         //this.setAvatar(player.avatar);
 		//that.graphics.addChild(that.avatar_label);
 		that.graphics.addChild(that.name_label);
-}
+    }
+    updateAvatar(avatar)
+    {
+        this.avatar_label.txt = avatar;
+    }
+    
 }

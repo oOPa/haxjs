@@ -26,8 +26,6 @@ Net.prototype.startUpdates = function ()
 Net.prototype.sendUpdatesToHost = function ()
 {
 	return;
-	//window.host.send(haxball.controller.keys);
-	//window.host.send([hx.network.pack,haxball.]);
 }
 Net.prototype.updateFromHost = function (updates)
 {

@@ -1,15 +1,18 @@
-var NetPlayer = function(name,avatar,world,peer_id) {
+var NetPlayer = function(name,avatar) {
     var that = this;
     this.keys = [false,false,false,false];
-    this.physics = new PhysicsPlayer(world);
     this.name = name;
     this.avatar = avatar;
-    this.peer_id = peer_id;
 };
 NetPlayer.prototype.point = function(){
     var v = this.physics.body.GetPosition();
     return {x : v.x,y:v.y};   
 }
+NetPlayer.prototype.createPhysics = function(world)
+{
+    this.physics = new PhysicsPlayer(world);
+}
+
 NetPlayer.prototype.update = function(){
     var that = this;
     var vec = new PIXI.Vector(0, 0);
