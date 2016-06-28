@@ -23,14 +23,7 @@ Net.prototype.startUpdates = function ()
 		this.timer = this.isHost ? setInterval(this.updateClients,hx.intervals) : setInterval(this.sendUpdatesToHost,hx.intervals);
 	}
 }
-Net.prototype.sendUpdatesToHost = function ()
-{
-	return;
-}
-Net.prototype.updateFromHost = function (updates)
-{
-	//haxball.renderer.prototype.players.get(updates[0]).point = updates[1];
-};
+
 Net.prototype.joinRoom = function(host)
 {
 	var that = this;
@@ -59,10 +52,6 @@ Net.prototype.joinRoom = function(host)
 
 Net.prototype.createRoom = function()
 {
-	
-}
-Net.prototype.createRoom = function()
-{
 
 	var that = this;
 	this.isHost = true;
@@ -76,8 +65,8 @@ Net.prototype.createRoom = function()
 		that.peer.on('connection', function(dataConnection)
 		{ 
 			console.log("new peer "+dataConnection.peer+" connected");
-			var p=that.render.createPlayer(dataConnection.metadata,dataConnection.metadata);
-			that.clients.p.put(dataConnection.peer,p);
+			var p=that.renderer.createPlayer(dataConnection.metadata,dataConnection.metadata);
+			that.clients.put(dataConnection.peer,p);
 			
 			dataConnection.on('close',function(){
 				that.clients.remove(dataConnection.peer);
@@ -85,7 +74,6 @@ Net.prototype.createRoom = function()
 			});
 			
 			dataConnection.on('data',function(data){
-				//callbacks.on_peer_data(data);
 				that.receiveClientData(dataConnection,data);
 			});
 		});
@@ -99,16 +87,32 @@ Net.prototype.createRoom = function()
 };
 
 Net.prototype.load = function () {
+	placeCanvas();
+	this.renderer = new Renderer();
+	addChatRoom()
 	if(this.isHost)
 	{
 		make_room("room_name",this.peer.id)
-		//console.log("roon_name",this.peer.id);
 	}
-	placeCanvas();
-	this.renderer = new Renderer();
-	addChatRoom();
+;
 	this.renderer.startRender();
 	this.host = this.renderer.createPlayer("hostname","fakenick");
 	new Controller(this.host);
 	this.startUpdates.apply();
 }
+
+/** sending and recieving data */
+Net.prototype.receiveClientData = function(client,data)
+{
+	console.log("got data from " + this.clients.get(client.peer).getName());
+	console.log(data);
+}
+
+Net.prototype.sendToHost = function (data)
+{
+	
+}
+Net.prototype.receiveHostData = function (updates)
+{
+	
+};

@@ -49,5 +49,6 @@ hx.style = {font : '15px Arial', fill : 'white'};
 hx.label_size = 10;
 
 hx.network = {
-    PACK:1
+    PACK:1,
+    NICK: 2
 }

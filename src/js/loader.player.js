@@ -9,7 +9,9 @@ NetPlayer.prototype.point = function(){
     return {x : v.x,y:v.y};   
 }
 
-
+NetPlayer.prototype.getName = function () {
+    return this.name;
+}
 NetPlayer.prototype.update = function(){
     var that = this;
     var vec = new PIXI.Vector(0, 0);
