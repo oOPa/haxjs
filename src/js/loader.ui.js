@@ -17,13 +17,15 @@ HaxballUI.prototype.getNick = function()
 HaxballUI.prototype.joinRoom = function(host)
 {
 	var that = this;
-	new Net().joinRoom(host);
+	window.net=new Net();
+	window.net.joinRoom(host);
 }
 
 HaxballUI.prototype.createRoom =function()
 {
 	var that = this;
 	this.net = new Net(true);
+	window.net=this.net;
 	this.net.createRoom();
 }
 

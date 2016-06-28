@@ -12,6 +12,21 @@ NetPlayer.prototype.point = function(){
 NetPlayer.prototype.getName = function () {
     return this.name;
 }
+NetPlayer.prototype.getTotalPos = function () {
+    var total = {};
+    var p = this.physics.body.GetPosition();
+    var l = this.physics.body.GetLinearVelocity();
+    total.x = p.x;
+    total.y = p.y;
+    total.vx = l.x;
+    total.vy = l.y;
+    return total;
+}
+NetPlayer.prototype.setTotalPos = function(pos)
+{
+    //this.physics.body.SetPosition(new b2Vec2(pos.x,pos.y));
+    this.physics.body.SetLinearVelocity(new b2Vec2(pos.vx,pos.vy));
+}
 NetPlayer.prototype.update = function(){
     var that = this;
     var vec = new PIXI.Vector(0, 0);

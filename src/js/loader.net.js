@@ -1,7 +1,7 @@
 var Net = function(host)
 {
 	this.max = 8;
-	this.isHost = host;
+	this.isHost = host == null ? false : host;
 	this.clients = new Hashtable();
 }
 
@@ -20,7 +20,7 @@ Net.prototype.startUpdates = function ()
 {
 	if(typeof this.timer == 'undefined')
 	{
-		this.timer = this.isHost ? setInterval(this.updateClients,hx.intervals) : setInterval(this.sendUpdatesToHost,hx.intervals);
+		this.timer = this.isHost ? setInterval(this.updateAllClients.bind(this),hx.intervals) : setInterval(this.sendToHost.bind(this),hx.intervals);
 	}
 }
 
@@ -46,6 +46,11 @@ Net.prototype.joinRoom = function(host)
 			console.log("unable to create room");
 			console.log(err)
 		});
+		
+		that.connection.on('close',function(){
+				that.stopUpdates();
+				console.log("lost connection to host");
+			});
 	}); 
 }
 
@@ -65,6 +70,7 @@ Net.prototype.createRoom = function()
 		that.peer.on('connection', function(dataConnection)
 		{ 
 			console.log("new peer "+dataConnection.peer+" connected");
+			console.log(dataConnection.peer);
 			var p=that.renderer.createPlayer(dataConnection.metadata,dataConnection.metadata);
 			that.clients.put(dataConnection.peer,p);
 			
@@ -94,23 +100,41 @@ Net.prototype.load = function () {
 	{
 		make_room("room_name",this.peer.id)
 	}
-;
 	this.renderer.startRender();
-	this.host = this.renderer.createPlayer("hostname","fakenick");
-	new Controller(this.host);
-	this.startUpdates.apply();
+	this.me = this.renderer.createPlayer("hostname","fakenick");
+	new Controller(this.me);
+	this.startUpdates();
 }
 
 /** sending and recieving data */
 Net.prototype.receiveClientData = function(client,data)
 {
-	console.log("got data from " + this.clients.get(client.peer).getName());
-	console.log(data);
+	var functs = [this.updatePlayerMovement];
+	var player = this.clients.get(client.peer);
+	//console.log("got data from " + player_name);
+	//console.log(data);
+	functs[0].call(this,player,data);
+	//hx.network = {
+    //PACK:0,
+    //NICK: 1,
+    //NEW_PLAYER: 2
+}
+
+Net.prototype.updatePlayerMovement = function (player,movement)
+{
+	//console.log(player.getName());
+	player.setTotalPos(movement);
+}
+Net.prototype.updateAllClients = function(client,data)
+{
+	//console.log("got data from " + this.clients.get(client.peer).getName());
+	//console.log(data);
 }
 
 Net.prototype.sendToHost = function (data)
 {
-	
+	this.connection.send(this.me.getTotalPos());
+	//console.log(this.me.getTotalPos());
 }
 Net.prototype.receiveHostData = function (updates)
 {
