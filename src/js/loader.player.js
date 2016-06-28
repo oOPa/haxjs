@@ -3,7 +3,18 @@ var NetPlayer = function(name,avatar) {
     this.keys = [false,false,false,false];
     this.name = name;
     this.avatar = avatar;
+    //this.lastSendTime = 0;
+    //this.lastReceiveTime = 0;
+    this.ping = 0;
+    this.positions = [];
 };
+NetPlayer.prototype.setPing = function(ping){
+    this.ping = ping;
+}
+NetPlayer.prototype.getLastPing = function(){
+    return this.ping;
+}
+
 NetPlayer.prototype.point = function(){
     var v = this.physics.body.GetPosition();
     return {x : v.x,y:v.y};   

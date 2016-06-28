@@ -40,7 +40,7 @@ Net.prototype.joinRoom = function(host)
 		});
 		
 		that.connection.on('data',function(dataConnection){
-			that.updateFromHost(dataConnection);
+			that.receiveHostData.call(that,dataConnection);
 		});
 		that.connection.on('error',function(err){
 			console.log("unable to create room");
@@ -109,21 +109,20 @@ Net.prototype.load = function () {
 /** sending and recieving data */
 Net.prototype.receiveClientData = function(client,data)
 {
-	var functs = [this.updatePlayerMovement];
+
+	//var lag = (new Date().getTime()-data.time);
+	//var pos = data.pos;
 	var player = this.clients.get(client.peer);
-	//console.log("got data from " + player_name);
-	//console.log(data);
-	functs[0].call(this,player,data);
-	//hx.network = {
-    //PACK:0,
-    //NICK: 1,
-    //NEW_PLAYER: 2
+	player.keys = data.val;
+	player.update();
+	client.send({time : data.time,pos:player.getTotalPos()});
+
 }
 
 Net.prototype.updatePlayerMovement = function (player,movement)
 {
 	//console.log(player.getName());
-	player.setTotalPos(movement);
+	//player.setTotalPos(movement);
 }
 Net.prototype.updateAllClients = function(client,data)
 {
@@ -133,10 +132,16 @@ Net.prototype.updateAllClients = function(client,data)
 
 Net.prototype.sendToHost = function (data)
 {
-	this.connection.send(this.me.getTotalPos());
+	//this.connection.send({time:new Date().getTime(),pos:this.me.getTotalPos()});
+	this.connection.send({time: new Date().getTime(),command: hx.network.MOVE,val : this.me.keys});
+	//this.connection.send(this.me.getTotalPos());
 	//console.log(this.me.getTotalPos());
-}
-Net.prototype.receiveHostData = function (updates)
-{
 	
+}
+Net.prototype.receiveHostData = function (data)
+{
+	console.log("start comparing");
+	console.log(data.pos);
+	console.log(this.me.getTotalPos());
+	console.log("end comparing");
 };
