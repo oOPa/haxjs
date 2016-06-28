@@ -4,16 +4,17 @@ class Renderer {
 	var that = this;
     this.players = new Hashtable();
     this.balls   = new Hashtable();
-    this.store = new PlayerStore();
+    //this.store = new PlayerStore();
     this.physics = new Physics();
     this.init();
 }
-createPlayer (name,avatar,peer_id)
+createPlayer (name,avatar)
 {
-	var player = new NetPlayer(name,avatar,this.physics.world,peer_id);
-	this.players.push(player);
-	this.renderer.addPlayer(player);
-	this.addText("* "+player.name+" was moved to red");
+	var player = new NetPlayer(name,avatar);
+    player.physics = new PhysicsPlayer(this.physics.world);
+	//this.players.put(player);
+	this.addPlayer(player);
+	console.log("* "+player.name+" was moved to red");
 	return player;
 }
 buildBall ()
@@ -196,7 +197,8 @@ doPhysics()
     var keys = this.players.keys();
 	for(i in keys)
 	{
-		var item = this.players.get(keys[i]);
+		var item = keys[i];
+        //console.log(item);
 		item.update();
 	}
 	this.physics.update();   
@@ -207,13 +209,13 @@ renderPlayers (){
     for(i in keys)
     {
         var item = keys[i];
-        var player = that.players.get(item);
+        var player_graphics = that.players.get(item);
         
-        var point = player.point();
+        var point = item.point();
         var x = point.x;
         var y = point.y;
         
-        var p = player.render.graphics.position;
+        var p = player_graphics.graphics.position;
         p.x = x;
         p.y = y;
         

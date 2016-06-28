@@ -8,10 +8,7 @@ NetPlayer.prototype.point = function(){
     var v = this.physics.body.GetPosition();
     return {x : v.x,y:v.y};   
 }
-NetPlayer.prototype.createPhysics = function(world)
-{
-    this.physics = new PhysicsPlayer(world);
-}
+
 
 NetPlayer.prototype.update = function(){
     var that = this;

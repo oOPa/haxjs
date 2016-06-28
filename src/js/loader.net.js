@@ -1,7 +1,7 @@
-var Net = function()
+var Net = function(host)
 {
 	this.max = 8;
-	this.isHost = false;
+	this.isHost = host;
 	this.clients = new Hashtable();
 }
 
@@ -31,51 +31,36 @@ Net.prototype.updateFromHost = function (updates)
 {
 	//haxball.renderer.prototype.players.get(updates[0]).point = updates[1];
 };
-Net.prototype.joinRoom = function(peer_id,resolve,reject)
+Net.prototype.joinRoom = function(host)
 {
 	var that = this;
-	this.host = peer_id;
+	placeCanvas();
 	this.peer = new Peer({host : hx.server.host,path:"/api",port:hx.server.port,key:hx.server.key});
 	this.peer.on('open', function(id) 
 	{
 		console.log('My peer ID is: ' + id);
-		that.connection = this.connect(that.host,{metadata:haxball.ui.nick});
-		
+		that.connection = this.connect(host,{metadata:'haxball.ui.nick'});
+			
 		that.connection.on('open', function(){
 			console.log("connected to host!");
-			window.host = that.connection;
-			resolve();
+			that.load();	
 		});
 		
 		that.connection.on('data',function(dataConnection){
 			that.updateFromHost(dataConnection);
 		});
 		that.connection.on('error',function(err){
-			reject(err);
+			console.log("unable to create room");
+			console.log(err)
 		});
 	}); 
 }
 
-Net.prototype.receiveClientData = function(con,data)
+
+Net.prototype.createRoom = function()
 {
-	return;
-	if(data[0] == hx.network.pack)
-	{
-		console.log(data);	
-	}
-	//this.clients.get(con.peer).keys = data;
-};
-Net.prototype.sendMessage = function ()
-{
-	if(this.isHost)
-	{
-		
-	}
-	else
-	{
-		
-	}
-};
+	
+}
 Net.prototype.createRoom = function()
 {
 
@@ -85,18 +70,18 @@ Net.prototype.createRoom = function()
 	
 	this.peer.on('open', function(id)
 	{
-		
 		console.log('My peer ID is: ' + id);
 		console.log('waiting for connections');
-		callbacks.on_peer_init.apply();
+		that.load();
 		that.peer.on('connection', function(dataConnection)
 		{ 
 			console.log("new peer "+dataConnection.peer+" connected");
-			callbacks.on_peer_connect(dataConnection.peer,dataConnection.metadata);
+			var p=that.render.createPlayer(dataConnection.metadata,dataConnection.metadata);
+			that.clients.p.put(dataConnection.peer,p);
 			
 			dataConnection.on('close',function(){
 				that.clients.remove(dataConnection.peer);
-				callbacks.on_peer_dc(dataConnection);
+				console.log(dataConnection.peer +" has left");
 			});
 			
 			dataConnection.on('data',function(data){
@@ -107,36 +92,23 @@ Net.prototype.createRoom = function()
 
 	}); 
 	this.peer.on('error',function(err){
-		callbacks.on_error(err);
+		console.log("error?");
+		console.log(err);
 	});
 	
 };
 
-Net.prototype.updateClients = function()
-{
-	var that = this;
-	var n = ['host']
-	n.push(haxball.players[0].point())
-	if(haxball.first && haxball.first.open)
+Net.prototype.load = function () {
+	if(this.isHost)
 	{
-		haxball.first.send(n);
+		make_room("room_name",this.peer.id)
+		//console.log("roon_name",this.peer.id);
 	}
-
-	//var keys = that.clients.keys();
-	console.log(this);
-	//return;
-	for(i in keys)
-	{
-		var item = keys[i]
-		var n = [item]
-		n.push(that.clients.get(item).point());
-		
-		for (var x in that.peer.connections){
-			//host	
-			var con = that.peer.connections[x][0];
-			con.send(n);
-		}
-	}
-	
-	//console.log(n);
-};
+	placeCanvas();
+	this.renderer = new Renderer();
+	addChatRoom();
+	this.renderer.startRender();
+	this.host = this.renderer.createPlayer("hostname","fakenick");
+	new Controller(this.host);
+	this.startUpdates.apply();
+}
