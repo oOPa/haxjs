@@ -35,7 +35,7 @@ NetPlayer.prototype.getTotalPos = function () {
 }
 NetPlayer.prototype.setTotalPos = function(pos)
 {
-    //this.physics.body.SetPosition(new b2Vec2(pos.x,pos.y));
+    this.physics.body.SetPosition(new b2Vec2(pos.x,pos.y));
     this.physics.body.SetLinearVelocity(new b2Vec2(pos.vx,pos.vy));
 }
 NetPlayer.prototype.update = function(){

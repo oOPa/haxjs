@@ -42,8 +42,10 @@ class PhysicsPlayer {
     fixDef.restitution = hx.constants.Player.RESTITUTION;
     //fixDef.shape = new b2CircleShape(hx.constants.Player.RADIUS);
     fixDef.shape = new b2CircleShape(30*hx.constants.Player.RADIUS);
-    bodyDef.position.x = 100 / hx.constants.World.SCALE;
-    bodyDef.position.y = 100 / hx.constants.World.SCALE;
+    //bodyDef.position.x = 100 / hx.constants.World.SCALE;
+    //bodyDef.position.y = 100 / hx.constants.World.SCALE;
+	bodyDef.position.x = 30*hx.constants.Player.RADIUS;
+    bodyDef.position.y = 30*hx.constants.Player.RADIUS;
 	
 	//bodyDef.position.x = 0;
 	//bodyDef.position.y = 0;

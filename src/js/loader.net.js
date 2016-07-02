@@ -3,8 +3,10 @@ var Net = function(host)
 	this.max = 8;
 	this.isHost = host == null ? false : host;
 	this.clients = new Hashtable();
+	this.states = new Hashtable();
+	//corresponds with hx.network
+	this.methods = ["","","","setKeys","","addChatMessage"];
 }
-
 Net.prototype.getRooms = function ()
 {
 	return this.roomlist;
@@ -20,7 +22,7 @@ Net.prototype.startUpdates = function ()
 {
 	if(typeof this.timer == 'undefined')
 	{
-		this.timer = this.isHost ? setInterval(this.updateAllClients.bind(this),hx.intervals) : setInterval(this.sendToHost.bind(this),hx.intervals);
+		//this.timer = this.isHost ? setInterval(this.updateAllClients.bind(this),hx.intervals) : setInterval(this.sendToHost.bind(this),hx.intervals);
 	}
 }
 
@@ -36,7 +38,7 @@ Net.prototype.joinRoom = function(host)
 			
 		that.connection.on('open', function(){
 			console.log("connected to host!");
-			that.load();	
+			that.load(host);	
 		});
 		
 		that.connection.on('data',function(dataConnection){
@@ -71,6 +73,7 @@ Net.prototype.createRoom = function()
 		{ 
 			console.log("new peer "+dataConnection.peer+" connected");
 			console.log(dataConnection.peer);
+			that.client0 = dataConnection.peer;
 			var p=that.renderer.createPlayer(dataConnection.metadata,dataConnection.metadata);
 			that.clients.put(dataConnection.peer,p);
 			
@@ -92,56 +95,77 @@ Net.prototype.createRoom = function()
 	
 };
 
-Net.prototype.load = function () {
+Net.prototype.load = function (peer) 
+{
+	var that = this;
 	placeCanvas();
 	this.renderer = new Renderer();
-	addChatRoom()
+	addChatRoom();
+	$("#chat-send").on('click',function(){
+			that.sendChatMessage.call(that,getMessage());
+	});
+	this.me = this.renderer.createPlayer("hostname","fakenick");
+	this.renderer.startRender();
 	if(this.isHost)
 	{
 		make_room("room_name",this.peer.id)
 	}
-	this.renderer.startRender();
-	this.me = this.renderer.createPlayer("hostname","fakenick");
-	new Controller(this.me);
+else{
+	new ControllerClient(this.me,this);
+	//create host player
+	this.host = peer;
+	var p = this.renderer.createPlayer(this.connection.metadata);
+	this.clients.put(peer,p);
+}
+new Controller(this.me)
 	this.startUpdates();
 }
 
 /** sending and recieving data */
 Net.prototype.receiveClientData = function(client,data)
 {
-
-	//var lag = (new Date().getTime()-data.time);
-	//var pos = data.pos;
-	var player = this.clients.get(client.peer);
-	player.keys = data.val;
-	player.update();
-	client.send({time : data.time,pos:player.getTotalPos()});
-
+	//var player = this.clients.get(client.peer);
+	//player.keys = data.val;
+	var peer = client.peer;
+	this[this.methods[data.command]].call(this,peer,data);
+	//client.send({time : data.time,command: hx.network.MOVE,val:player.point()});
 }
-
-Net.prototype.updatePlayerMovement = function (player,movement)
+Net.prototype.sendChatMessage = function(message)
 {
-	//console.log(player.getName());
-	//player.setTotalPos(movement);
+	if(this.isHost)
+	{
+		//send to everyone
+		this.peer.connections[this.client0][0].send({command: hx.network.CHAT,val:message});
+	}
+	else
+	{
+		this.connection.send({command: hx.network.CHAT,val:message});
+	}
 }
-Net.prototype.updateAllClients = function(client,data)
-{
-	//console.log("got data from " + this.clients.get(client.peer).getName());
-	//console.log(data);
-}
-
 Net.prototype.sendToHost = function (data)
 {
-	//this.connection.send({time:new Date().getTime(),pos:this.me.getTotalPos()});
-	this.connection.send({time: new Date().getTime(),command: hx.network.MOVE,val : this.me.keys});
-	//this.connection.send(this.me.getTotalPos());
-	//console.log(this.me.getTotalPos());
-	
+	var time = new Date().getTime();
+	this.connection.send({time: time,command: hx.network.MOVE,val : this.me.keys});
 }
 Net.prototype.receiveHostData = function (data)
 {
-	console.log("start comparing");
-	console.log(data.pos);
-	console.log(this.me.getTotalPos());
-	console.log("end comparing");
+	var peer = this.host;
+	this[this.methods[data.command]].call(this,peer,data);
 };
+Net.prototype.getPlayerFromId = function (peer) {
+	return this.clients.get(peer);
+}
+Net.prototype.addChatMessage = function (peer,data)
+{
+	console.log(this.getPlayerFromId(peer).name +" ("+peer+"): "+data.val);
+};
+Net.prototype.setKeys = function (peer,keys)
+{
+	console.log(keys.val);
+	var player = this.getPlayerFromId(peer);
+	player.keys = keys.val;
+	console.log(player.keys);
+}
+Net.prototype.sendAuthoritativePosition = function (params) {
+	
+}

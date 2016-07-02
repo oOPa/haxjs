@@ -12,9 +12,14 @@ createPlayer (name,avatar)
 {
 	var player = new NetPlayer(name,avatar);
     player.physics = new PhysicsPlayer(this.physics.world);
-	//this.players.put(player);
 	this.addPlayer(player);
 	console.log("* "+player.name+" was moved to red");
+            console.log(this.players.size());
+
+    if(this.players.size() == 1)
+    {
+        this.me = player;
+    }    
 	return player;
 }
 buildBall ()
@@ -165,12 +170,20 @@ startRender ()
     animate();
     function animate() {
         that.renderer.render(that.stage);
-        that.doPhysics.call(that);	
+        that.doPhysics.call(that);
+        /** temp */
+        //that.me.update.call(that.me);	
+        //that.updatePhysics();
+        /**  */
         that.renderPlayers();
         that.renderBalls();
         requestAnimationFrame( animate );
     }
 };
+updatePhysics()
+{
+    this.physics.update();
+}
 updateAvatar(player)
 {
     this.players.get(player).updateAvatar(player.avatar);

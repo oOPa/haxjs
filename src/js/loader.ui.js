@@ -29,14 +29,6 @@ HaxballUI.prototype.createRoom =function()
 	this.net.createRoom();
 }
 
-HaxballUI.prototype.sendMessage=function ()
-{
-	msg = $("#chat-text").val();
-	$("#chat-text").empty();
-	console.log(msg);	
-	haxball.addText(this.nick+":"+msg);
-}
-
 HaxballUI.prototype.exitRoom =function()
 {
 	$('body').html(this.cache);

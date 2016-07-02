@@ -15,7 +15,7 @@ var placeCanvas = function()
 	$('body').css({'padding-top':'10px'});
 
 }
-var addChatRoom = function()
+var addChatRoom = function(sendFunction)
 {
     	var chat_div = document.createElement("div");
 	chat_div.classList.add("center-block")
@@ -27,10 +27,6 @@ var addChatRoom = function()
 	chat_div.appendChild(c);
 	chat_div.appendChild(send);
 	document.body.appendChild(chat_div);
-	$("#chat-send").on('click',function(){
-		that.sendMessage();
-	});
-
 }
 var Pack = function(velocity,position)
 {
@@ -46,4 +42,10 @@ var buildBall =function ()
 var make_room = function(room_name,peer){
     var max = 8;
     	$.post("/create_room",encodeURI("name="+room_name+"&peer="+peer+"&max="+max+"&ver="+hx.version));
+}
+var getMessage=function ()
+{
+	var msg = $("#chat-text").val();
+	$("#chat-text").empty();
+	return msg;
 }
