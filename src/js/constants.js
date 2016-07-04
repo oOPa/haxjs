@@ -54,5 +54,6 @@ hx.network = {
     NEW_PLAYER: 2,
     MOVE: 3,
     CONFIRM: 4,
-    CHAT: 5
+    CHAT: 5,
+    AUTHORITY : 6
 }

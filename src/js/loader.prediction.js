@@ -4,27 +4,21 @@ class Prediction {
 	var that = this;
     this.players = new Hashtable();
     this.balls   = new Hashtable();
-    //this.physics = new Physics();
+    this.physics = new Physics();
     this.init();
 }
 createPlayer (name,avatar)
 {
 	var player = new NetPlayer(name,avatar);
-    //player.physics = new PhysicsPlayer(this.physics.world);
+    player.physics = new PhysicsPlayer(this.physics.world);
 	this.addPlayer(player);
 	console.log("* "+player.name+" was moved to red");
-            console.log(this.players.size());
-
+            //console.log(this.players.size());
     if(this.players.size() == 1)
     {
         this.me = player;
     }    
 	return player;
-}
-buildBall ()
-{
-	var ball = new DefaultBall(this.physics.world);
-	this.addBall(ball);
 }
 
 init  () {
@@ -74,17 +68,9 @@ that.camera.beginFill(0x0000FF, 1);
 that.camera.arc(90-10,177+20,25,Math.PI,(3/2)*Math.PI)
 that.camera.endFill();
 
-/** second arc **/
-//that.camera.lineStyle(2,0x000000);
-//that.camera.beginFill(0x0000FF, 1);
-that.camera.arc(90-10,177+173,25,Math.PI/2,(2/2)*Math.PI)
-//that.camera.endFill();
 
-//goal back net
-//that.camera.lineStyle(2,0x000000);
-//that.camera.moveTo(55,197);
-//that.camera.lineTo(55,350);
-//that.camera.endFill();
+that.camera.arc(90-10,177+173,25,Math.PI/2,(2/2)*Math.PI)
+
 }
 drawMisc ()
 {
@@ -160,8 +146,8 @@ startRender ()
     animate();
     function animate() {
         that.renderer.render(that.stage);
-        //that.renderPlayers();
-        //that.renderBalls();
+        that.doPhysics.call(that);
+        that.renderPlayers();
         requestAnimationFrame( animate );
     }
 };
@@ -175,17 +161,6 @@ addPlayer (player){
        var p = new RendererPlayer(player);
        this.camera.addChild(p.graphics);
        this.players.put(player,p);       
-};
-addBall (ball){
-	if(ball == null)
-	{
-		ball = new DefaultBall(game.physics.world);
-	}
-	var that = this;
-       b = new RendererBall(ball);
-       that.camera.addChild(b.graphics);
-       this.balls.put(ball, b);
-       
 };
 doPhysics()
 {
@@ -201,6 +176,7 @@ doPhysics()
 renderPlayers (){
     var that = this;
     let keys = that.players.keys();
+    //console.log(keys);
     for(i in keys)
     {
         var item = keys[i];
@@ -213,26 +189,7 @@ renderPlayers (){
         var p = player_graphics.graphics.position;
         p.x = x;
         p.y = y;
-        
+        //console.log(p);
     }
 };
-renderBalls (){
-    
-    var that = this;
-    let keys = that.balls.keys();
-    for(i in keys)
-    {
-		//game.logger.log("balls")
-        let item = keys[i];
-        //console.log(item.name);
-        //item.update();
-        let point = item.point();
-        let x = point.x;
-        let y = point.y;
-        let p = that.balls.get(item).graphics.position;
-        p.x = x;
-        p.y = y;
-        
-    }
-    
-}}
+}

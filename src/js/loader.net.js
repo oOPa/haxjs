@@ -5,7 +5,7 @@ var Net = function(host)
 	this.clients = new Hashtable();
 	this.states = new Hashtable();
 	//corresponds with hx.network
-	this.methods = ["","","","setKeys","","addChatMessage"];
+	this.methods = ["","","","setKeys","","addChatMessage","receiveAuthoritativePosition"];
 }
 Net.prototype.getRooms = function ()
 {
@@ -37,6 +37,7 @@ Net.prototype.joinRoom = function(host)
 	this.peer = new Peer({host : hx.server.host,path:"/api",port:hx.server.port,key:hx.server.key});
 	this.peer.on('open', function(id) 
 	{
+		that.myPeer = id;
 		console.log('My peer ID is: ' + id);
 		that.connection = this.connect(host,{metadata:'haxball.ui.nick'});
 			
@@ -154,7 +155,7 @@ Net.prototype.sendToHost = function (data)
 }
 Net.prototype.receiveHostData = function (data)
 {
-	var peer = this.host;
+	var peer = data.peer || this.host;
 	this[this.methods[data.command]].call(this,peer,data);
 };
 Net.prototype.getPlayerFromId = function (peer) {
@@ -171,6 +172,29 @@ Net.prototype.setKeys = function (peer,keys)
 	player.keys = keys.val;
 	//console.log(player.keys);
 }
-Net.prototype.sendAuthoritativePosition = function (params) {
-	this.peer.connections[this.client0][0].send({command: hx.network.CHAT,val:message});
+Net.prototype.sendAuthoritativePosition = function () {
+	var pos = this.getPlayerFromId(this.client0).getTotalPos();
+	this.peer.connections[this.client0][0].send({command: hx.network.AUTHORITY,val:pos,peer : this.client0});
+}
+Net.prototype.receiveAuthoritativePosition = function(peer,data)
+{
+	if(data.val.vxvy != 0)
+	{
+	var dt = new Date().getTime() - data.val.time;
+	var x = dt * data.val.vx
+	var y = dt * data.val.vy
+	var point = (peer == this.myPeer) ? this.me.point() : this.getPlayerFromId(peer).point();
+	
+	console.log("server predicted: "+x+"\t"+y);
+	console.log("client position : "+point.x+"\t"+point.y);
+	}
+	else
+	{
+		var player = (peer == this.myPeer) ? this.me : this.getPlayerFromId(peer);
+		var point = player.point();
+		console.log("server static: "+data.val.x+"\t"+data.val.y);
+		console.log("client static: "+point.x+"\t"+point.y);
+		/** perfome correction */
+		player.setPos({x : data.val.x,y:data.val.y});
+	}
 }

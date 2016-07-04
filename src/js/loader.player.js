@@ -8,12 +8,6 @@ var NetPlayer = function(name,avatar) {
     this.ping = 0;
     this.positions = [];
 };
-NetPlayer.prototype.setPing = function(ping){
-    this.ping = ping;
-}
-NetPlayer.prototype.getLastPing = function(){
-    return this.ping;
-}
 
 NetPlayer.prototype.point = function(){
     var v = this.physics.body.GetPosition();
@@ -25,18 +19,24 @@ NetPlayer.prototype.getName = function () {
 }
 NetPlayer.prototype.getTotalPos = function () {
     var total = {};
+    var time = new Date().getTime();
     var p = this.physics.body.GetPosition();
     var l = this.physics.body.GetLinearVelocity();
     total.x = p.x;
     total.y = p.y;
     total.vx = l.x;
     total.vy = l.y;
+    total.vxvy = l.x * l.y;
+    total.time = time;
     return total;
 }
 NetPlayer.prototype.setTotalPos = function(pos)
 {
-    this.physics.body.SetPosition(new b2Vec2(pos.x,pos.y));
     this.physics.body.SetLinearVelocity(new b2Vec2(pos.vx,pos.vy));
+}
+NetPlayer.prototype.setPos = function(pos)
+{
+    this.physics.body.SetPosition(new b2Vec2(pos.x,pos.y));
 }
 NetPlayer.prototype.update = function(){
     var that = this;

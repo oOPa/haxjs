@@ -4,7 +4,6 @@ class Renderer {
 	var that = this;
     this.players = new Hashtable();
     this.balls   = new Hashtable();
-    //this.store = new PlayerStore();
     this.physics = new Physics();
     this.init();
 }
@@ -14,8 +13,6 @@ createPlayer (name,avatar)
     player.physics = new PhysicsPlayer(this.physics.world);
 	this.addPlayer(player); 
 	console.log("* "+player.name+" was moved to red");
-            console.log(this.players.size());
-
     if(this.players.size() == 1)
     {
         this.me = player;
