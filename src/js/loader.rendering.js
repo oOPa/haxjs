@@ -12,7 +12,7 @@ createPlayer (name,avatar)
 {
 	var player = new NetPlayer(name,avatar);
     player.physics = new PhysicsPlayer(this.physics.world);
-	this.addPlayer(player);
+	this.addPlayer(player); 
 	console.log("* "+player.name+" was moved to red");
             console.log(this.players.size());
 
@@ -53,7 +53,11 @@ graphics.drawRect(0,0,800,(600-150));
 graphics.endFill();
 
 
-
+var fps =  new PIXI.Text('Menu (esc)',{font : '15px Arial', fill : 'white', align : 'center'});
+fps.x = 500;
+fps.y = 500;
+graphics.addChild(fps);
+this.fps = fps;
 /** draw stadium **/
 this.drawStadium();
 //draw post(s)
@@ -163,12 +167,25 @@ drawStadium ()
     that.camera.endFill();
 }
 /** start rendering **/
+setFps()
+{
+    var that = this;
+    that.fps.text = that.framerate;
+    //setTimeout(this.setFps.bind(this),500);
+}
 startRender ()
 {
     var that = this;
     // run the render loop
     animate();
+    setInterval(this.setFps.bind(this),500);
+    var lastLoop = new Date();
     function animate() {
+        var thisLoop = new Date();
+        var fps = 1000 / (thisLoop - lastLoop);
+        that.framerate = fps;
+        
+        lastLoop = thisLoop;
         that.renderer.render(that.stage);
         that.doPhysics.call(that);
         /** temp */
@@ -180,10 +197,7 @@ startRender ()
         requestAnimationFrame( animate );
     }
 };
-updatePhysics()
-{
-    this.physics.update();
-}
+
 updateAvatar(player)
 {
     this.players.get(player).updateAvatar(player.avatar);

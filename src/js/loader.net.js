@@ -22,6 +22,10 @@ Net.prototype.startUpdates = function ()
 {
 	if(typeof this.timer == 'undefined')
 	{
+		if(this.isHost)
+		{
+			this.timer = setInterval(this.sendAuthoritativePosition.bind(this),hx.intervals);
+		}
 		//this.timer = this.isHost ? setInterval(this.updateAllClients.bind(this),hx.intervals) : setInterval(this.sendToHost.bind(this),hx.intervals);
 	}
 }
@@ -99,7 +103,7 @@ Net.prototype.load = function (peer)
 {
 	var that = this;
 	placeCanvas();
-	this.renderer = new Renderer();
+	this.renderer = this.isHost ? new Renderer() : new Prediction();
 	addChatRoom();
 	$("#chat-send").on('click',function(){
 			that.sendChatMessage.call(that,getMessage());
@@ -110,6 +114,7 @@ Net.prototype.load = function (peer)
 	{
 		make_room("room_name",this.peer.id)
 	}
+	
 else{
 	new ControllerClient(this.me,this);
 	//create host player
@@ -161,11 +166,11 @@ Net.prototype.addChatMessage = function (peer,data)
 };
 Net.prototype.setKeys = function (peer,keys)
 {
-	console.log(keys.val);
+	//console.log(keys.val);
 	var player = this.getPlayerFromId(peer);
 	player.keys = keys.val;
-	console.log(player.keys);
+	//console.log(player.keys);
 }
 Net.prototype.sendAuthoritativePosition = function (params) {
-	
+	this.peer.connections[this.client0][0].send({command: hx.network.CHAT,val:message});
 }

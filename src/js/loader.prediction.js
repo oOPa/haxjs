@@ -1,20 +1,24 @@
-class RendererPrediction {
+class Prediction {
 
  constructor (){
 	var that = this;
     this.players = new Hashtable();
     this.balls   = new Hashtable();
-    //this.store = new PlayerStore();
-    this.physics = new Physics();
+    //this.physics = new Physics();
     this.init();
 }
 createPlayer (name,avatar)
 {
 	var player = new NetPlayer(name,avatar);
-    player.physics = new PhysicsPlayer(this.physics.world);
-	//this.players.put(player);
+    //player.physics = new PhysicsPlayer(this.physics.world);
 	this.addPlayer(player);
 	console.log("* "+player.name+" was moved to red");
+            console.log(this.players.size());
+
+    if(this.players.size() == 1)
+    {
+        this.me = player;
+    }    
 	return player;
 }
 buildBall ()
@@ -25,7 +29,6 @@ buildBall ()
 
 init  () {
 var that = this;
-//var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
 var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true});
 this.renderer = renderer;
 document.getElementById("game-view").appendChild(renderer.view)
@@ -55,15 +58,7 @@ this.drawStadium();
 this.drawPosts();
 //draw nets
 this.drawNets();
-//this.drawChat();
-//this.drawMisc();
 
-/** chat and misc **/
-/** add chat area **/
-
-/** misc area **/
-
-// present **/
 
 viewport_.addChild(that.camera);
 graphics.addChild(viewport_);
@@ -165,12 +160,12 @@ startRender ()
     animate();
     function animate() {
         that.renderer.render(that.stage);
-        that.doPhysics.call(that);	
-        that.renderPlayers();
-        that.renderBalls();
+        //that.renderPlayers();
+        //that.renderBalls();
         requestAnimationFrame( animate );
     }
 };
+
 updateAvatar(player)
 {
     this.players.get(player).updateAvatar(player.avatar);
