@@ -6,6 +6,7 @@ hx.server.port = 8888;
 hx.server.key = "peerjs";
 hx.version = 0.1;
 hx.intervals = 1000;
+hx.fps = 59;
 hx.constants.World = {
     FRICTION:0.1,
     SCALE:30,

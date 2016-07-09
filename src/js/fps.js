@@ -1,8 +1,6 @@
-var fps = 60;
 var prevTime = 0;
 function enterFrameHandler(currentTime) {
-      
-     var timeStep = 1/fps;       
+       
      var frameTime = (currentTime - prevTime) / 1000;      
       
      if ( frameTime > 0.25 )
@@ -12,14 +10,14 @@ function enterFrameHandler(currentTime) {
      
      prevTime = currentTime;      
      timeAccumulator += frameTime;      
-     while(timeAccumulator >= timeStep)
+     while(timeAccumulator >= that.timeStep)
      {   
-          updatePhysics(timeStep);
-          timeAccumulator -= timeStep;
+          updatePhysics(that.timeStep);
+          timeAccumulator -= that.timeStep;
      }      
      //clear forces
-     //interpolate
-     var alpha = timeAccumulator / timeStep;      
+     //interpolate and render
+     var alpha = timeAccumulator / that.timeStep;      
      updateGraphics(alpha);               
 }
 //interpolate
