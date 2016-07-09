@@ -5,7 +5,7 @@ hx.server.host = "localhost";
 hx.server.port = 8888;
 hx.server.key = "peerjs";
 hx.version = 0.1;
-hx.intervals = 5000;
+hx.intervals = 1000;
 hx.constants.World = {
     FRICTION:0.1,
     SCALE:30,

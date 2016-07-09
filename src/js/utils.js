@@ -15,6 +15,11 @@ var placeCanvas = function()
 	$('body').css({'padding-top':'10px'});
 
 }
+ var lerp = function (value1, value2, amount) {
+        amount = amount < 0 ? 0 : amount;
+        amount = amount > 1 ? 1 : amount;
+        return value1 + (value2 - value1) * amount;
+    }
 var addChatRoom = function(sendFunction)
 {
     	var chat_div = document.createElement("div");

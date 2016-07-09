@@ -19,6 +19,7 @@ Net.prototype.sendChatMessage = function(message)
 Net.prototype.sendToHost = function (data)
 {
 	var time = new Date().getTime();
+	//this.queue.enque(this.me.keys);
 	this.connection.send({time: time,command: hx.network.MOVE,val : this.me.keys});
 }
 Net.prototype.receiveHostData = function (data)
@@ -70,27 +71,57 @@ Net.prototype.createAuthorityPacket = function(peer)
 	data.val = (this.getAuthoritativePosition(peer));
 	data.command = hx.network.AUTHORITY;
 	data.peer = peer;
+	//data.vector = {};
+	//vec = this.getPlayerFromId(peer).getVector();
+	//data.vector.x = vec.x;
+	//data.vector.y = vec.y;
 	return data;
 }
 Net.prototype.receiveAuthoritativePosition = function(peer,data)
 {
-	if(data.val.vxvy != 0)
+	if(!data.val.vxvy)
 	{
-	var dt = new Date().getTime() - data.val.time;
-	var x = dt * data.val.vx
-	var y = dt * data.val.vy
-	var point = (peer == this.myPeer) ? this.me.point() : this.getPlayerFromId(peer).point();
+	var player = (peer == this.myPeer) ? this.me : this.getPlayerFromId(peer);
+	var point = player.point();
+	var dt = point.time - data.val.time;
+	//var x = (dt * data.val.vx) + data.val.x;
+	//var y = (dt * data.val.vy) + data.val.y;
+	var ratio = point.time / dt
 	
-	//console.log("server predicted: "+x+"\t"+y);
-	//console.log("client position : "+point.x+"\t"+point.y);
+	var x = lerp(data.val.x,point.x,ratio);
+	var y = lerp(data.val.y,point.y,ratio);
+	/** new formula */
+	//var x = (dt * data.val.vx) + 0.5 * (data.val.ax * dt)  + data.val.x;
+	//var y = (dt * data.val.vy) + 0.5 * (data.val.ay * dt)  + data.val.y;
+	
+	//interpol
+	
+	
+	//precision
+	x = x.toPrecision(4);
+	y = y.toPrecision(4);
+	
+	point.x = point.x.toPrecision(4);
+	point.y = point.y.toPrecision(4);
+	//console.log("server speed x:" +data.val.vx)
+	//console.log("client speed x:" +player.physics.body.GetLinearVelocity().x)
+	console.log("server "+x+"\t"+y)
+	//console.log("server vector =  "+data.vector.x+","+data.vector.y);
+	console.log("client "+point.x+"\t"+point.y);
 	}
 	else
 	{
 		var player = (peer == this.myPeer) ? this.me : this.getPlayerFromId(peer);
 		var point = player.point();
-		console.log("server static: "+data.val.x+"\t"+data.val.y);
-		console.log("client static: "+point.x+"\t"+point.y);
+		//console.log("server static: "+data.val.x+"\t"+data.val.y);
+		//console.log("client static: "+point.x+"\t"+point.y);
+		//console.log("server speed x:")
+	
 		/** perfome correction */
-		player.setPos({x : data.val.x,y:data.val.y});
+		this.syncPosition(player,data);
 	}
+}
+Net.prototype.syncPosition = function(player,data)
+{
+	player.setPos({x : data.val.x,y:data.val.y});
 }

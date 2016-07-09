@@ -7,7 +7,7 @@ HaxballUI.prototype.load = function()
 	this.max = 8;
 	this.nick = "DEFAULT NICKNAME";
 	this.listRooms();
-	this.createListeners();	
+	this.createListeners();
 };
 //rename this function
 HaxballUI.prototype.getNick = function()
@@ -17,14 +17,14 @@ HaxballUI.prototype.getNick = function()
 HaxballUI.prototype.joinRoom = function(host)
 {
 	var that = this;
-	window.net=new Net();
+	window.net=new Net(false,that.nick);
 	window.net.joinRoom(host);
 }
 
 HaxballUI.prototype.createRoom =function()
 {
 	var that = this;
-	this.net = new Net(true);
+	this.net = new Net(true,"benjamin");
 	window.net=this.net;
 	this.net.createRoom();
 }

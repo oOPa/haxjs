@@ -10,8 +10,9 @@ var NetPlayer = function(name,avatar) {
 };
 
 NetPlayer.prototype.point = function(){
+    var time = new Date().getTime();
     var v = this.physics.body.GetPosition();
-    return {x : v.x,y:v.y};   
+    return {x : v.x,y:v.y,time:time};   
 }
 
 NetPlayer.prototype.getName = function () {
@@ -26,7 +27,29 @@ NetPlayer.prototype.getTotalPos = function () {
     total.y = p.y;
     total.vx = l.x;
     total.vy = l.y;
-    total.vxvy = l.x * l.y;
+    total.vxvy = (l.x == l.y) && (l.y == 0);
+    total.time = time;
+    return total;
+}
+NetPlayer.prototype.getTotalPosSlower = function () {
+    var total = {};
+    var time = new Date().getTime();
+    var p = this.physics.body.GetPosition();
+    var l = this.physics.body.GetLinearVelocity();
+    
+    /** accleration */
+    var t2 = new Date().getTime();
+    var l2 =  this.physics.body.GetLinearVelocity();
+    var dt = t2 - time;
+    total.ax = (l2.x - l.x) / dt
+    total.ay = (l2.y - l.y) / dt
+    total.t2 = t2;
+    
+    total.x = p.x;
+    total.y = p.y;
+    total.vx = l.x;
+    total.vy = l.y;
+    total.vxvy = (l.x == l.y) && (l.y == 0);
     total.time = time;
     return total;
 }
@@ -41,15 +64,18 @@ NetPlayer.prototype.setPos = function(pos)
 NetPlayer.prototype.update = function(){
     var that = this;
     var vec = new PIXI.Vector(0, 0);
-    window.vec = new PIXI.Vector(0, 0);
     that.keys.forEach(function (key, i) {
     if (key) {
         var vec2 = new Vec(i * -90,200);
         vec.add(vec2.vec);
     }});
-    
+    this.vec = vec;
     if (vec.length() > 0)
     {
         that.physics.body.ApplyForce(vec, that.physics.body.GetWorldCenter());
     }
+}
+NetPlayer.prototype.getVector = function()
+{
+    return this.vec;
 }

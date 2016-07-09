@@ -1,9 +1,12 @@
-var Net = function(host)
+var Net = function(host,nickname)
 {
 	this.max = 8;
+	this.nickname = nickname;
 	this.isHost = host == null ? false : host;
 	this.clients = new Hashtable();
 	this.states = new Hashtable();
+	this.queue = new Queue();
+
 	//corresponds with hx.network
 	this.methods = ["","","","setKeys","","addChatMessage","receiveAuthoritativePosition"];
 }
@@ -39,7 +42,7 @@ Net.prototype.joinRoom = function(host)
 	{
 		that.myPeer = id;
 		console.log('My peer ID is: ' + id);
-		that.connection = this.connect(host,{metadata:'haxball.ui.nick'});
+		that.connection = this.connect(host,{metadata:that.nickname});
 			
 		that.connection.on('open', function(){
 			console.log("connected to host!");
@@ -108,18 +111,23 @@ Net.prototype.load = function (peer)
 	$("#chat-send").on('click',function(){
 			that.sendChatMessage.call(that,getMessage());
 	});
-	this.me = this.renderer.createPlayer("hostname","fakenick");
-	this.renderer.startRender();
 	if(this.isHost)
 	{
+			this.me = this.renderer.createPlayer("host","fakeevatar");
+				this.renderer.startRender();
+
 		make_room("room_name",this.peer.id)
+		
 	}
 	
 else{
+				this.me = this.renderer.createPlayer(this.nickname,"fakeevatar");
+								this.renderer.startRender();
+
 	new ControllerClient(this.me,this);
 	//create host player
 	this.host = peer;
-	var p = this.renderer.createPlayer(this.connection.metadata);
+	var p = this.renderer.createPlayer("host");
 	this.clients.put(peer,p);
 }
 new Controller(this.me)
