@@ -198,9 +198,10 @@ startRender ()
      //clear forces
      that.clearForces();
      //interpolate and render
-     //var alpha = timeAccumulator / that.timeStep;      
+     var alpha = timeAccumulator / that.timeStep;
+     //console.log(alpha);      
      //updateGraphics(alpha);
-       that.renderPlayers();
+       that.interpolate(alpha);
         requestAnimationFrame( animate );      
     }
 };
@@ -241,7 +242,7 @@ clearForces()
 {
     this.physics.clearForces();
 }
-renderPlayers (){
+interpolate (alpha){
     var that = this;
     let keys = that.players.keys();
     for(i in keys)
@@ -249,14 +250,24 @@ renderPlayers (){
         var item = keys[i];
         var player_graphics = that.players.get(item);
         
+        /** */
+        //var point = item.point();
+        //var x = point.x;
+        //var y = point.y;
+        /** */
+
+        var previous = item.previous();
         var point = item.point();
-        var x = point.x;
-        var y = point.y;
+        
+        var x = previous.x * (1 - alpha) + point.x * alpha;
+        var y = previous.y * (1 - alpha) + point.y * alpha;
         
         var p = player_graphics.graphics.position;
         p.x = x;
         p.y = y;
         
+        /** */
+    
     }
 };
 renderBalls (){
@@ -284,13 +295,9 @@ class RendererBall {
     var that = this;
     this.graphics = new PIXI.Graphics();
     that.graphics.beginFill(0xFFFFFF);
-    // draw a circle, set the lineStyle to zero so the circle doesn't have an outline
     that.graphics.lineStyle(1.5,0x000000);
     that.graphics.beginFill(0xFFFFFF, 1);
-    //that.graphics.drawCircle(500, 250,hx.scale.FACTOR * hx.constants.Ball.RADIUS);
-    //that.graphics.drawCircle(500, 250,30*hx.constants.Player.RADIUS);
     that.graphics.drawCircle(0,0,30*hx.constants.Ball.RADIUS);
-    //that.graphics.drawCircle(500, 250,10);
     that.graphics.endFill();
 }}
 class RendererPlayer {

@@ -21,12 +21,16 @@ class ControllerClient{
    document.addEventListener('keydown', (e) => {
         if (e.keyCode > 36 && e.keyCode < 41) {
             this.player.keys[hx.constants.Directions[e.keyCode]] = true;	
-            this.net.sendToHost();	           
+            //this.net.sendToHost();	           
         }
     });
     document.addEventListener('keyup', (e) => {
             this.player.keys[hx.constants.Directions[e.keyCode]] = false;	
-            this.net.sendToHost();			
+            //this.net.sendToHost();			
     });
 }
+}
+var KeyboardInputBuffer = function()
+{
+    
 }

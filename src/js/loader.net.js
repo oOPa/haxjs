@@ -106,7 +106,8 @@ Net.prototype.load = function (peer)
 {
 	var that = this;
 	placeCanvas();
-	this.renderer = this.isHost ? new Renderer() : new Prediction();
+	//this.renderer = this.isHost ? new Renderer() : new Prediction();
+	this.renderer = new Renderer();
 	addChatRoom();
 	$("#chat-send").on('click',function(){
 			that.sendChatMessage.call(that,getMessage());

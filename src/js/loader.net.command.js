@@ -84,12 +84,12 @@ Net.prototype.receiveAuthoritativePosition = function(peer,data)
 	var player = (peer == this.myPeer) ? this.me : this.getPlayerFromId(peer);
 	var point = player.point();
 	var dt = point.time - data.val.time;
-	//var x = (dt * data.val.vx) + data.val.x;
-	//var y = (dt * data.val.vy) + data.val.y;
-	var ratio = point.time / dt
+	var x = (dt * data.val.vx) + data.val.x;
+	var y = (dt * data.val.vy) + data.val.y;
+	//var ratio = point.time / dt
 	
-	var x = lerp(data.val.x,point.x,ratio);
-	var y = lerp(data.val.y,point.y,ratio);
+	//var x = lerp(data.val.x,point.x,ratio);
+	//var y = lerp(data.val.y,point.y,ratio);
 	/** new formula */
 	//var x = (dt * data.val.vx) + 0.5 * (data.val.ax * dt)  + data.val.x;
 	//var y = (dt * data.val.vy) + 0.5 * (data.val.ay * dt)  + data.val.y;

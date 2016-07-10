@@ -7,12 +7,18 @@ var NetPlayer = function(name,avatar) {
     //this.lastReceiveTime = 0;
     this.ping = 0;
     this.positions = [];
+    this._previous = {x:0,y:0};
 };
 
 NetPlayer.prototype.point = function(){
     var time = new Date().getTime();
     var v = this.physics.body.GetPosition();
-    return {x : v.x,y:v.y,time:time};   
+    var p = {x : v.x,y:v.y,time:time};
+    this._previous = p ;
+    return p;   
+}
+NetPlayer.prototype.previous =  function () {
+    return this._previous;
 }
 
 NetPlayer.prototype.getName = function () {
