@@ -33,7 +33,7 @@ var addChatRoom = function(sendFunction)
 	chat_div.appendChild(send);
 	document.body.appendChild(chat_div);
 }
-var Pack = function(velocity,position)
+var State = function(velocity,position)
 {
     this.velocity = velocity;
     this.position = position;
@@ -47,6 +47,17 @@ var buildBall =function ()
 var make_room = function(room_name,peer){
     var max = 8;
     	$.post("/create_room",encodeURI("name="+room_name+"&peer="+peer+"&max="+max+"&ver="+hx.version));
+}
+var make_room_host = function(room_name,peer){
+    var max = 8;
+    	$.post("/create_debug",encodeURI("name="+room_name+"&peer="+peer+"&max="+max+"&ver="+hx.version));
+}
+var join_debug_room = function()
+{
+	$.get("/get_debug_room",function(data)
+	{
+		window.net=new Net(false,'client');window.net.joinRoom(data);
+	});
 }
 var getMessage=function ()
 {

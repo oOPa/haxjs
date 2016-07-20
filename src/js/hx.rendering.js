@@ -2,7 +2,7 @@ class Renderer {
 
  constructor (){
 	var that = this;
-    this.timeStep = 1/hx.fps;
+    this.timeStep = 1/hx.lockstep;
     this.players = new Hashtable();
     this.balls   = new Hashtable();
     this.physics = new Physics();
@@ -60,17 +60,9 @@ this.fps = fps;
 this.drawStadium();
 //draw post(s)
 this.drawPosts();
-//draw nets
+
 this.drawNets();
-//this.drawChat();
-//this.drawMisc();
 
-/** chat and misc **/
-/** add chat area **/
-
-/** misc area **/
-
-// present **/
 
 viewport_.addChild(that.camera);
 graphics.addChild(viewport_);
@@ -168,7 +160,7 @@ drawStadium ()
 setFps()
 {
     var that = this;
-    var fps =1/that.frametime;
+    var fps =1/that.frameTime;
     that.fps.text = fps;
 }
 startRender ()
@@ -176,9 +168,14 @@ startRender ()
     var that = this;
     animate();
     //display the fps
-    //setInterval(this.setFps.bind(this),500);
+    setInterval(this.setFps.bind(this),500);
+    
     var prevTime = 0;
     var timeAccumulator = 0.0
+
+
+
+
     function animate(currentTime) {
                 that.renderer.render(that.stage);
      var frameTime = (currentTime - prevTime) / 1000;      

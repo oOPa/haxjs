@@ -6,6 +6,7 @@ var NetPlayer = function(name,avatar) {
     //this.lastSendTime = 0;
     //this.lastReceiveTime = 0;
     this.ping = 0;
+    this.latency = 0;
     this.positions = [];
     this._previous = {x:0,y:0};
 };
@@ -23,6 +24,10 @@ NetPlayer.prototype.previous =  function () {
 
 NetPlayer.prototype.getName = function () {
     return this.name;
+}
+NetPlayer.prototype.setState = function()
+{
+    
 }
 NetPlayer.prototype.getTotalPos = function () {
     var total = {};

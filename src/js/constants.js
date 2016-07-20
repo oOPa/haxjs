@@ -5,8 +5,11 @@ hx.server.host = "localhost";
 hx.server.port = 8888;
 hx.server.key = "peerjs";
 hx.version = 0.1;
-hx.intervals = 1000;
-hx.fps = 60;
+hx.intervals = 1500;
+hx.lockstep = 60;
+hx.fps = 0;
+
+hx.clientBufferSize = 5;
 hx.constants.World = {
     FRICTION:0.1,
     SCALE:30,
