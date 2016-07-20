@@ -5,7 +5,7 @@ var Net = function(host,nickname)
 	this.isHost = host == null ? false : host;
 	this.clients = new Hashtable();
 	this.states = new Hashtable();
-	this.queue = new Queue();
+	//this.queue = new Queue();
 
 	//corresponds with hx.network
 	this.methods = ["","","","setKeys","","addChatMessage","receiveAuthoritativePosition"];
