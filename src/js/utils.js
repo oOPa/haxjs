@@ -65,3 +65,41 @@ var getMessage=function ()
 	$("#chat-text").empty();
 	return msg;
 }
+var getTimeMs = function()
+{
+	return new Date().getTime;
+}
+var InputBuffer = function(len)
+{
+	this.len = len;
+	this._pointer = -1;
+	//this._arr = new Array();
+	this._arr = create2dArray(len,4);
+}
+InputBuffer.prototype.add = function (args)
+{
+	this._arr[(++this._pointer)%this.len] = args;
+}
+InputBuffer.prototype.reset = function()
+{
+	this._arr = new Array();
+}
+InputBuffer.prototype.getBuffer = function ()
+{
+	return this._arr;
+}
+var create2dArray = function (n,m)
+    {	
+	   var arr = new Array();
+       for (var i=0;i<n;i++)
+       {
+            arr[i]= new Array();
+            for (var j=0;j<m;j++)
+            {
+                arr[i][j]=0;
+            }
+        }
+    
+	   return arr;
+    }
+

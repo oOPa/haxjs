@@ -1,16 +1,27 @@
 class Renderer {
 
- constructor (){
+ constructor (isHost){
 	var that = this;
     this.timeStep = 1/hx.lockstep;
     this.players = new Hashtable();
     this.balls   = new Hashtable();
     this.physics = new Physics();
     this.init();
+    this.state = [];
+    this.isHost = isHost;
+    if(isHost)
+    {
+        this.interpolate = this.interpolateHost;
+        //this.doPhysicsFx = this.doPhysicsFxHost;
+    }
 }
-createPlayer (name,avatar)
+getState()
 {
-	var player = new NetPlayer(name,avatar);
+    return this.state;
+}
+createPlayer (name,avatar,peer)
+{
+	var player = new NetPlayer(name,avatar,this.isHost ? "host" : peer);
     player.physics = new PhysicsPlayer(this.physics.world);
 	this.addPlayer(player); 
 	console.log("* "+player.name+" was moved to red");
@@ -79,16 +90,9 @@ that.camera.arc(90-10,177+20,25,Math.PI,(3/2)*Math.PI)
 that.camera.endFill();
 
 /** second arc **/
-//that.camera.lineStyle(2,0x000000);
-//that.camera.beginFill(0x0000FF, 1);
-that.camera.arc(90-10,177+173,25,Math.PI/2,(2/2)*Math.PI)
-//that.camera.endFill();
 
-//goal back net
-//that.camera.lineStyle(2,0x000000);
-//that.camera.moveTo(55,197);
-//that.camera.lineTo(55,350);
-//that.camera.endFill();
+that.camera.arc(90-10,177+173,25,Math.PI/2,(2/2)*Math.PI)
+
 }
 drawMisc ()
 {
@@ -173,9 +177,6 @@ startRender ()
     var prevTime = 0;
     var timeAccumulator = 0.0
 
-
-
-
     function animate(currentTime) {
                 that.renderer.render(that.stage);
      var frameTime = (currentTime - prevTime) / 1000;      
@@ -224,6 +225,25 @@ addBall (ball){
        this.balls.put(ball, b);
        
 };
+doPhysicsFxHost(timeStep)
+{
+    var keys = this.players.keys();
+	for(i in keys)
+	{
+		var item = keys[i];
+        var realTime = getTimeMs();
+        if ( realTime+item.getLatency() < realTime )
+        {
+            //ignore
+        }
+        else
+        {
+            item.update();
+        }		
+	}
+	this.physics.update(timeStep);    
+
+}
 doPhysicsFx(timeStep)
 {
     var keys = this.players.keys();
@@ -242,11 +262,12 @@ clearForces()
 interpolate (alpha){
     var that = this;
     let keys = that.players.keys();
+   
     for(i in keys)
     {
         var item = keys[i];
         var player_graphics = that.players.get(item);
-        
+       // console.log(item.getPeer());
         /** */
         //var point = item.point();
         //var x = point.x;
@@ -266,7 +287,39 @@ interpolate (alpha){
         /** */
     
     }
-};
+}
+interpolateHost (alpha){
+    var that = this;
+    let keys = that.players.keys();
+    var temp = []; 
+    for(i in keys)
+    {
+        var item = keys[i];
+        var player_graphics = that.players.get(item);
+        temp.push(item.getPeer());
+        /** */
+        //var point = item.point();
+        //var x = point.x;
+        //var y = point.y;
+        /** */
+
+        var previous = item.previous();
+        var point = item.point();
+        
+        var x = previous.x * (1 - alpha) + point.x * alpha;
+        var y = previous.y * (1 - alpha) + point.y * alpha;
+        
+        var p = player_graphics.graphics.position;
+        p.x = x;
+        p.y = y;
+        
+        temp.push(point);
+        /** */
+    
+    }
+    that.state = temp;
+    
+}
 renderBalls (){
     
     var that = this;

@@ -8,7 +8,7 @@ var Net = function(host,nickname)
 	//this.queue = new Queue();
 
 	//corresponds with hx.network
-	this.methods = ["","","","setKeys","","addChatMessage","receiveAuthoritativePosition"];
+	this.methods = ["","","","setKeys","","addChatMessage","receiveAuthoritativePosition","receiveInputs","receiveSnapshot"];
 }
 Net.prototype.getRooms = function ()
 {
@@ -21,18 +21,28 @@ Net.prototype.stopUpdates =function ()
 		clearInterval(this.timer);
 	}
 }
+Net.prototype.sendSnapshot = function()
+{
+	var data = {command: hx.network.SNAPSHOT, val: this.renderer.getState()}
+	console.log(data)
+	//this.sendToClients(data);
+}
 Net.prototype.startUpdates = function ()
 {
 	if(typeof this.timer == 'undefined')
 	{
 		if(this.isHost)
 		{
-			this.timer = setInterval(this.sendAllPos.bind(this),hx.intervals);
+			//this.timer = setInterval(this.sendAllPos.bind(this),hx.intervals);
+			this.timer = setInterval(this.sendSnapshot.bind(this),hx.intervals);
+		}
+		else
+		{
+			this.timer = setInterval(this.sendToHost.bind(this),hx.intervals);
 		}
 		//this.timer = this.isHost ? setInterval(this.updateAllClients.bind(this),hx.intervals) : setInterval(this.sendToHost.bind(this),hx.intervals);
 	}
 }
-
 Net.prototype.joinRoom = function(host)
 {
 	var that = this;
@@ -107,7 +117,7 @@ Net.prototype.load = function (peer)
 	var that = this;
 	placeCanvas();
 	//this.renderer = this.isHost ? new Renderer() : new Prediction();
-	this.renderer = new Renderer();
+	this.renderer = new Renderer(this.isHost);
 	addChatRoom();
 	$("#chat-send").on('click',function(){
 			that.sendChatMessage.call(that,getMessage());
@@ -122,10 +132,11 @@ Net.prototype.load = function (peer)
 	}
 	
 else{
-				this.me = this.renderer.createPlayer(this.nickname,"fakeevatar");
-								this.renderer.startRender();
+		this.inputBuffer = new InputBuffer(10);
+		this.me = this.renderer.createPlayer(this.nickname,"fakeevatar","me");
+		this.renderer.startRender();
 
-	new ControllerClient(this.me,this);
+	new ControllerClient(this.me,this,this.inputBuffer);
 	//create host player
 	this.host = peer;
 	var p = this.renderer.createPlayer("host");

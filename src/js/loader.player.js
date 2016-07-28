@@ -1,4 +1,4 @@
-var NetPlayer = function(name,avatar) {
+var NetPlayer = function(name,avatar,peer) {
     var that = this;
     this.keys = [false,false,false,false];
     this.name = name;
@@ -6,17 +6,26 @@ var NetPlayer = function(name,avatar) {
     //this.lastSendTime = 0;
     //this.lastReceiveTime = 0;
     this.ping = 0;
+    this.peer = peer;
     this.latency = 0;
     this.positions = [];
     this._previous = {x:0,y:0};
 };
 
 NetPlayer.prototype.point = function(){
-    var time = new Date().getTime();
+    //var time = new Date().getTime();
     var v = this.physics.body.GetPosition();
-    var p = {x : v.x,y:v.y,time:time};
+    var p = {x : v.x,y:v.y};//,time:time};
     this._previous = p ;
     return p;   
+}
+NetPlayer.prototype.getPeer = function()
+{
+    return this.peer;
+}
+NetPlayer.prototype.getLatency = function()
+{
+    return this.ping;
 }
 NetPlayer.prototype.previous =  function () {
     return this._previous;

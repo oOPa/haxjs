@@ -20,7 +20,12 @@ Net.prototype.sendToHost = function (data)
 {
 	var time = new Date().getTime();
 	//this.queue.enque(this.me.keys);
-	this.connection.send({time: time,command: hx.network.MOVE,val : this.me.keys});
+	//this.connection.send({time: time,command: hx.network.MOVE,val : this.me.keys});
+	this.connection.send({time: time,command: hx.network.INPUTS,val : this.getInputBuffer()});
+}
+Net.prototype.getInputBuffer = function (data)
+{
+	return this.inputBuffer.getBuffer();
 }
 Net.prototype.receiveHostData = function (data)
 {
@@ -37,7 +42,9 @@ Net.prototype.addChatMessage = function (peer,data)
 };
 Net.prototype.setKeys = function (peer,keys)
 {
+	//console.log("got input");
 	var player = this.getPlayerFromId(peer);
+	player.update
 	player.keys = keys.val;
 }
 Net.prototype.getAuthoritativePosition = function (peer) {
@@ -80,7 +87,7 @@ Net.prototype.createAuthorityPacket = function(peer)
 Net.prototype.receiveAuthoritativePosition = function(peer,data)
 {
 	var player = (peer == this.myPeer) ? this.me : this.getPlayerFromId(peer);
-	console.log(data.val);
+	//console.log(data.val);
 	//this.syncPositionConverge(player,data);
 }
 Net.prototype.syncPosition = function(player,data)
@@ -104,9 +111,12 @@ Net.prototype.syncPositionConverge = function(time, keys, state)
 	 }
 	 //re-apply inputs
     //current.velocity = velocity;
-	//player.keys = keys;
+	this.player.keys = keys;
 }
 Net.prototype.rewind = function(index)
 {
 
+}
+Net.prototype.receiveInputs = function (peer,data) {
+	console.log("received inputs "+data.val[1]);
 }

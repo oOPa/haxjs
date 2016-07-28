@@ -59,5 +59,7 @@ hx.network = {
     MOVE: 3,
     CONFIRM: 4,
     CHAT: 5,
-    AUTHORITY : 6
+    AUTHORITY : 6,
+    INPUTS : 7,
+    SNAPSHOT : 8
 }
