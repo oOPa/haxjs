@@ -9,6 +9,7 @@ class Renderer {
     this.init();
     this.state = [];
     this.isHost = isHost;
+    this.sequence_number = 0;
     if(isHost)
     {
         this.interpolate = this.interpolateHost;
@@ -21,13 +22,22 @@ getState()
 }
 createPlayer (name,avatar,peer)
 {
-	var player = new NetPlayer(name,avatar,this.isHost ? "host" : peer);
+	var player = new NetPlayer(name,avatar);
     player.physics = new PhysicsPlayer(this.physics.world);
 	this.addPlayer(player); 
 	console.log("* "+player.name+" was moved to red");
     if(this.players.size() == 1)
     {
         this.me = player;
+        if(this.isHost)
+        {
+            player.peer = "host";
+        }
+   
+    }
+    else
+    {
+        player.peer = peer;
     }    
 	return player;
 }
@@ -291,7 +301,7 @@ interpolate (alpha){
 interpolateHost (alpha){
     var that = this;
     let keys = that.players.keys();
-    var temp = []; 
+    var temp = [++that.sequence_number]; 
     for(i in keys)
     {
         var item = keys[i];

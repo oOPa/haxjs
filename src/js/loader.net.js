@@ -21,11 +21,31 @@ Net.prototype.stopUpdates =function ()
 		clearInterval(this.timer);
 	}
 }
+Net.prototype.receiveSnapshot = function(dummy,data)
+{
+	var len = (data.val).length;
+	for(var i =1;i<len;i+=2)
+	{
+		var id = data.val[i];
+		var player = null;
+		if(id == this.peer.id)
+		{
+			player = this.me
+		}
+		else
+		{
+			peer = id == "host" ? this.host : id;
+			player = this.getPlayerFromId(peer);
+		}
+		//player.applyState(data.val[i+1]);
+		player.setPos(data.val[i+1]);
+	}
+}
 Net.prototype.sendSnapshot = function()
 {
 	var data = {command: hx.network.SNAPSHOT, val: this.renderer.getState()}
-	console.log(data)
-	//this.sendToClients(data);
+	//console.log(data)
+	this.sendToClients(data);
 }
 Net.prototype.startUpdates = function ()
 {
@@ -38,7 +58,7 @@ Net.prototype.startUpdates = function ()
 		}
 		else
 		{
-			this.timer = setInterval(this.sendToHost.bind(this),hx.intervals);
+			//this.timer = setInterval(this.sendToHost.bind(this),hx.intervals);
 		}
 		//this.timer = this.isHost ? setInterval(this.updateAllClients.bind(this),hx.intervals) : setInterval(this.sendToHost.bind(this),hx.intervals);
 	}
@@ -91,7 +111,7 @@ Net.prototype.createRoom = function()
 			console.log("new peer "+dataConnection.peer+" connected");
 			console.log(dataConnection.peer);
 			that.client0 = dataConnection.peer;
-			var p=that.renderer.createPlayer(dataConnection.metadata,dataConnection.metadata);
+			var p=that.renderer.createPlayer(dataConnection.metadata,dataConnection.metadata,dataConnection.peer);
 			that.clients.put(dataConnection.peer,p);
 			
 			dataConnection.on('close',function(){

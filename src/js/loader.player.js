@@ -15,9 +15,14 @@ var NetPlayer = function(name,avatar,peer) {
 NetPlayer.prototype.point = function(){
     //var time = new Date().getTime();
     var v = this.physics.body.GetPosition();
+    //var l = this.physics.body.GetLinearVelocity();
     var p = {x : v.x,y:v.y};//,time:time};
     this._previous = p ;
     return p;   
+}
+NetPlayer.prototype.applyState = function(state_info)
+{
+   // this.physics.body.ApplyImpulse(this.physics.body.GetWorldCenter(),new b2Vec2(state_info.x,state_info.y));
 }
 NetPlayer.prototype.getPeer = function()
 {
@@ -75,6 +80,7 @@ NetPlayer.prototype.getTotalPosSlower = function () {
 }
 NetPlayer.prototype.setTotalPos = function(pos)
 {
+    this.physics.body.SetPosition(new b2Vec2(pos.x,pos.y));
     this.physics.body.SetLinearVelocity(new b2Vec2(pos.vx,pos.vy));
 }
 NetPlayer.prototype.setPos = function(pos)
