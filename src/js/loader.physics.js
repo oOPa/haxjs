@@ -28,10 +28,7 @@ update()
     this.world.ClearForces();
     
 }
-updateFx(timeStep)
-{
-   this.world.Step(timeStep, 10, 10);
-}
+
 clearForces()
 {
     this.world.ClearForces();

@@ -185,31 +185,15 @@ startRender ()
     setInterval(this.setFps.bind(this),500);
     
     var prevTime = 0;
-    var timeAccumulator = 0.0
 
     function animate(currentTime) {
-                that.renderer.render(that.stage);
-     var frameTime = (currentTime - prevTime) / 1000;      
-     that.frameTime = frameTime;
-     if ( frameTime > 0.25 )
-     {
-        frameTime = 0.25;            
-     }
-     
-     prevTime = currentTime;      
-     timeAccumulator += frameTime;      
-     while(timeAccumulator >= that.timeStep)
-     {   
-          that.doPhysicsFx(that.timeStep);
-          timeAccumulator -= that.timeStep;
-     }      
-     //clear forces
-     that.clearForces();
-     //interpolate and render
-     var alpha = timeAccumulator / that.timeStep;
-     //console.log(alpha);      
-     //updateGraphics(alpha);
-       that.interpolate(alpha);
+        that.renderer.render(that.stage);
+        that.frameTime = (currentTime - prevTime) / 1000;      
+        prevTime = currentTime;       
+        that.doPhysicsFx(that.timeStep);
+        //clear forces
+        that.clearForces();
+        that.interpolate();
         requestAnimationFrame( animate );      
     }
 };
@@ -260,16 +244,15 @@ doPhysicsFx(timeStep)
 	for(i in keys)
 	{
 		var item = keys[i];
-        //console.log(item);
 		item.update();
 	}
-	this.physics.update(timeStep);   
+	this.physics.update();   
 }
 clearForces()
 {
     this.physics.clearForces();
 }
-interpolate (alpha){
+interpolate (){
     var that = this;
     let keys = that.players.keys();
    
@@ -277,28 +260,14 @@ interpolate (alpha){
     {
         var item = keys[i];
         var player_graphics = that.players.get(item);
-       // console.log(item.getPeer());
-        /** */
-        //var point = item.point();
-        //var x = point.x;
-        //var y = point.y;
-        /** */
-
-        var previous = item.previous();
         var point = item.point();
-        
-        var x = previous.x * (1 - alpha) + point.x * alpha;
-        var y = previous.y * (1 - alpha) + point.y * alpha;
-        
         var p = player_graphics.graphics.position;
-        p.x = x;
-        p.y = y;
+        p.x = point.x;
+        p.y = point.y;
         
-        /** */
-    
     }
 }
-interpolateHost (alpha){
+interpolateHost (){
     var that = this;
     let keys = that.players.keys();
     var temp = [++that.sequence_number]; 
@@ -307,22 +276,11 @@ interpolateHost (alpha){
         var item = keys[i];
         var player_graphics = that.players.get(item);
         temp.push(item.getPeer());
-        /** */
-        //var point = item.point();
-        //var x = point.x;
-        //var y = point.y;
-        /** */
-
-        var previous = item.previous();
         var point = item.point();
-        
-        var x = previous.x * (1 - alpha) + point.x * alpha;
-        var y = previous.y * (1 - alpha) + point.y * alpha;
-        
         var p = player_graphics.graphics.position;
-        p.x = x;
-        p.y = y;
-        
+        p.x = point.x;
+        p.y = point.y;
+
         temp.push(point);
         /** */
     
