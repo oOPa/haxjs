@@ -6,58 +6,16 @@ class Renderer {
     this.balls   = new Hashtable();
     this.physics = new Physics();
     this.init();
-    this.state = [];
-    this.isHost = isHost;
+
     this.sequence_number = 0;
-    this.interpolationQueue = new PlaybackQueue();
     this.PlaybackQueue = new PlaybackQueue();
     this.playersByPeer = pbp;
     this.host = hostPeerId;
-    this.delay = 1000;
+    this.delay = 50;
+    this.nextPositionTime = 0;
 }
-processQueue()
-{
-    while(this.interpolationQueue.hasNext())
-    {
-        var first = interpolationQueue.getNext();
-        if(this.interpolationQueue.hasNext())
-        {
-            var second = interpolationQueue.getNext();
-            //find time difference
-            var frame1 = new FrameIterator(first);
-            var frame2 = new FrameIterator(second);
-            var dt = frame2.getFrameTime() - frame1.getFrameTime();
-            //var frameCount = frame2.getSequenceNumber() - frame1.getSequenceNumber();
 
-            while(frame1.hasNext() || frame2.hasNext())
-            {
-                //assume both frames have the same number of objects
-                var gameObjData1 = frame1.getNextData();
-                var gameObjData2 = frame2.getNextData();
 
-                gameObjData1.vx = (gameObjData2.x - gameObjData1.x) / dt;
-                gameObjData1.vy = (gameObjData2.y - gameObjData1.y) / dt;
-
-                gameObjData2.vx = 0;
-                gameObjData2.vy = 0;
-            }
-            this.PlaybackQueue.add(first);
-            this.PlaybackQueue.add(second);
-        }
-        else
-        {
-            this.PlaybackQueue.add(first);
-        }
-    }
-}
-addFrame(data)
-{
-    this.PlaybackQueue.add(data);
-}
-getState()
-{
-    return this.state;
-}
 createPlayer (name,avatar,peer)
 {
 	var player = new NetPlayer(name,avatar,peer);
@@ -211,7 +169,9 @@ setFps()
 startRender ()
 {
     var that = this;
+    that.createSnapshot();
     animate();
+    
     //display the fps
     setInterval(this.setFps.bind(this),500);
     
@@ -220,11 +180,9 @@ startRender ()
     function animate(currentTime) {
         that.renderer.render(that.stage);
         that.frameTime = (currentTime - prevTime) / 1000;      
-        prevTime = currentTime;       
-        //that.doPhysics();
-        //clear forces
-        //that.clearForces();
-        that.interpolate();
+        prevTime = currentTime;
+        that.checkUpdates();
+        that.interpolate(currentTime);
         requestAnimationFrame( animate );      
     }
 };
@@ -265,45 +223,87 @@ clearForces()
 {
     this.physics.clearForces();
 }
-interpolate (){
-    var that = this;
-    if(this.PlaybackQueue.hasNext())
+checkUpdates ()
+{
+   if(this.PlaybackQueue.hasNext())
     {
-        var frame = this.PlaybackQueue.getNext();
-        var len = frame.length;
-	    //console.log("sequence number = "+frame[0]);
-	    //console.log("previous_frame_time = "+frame[1]);
-
-        
-        for(var i =2;i<len;i+=2)
-	    {
-            
-            
-		    var id = frame[i];
-		    var player = null;
-		    if(id == this.me.getPeer())
-		    {
-			    player = this.me
-		    }
-		
-        else
-		{
-			var peer = (id == "host" ? this.host : id);
-			var player = this.playersByPeer.get(peer);
-		}
-        //console.log(player);
-        var player_graphics = that.players.get(player)
-        var p = player_graphics.graphics.position;;
-        var point = frame[i+1];
-       
-        //p.x = point.x;
-        //p.y = point.y;
-        p.x = point.vx *this.dt;
-
-        
-	    }
-        console.log("end frame");
+        this.createSnapshot();
+        this.nextPosition = this.PlaybackQueue.getNext();
+        this.nextPositionTime = getTimeMs() + this.delay;
     }
+}
+interpolate (){
+   var time= getTimeMs()
+    if (time < this.nextPositionTime){
+        //interpolate
+        var it = new SnapshotIterator(this.nextPosition);
+        var last = new SnapshotIterator(this.lastPosition);
+        while(it.hasNext())
+        {
+            //debugger;
+            var item = it.getNext();
+            var lastPositionData = last.getObjectById(item.id);
+            var player_graphics = this.getGraphicsFromId(item.id).position;
+            player_graphics.x = lerp(lastPositionData.x,item.data.x,time/this.nextPositionTime);
+            player_graphics.y = lerp(lastPositionData.y,item.data.y,time/this.nextPositionTime);
+           
+        }
+    }
+    else{
+        //snap
+        this.applySnapshot(this.nextPosition);
+    }
+
+}
+
+createSnapshot()
+{
+    var temp = [0,0]; 
+    let keys = this.players.keys();
+    for(i in keys)
+    {
+        var item = keys[i];
+        var player_graphics = this.players.get(item);
+        temp.push(item.getPeer());    
+        var p = player_graphics.graphics.position;
+        var point = {x:p.x,y:p.y}
+        temp.push(point);
+        /** */
+    
+    }
+    this.lastPosition = temp;
+}
+applySnapshot(snapshot)
+{
+    if(snapshot)
+    {
+    var it = new SnapshotIterator(snapshot);
+    while(it.hasNext())
+    {
+        var next = it.getNext();
+        var player_graphics = this.getGraphicsFromId(next.id);
+        player_graphics.position.x = next.data.x;
+        player_graphics.position.y = next.data.y;
+    }
+    }
+}
+getGraphicsFromId(id)
+{
+        var player = null;
+        if(id == this.me.getPeer())
+        {
+            player = this.me
+        }
+
+        else
+        {
+        var peer = (id == "host" ? this.host : id);
+        player = this.playersByPeer.get(peer);
+        }
+
+        var player_graphics = this.players.get(player).graphics;
+        return player_graphics;
+        //var p = player_graphics.graphics.position;;   
 }
 
 renderBalls (){

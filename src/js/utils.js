@@ -67,7 +67,7 @@ var getMessage=function ()
 }
 var getTimeMs = function()
 {
-	return new Date().getTime;
+	return new Date().getTime();
 }
 var InputBuffer = function(len)
 {
@@ -135,39 +135,58 @@ PlaybackQueue.prototype.getNext = function()
 {
 	return this.arr[ this.access_pointer = ((this.access_pointer+1)%this.len)];
 }
+PlaybackQueue.prototype.getSecond = function()
+{
+	if(!this.hasNext())
+	{
+		return this.arr[this.access_pointer];
+	}
+	else
+	{
+		return this.getNext();
+	}
+}
 PlaybackQueue.prototype.getBuffer = function ()
 {
 	return this.arr;
 }
-var FrameIterator = function(frame)
+
+
+var SnapshotIterator = function(snapshot)
 {
-	this.frame = frame;
-	this.len = frame.length;
+	this.snapshot = snapshot;
+	this.len = snapshot.length;
 	this.pointer = 1;
 }
-FrameIterator.prototype.getSequenceNumber = function()
+SnapshotIterator.prototype.reset = function()
 {
-	return this.frame[0];
+	this.pointer = 1;
 }
-FrameIterator.prototype.getFrameTime = function()
+SnapshotIterator.prototype.getSequenceNumber = function()
 {
-	return this.frame[1];
+	return this.snapshot[0];
 }
-FrameIterator.prototype.hasNext = function()
+SnapshotIterator.prototype.getFrameTime = function()
 {
-	return this.pointer == this.len-1;
+	return this.snapshot[1];
 }
-FrameIterator.prototype.getNext = function()
+SnapshotIterator.prototype.hasNext = function()
 {
-	var next = {name:this.frame[++this.pointer],data:this.frame[++this.pointer]};
+	return this.pointer != (this.len-1);
+}
+SnapshotIterator.prototype.getNext = function()
+{
+	var next = {id:this.snapshot[++this.pointer],data:this.snapshot[++this.pointer]};
 	return next;
 }
-FrameIterator.prototype.getNextData = function()
+SnapshotIterator.prototype.getObjectById = function(id)
 {
-	this.pointer+=2;
-	return this.frame[this.pointer];
-}
-FrameIterator.prototype.next = function()
-{
-	this.pointer+=2;
+	for(var i = 2;i < this.len;i++)
+	{
+		if(this.snapshot[i] == id)
+		{
+			return this.snapshot[i+1];
+		}
+	}
+	return false;
 }

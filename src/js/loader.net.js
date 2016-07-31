@@ -8,6 +8,7 @@ var Net = function(host,nickname)
 	//this.queue = new Queue();
     this.PlaybackQueue = new PlaybackQueue();
 	//corresponds with hx.network
+	this.lastSnapshotSeq = 0;
 	this.methods = ["","","","setKeys","","addChatMessage","receiveAuthoritativePosition","receiveInputs","receiveSnapshot"];
 }
 Net.prototype.getRooms = function ()
@@ -24,20 +25,24 @@ Net.prototype.stopUpdates =function ()
 Net.prototype.play = function()
 {
 	this.copyBuffer();
-	this.renderer.processQueue();
+	//this.renderer.processQueue();
 }
 Net.prototype.copyBuffer = function()
 {
 	while(this.PlaybackQueue.hasNext())
 	{
-		this.renderer.interpolationQueue.add(this.PlaybackQueue.getNext());
+		this.renderer.PlaybackQueue.add(this.PlaybackQueue.getNext());
 	}
 }
 Net.prototype.receiveSnapshot = function(dummy,data)
 {
 	var that = this;
+	if(data.val[0] > this.lastSnapshotSeq)
+	{
+		this.lastSnapshotSeq = data.val[0];
+		this.renderer.PlaybackQueue.add(data.val);
 
-	this.PlaybackQueue.add(data.val);
+	}
 }
 Net.prototype.sendSnapshot = function()
 {
@@ -57,7 +62,7 @@ Net.prototype.startUpdates = function ()
 		else
 		{
 			//playback delay
-			//this.playback = setInterval(this.copyBuffer.bind(this),hx.playbackDelayMs);
+			//this.playback = setInterval(this.play.bind(this),hx.playbackDelayMs);
 			//this.timer = setInterval(this.sendToHost.bind(this),hx.intervals);
 		}
 		//this.timer = this.isHost ? setInterval(this.updateAllClients.bind(this),hx.intervals) : setInterval(this.sendToHost.bind(this),hx.intervals);
@@ -162,6 +167,7 @@ else{
 	//create host player
 
 	var p = this.renderer.createPlayer("host");
+	p.peer = "host";
 	this.clients.put(peer,p);
 }
 new Controller(this.me)
