@@ -2,7 +2,6 @@ class Renderer {
 
  constructor (isHost){
 	var that = this;
-    this.timeStep = 1/hx.lockstep;
     this.players = new Hashtable();
     this.balls   = new Hashtable();
     this.physics = new Physics();
@@ -14,6 +13,10 @@ class Renderer {
     {
         this.interpolate = this.interpolateHost;
         //this.doPhysicsFx = this.doPhysicsFxHost;
+    }
+    else
+    {
+
     }
 }
 getState()
@@ -190,7 +193,7 @@ startRender ()
         that.renderer.render(that.stage);
         that.frameTime = (currentTime - prevTime) / 1000;      
         prevTime = currentTime;       
-        that.doPhysicsFx(that.timeStep);
+        that.doPhysics();
         //clear forces
         that.clearForces();
         that.interpolate();
@@ -219,26 +222,8 @@ addBall (ball){
        this.balls.put(ball, b);
        
 };
-doPhysicsFxHost(timeStep)
-{
-    var keys = this.players.keys();
-	for(i in keys)
-	{
-		var item = keys[i];
-        var realTime = getTimeMs();
-        if ( realTime+item.getLatency() < realTime )
-        {
-            //ignore
-        }
-        else
-        {
-            item.update();
-        }		
-	}
-	this.physics.update(timeStep);    
 
-}
-doPhysicsFx(timeStep)
+doPhysics()
 {
     var keys = this.players.keys();
 	for(i in keys)
@@ -270,7 +255,7 @@ interpolate (){
 interpolateHost (){
     var that = this;
     let keys = that.players.keys();
-    var temp = [++that.sequence_number]; 
+    var temp = [++that.sequence_number,that.prevTime]; 
     for(i in keys)
     {
         var item = keys[i];

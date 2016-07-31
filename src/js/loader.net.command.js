@@ -20,13 +20,10 @@ Net.prototype.sendToHost = function (data)
 {
 	var time = new Date().getTime();
 	//this.queue.enque(this.me.keys);
-	//this.connection.send({time: time,command: hx.network.MOVE,val : this.me.keys});
-	this.connection.send({time: time,command: hx.network.INPUTS,val : this.getInputBuffer()});
+	this.connection.send({time: time,command: hx.network.MOVE,val : this.me.keys});
+	//this.connection.send({time: time,command: hx.network.INPUTS,val : this.getInputBuffer()});
 }
-Net.prototype.getInputBuffer = function (data)
-{
-	return this.inputBuffer.getBuffer();
-}
+
 Net.prototype.receiveHostData = function (data)
 {
 	var peer = data.peer || this.host;

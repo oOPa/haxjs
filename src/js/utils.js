@@ -88,6 +88,15 @@ InputBuffer.prototype.getBuffer = function ()
 {
 	return this._arr;
 }
+var createArray = function(n)
+{
+var arr = new Array();
+       for (var i=0;i<n;i++)
+       {
+		   arr[i] = 0;
+	   }
+	   return arr;
+}
 var create2dArray = function (n,m)
     {	
 	   var arr = new Array();
@@ -103,3 +112,62 @@ var create2dArray = function (n,m)
 	   return arr;
     }
 
+var PlaybackQueue = function()
+{
+    this.len = hx.playbackQueueMax;
+    this.arr = createArray(this.len);
+    this.access_pointer = -1;
+    this.insert_pointer = -1;
+}
+PlaybackQueue.prototype.add = function (frame)
+{
+	this.arr[this.getNextInsertPointer()] = frame;
+}
+PlaybackQueue.prototype.getNextInsertPointer = function()
+{
+	return (this.insert_pointer = (this.insert_pointer +1)%this.len)
+}
+PlaybackQueue.prototype.hasNext = function()
+{
+    return (this.access_pointer != this.insert_pointer);
+}
+PlaybackQueue.prototype.getNext = function()
+{
+	return this.arr[ this.access_pointer = ((this.access_pointer+1)%this.len)];
+}
+PlaybackQueue.prototype.getBuffer = function ()
+{
+	return this.arr;
+}
+var FrameIterator = function(frame)
+{
+	this.frame = frame;
+	this.len = frame.length;
+	this.pointer = 1;
+}
+FrameIterator.prototype.getSequenceNumber = function()
+{
+	return this.frame[0];
+}
+FrameIterator.prototype.getFrameTime = function()
+{
+	return this.frame[1];
+}
+FrameIterator.prototype.hasNext = function()
+{
+	return this.pointer == this.len-1;
+}
+FrameIterator.prototype.getNext = function()
+{
+	var next = {name:this.frame[++this.pointer],data:this.frame[++this.pointer]};
+	return next;
+}
+FrameIterator.prototype.getNextData = function()
+{
+	this.pointer+=2;
+	return this.frame[this.pointer];
+}
+FrameIterator.prototype.next = function()
+{
+	this.pointer+=2;
+}

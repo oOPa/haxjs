@@ -8,8 +8,11 @@ hx.version = 0.1;
 hx.intervals = 1500;
 hx.lockstep = 60;
 hx.fps = 0;
-
+hx.playbackDelayMs = 1000;
+hx.playbackQueueMax = 10;
 hx.clientBufferSize = 5;
+
+
 hx.constants.World = {
     FRICTION:0.1,
     SCALE:30,

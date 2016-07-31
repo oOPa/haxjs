@@ -13,6 +13,7 @@ class Renderer {
     this.PlaybackQueue = new PlaybackQueue();
     this.playersByPeer = pbp;
     this.host = hostPeerId;
+    this.delay = 1000;
 }
 processQueue()
 {
@@ -294,9 +295,11 @@ interpolate (){
         var player_graphics = that.players.get(player)
         var p = player_graphics.graphics.position;;
         var point = frame[i+1];
-        p.x = point.x;
-        p.y = point.y;
-	
+       
+        //p.x = point.x;
+        //p.y = point.y;
+        p.x = point.vx *this.dt;
+
         
 	    }
         console.log("end frame");

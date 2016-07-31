@@ -24,7 +24,6 @@ update()
 {
    
     this.world.Step(1 / 60, 10, 10);
-       //this.world.Step(1 / 60, 10, 10);
     this.world.ClearForces();
     
 }

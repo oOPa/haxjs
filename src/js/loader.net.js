@@ -6,7 +6,7 @@ var Net = function(host,nickname)
 	this.clients = new Hashtable();
 	this.states = new Hashtable();
 	//this.queue = new Queue();
-
+    this.PlaybackQueue = new PlaybackQueue();
 	//corresponds with hx.network
 	this.methods = ["","","","setKeys","","addChatMessage","receiveAuthoritativePosition","receiveInputs","receiveSnapshot"];
 }
@@ -21,25 +21,23 @@ Net.prototype.stopUpdates =function ()
 		clearInterval(this.timer);
 	}
 }
+Net.prototype.play = function()
+{
+	this.copyBuffer();
+	this.renderer.processQueue();
+}
+Net.prototype.copyBuffer = function()
+{
+	while(this.PlaybackQueue.hasNext())
+	{
+		this.renderer.interpolationQueue.add(this.PlaybackQueue.getNext());
+	}
+}
 Net.prototype.receiveSnapshot = function(dummy,data)
 {
-	var len = (data.val).length;
-	for(var i =1;i<len;i+=2)
-	{
-		var id = data.val[i];
-		var player = null;
-		if(id == this.peer.id)
-		{
-			player = this.me
-		}
-		else
-		{
-			peer = id == "host" ? this.host : id;
-			player = this.getPlayerFromId(peer);
-		}
-		//player.applyState(data.val[i+1]);
-		player.setPos(data.val[i+1]);
-	}
+	var that = this;
+
+	this.PlaybackQueue.add(data.val);
 }
 Net.prototype.sendSnapshot = function()
 {
@@ -58,6 +56,8 @@ Net.prototype.startUpdates = function ()
 		}
 		else
 		{
+			//playback delay
+			//this.playback = setInterval(this.copyBuffer.bind(this),hx.playbackDelayMs);
 			//this.timer = setInterval(this.sendToHost.bind(this),hx.intervals);
 		}
 		//this.timer = this.isHost ? setInterval(this.updateAllClients.bind(this),hx.intervals) : setInterval(this.sendToHost.bind(this),hx.intervals);
@@ -137,7 +137,7 @@ Net.prototype.load = function (peer)
 	var that = this;
 	placeCanvas();
 	//this.renderer = this.isHost ? new Renderer() : new Prediction();
-	this.renderer = new Renderer(this.isHost);
+	this.renderer = new Renderer(this.isHost,this.clients,peer);
 	addChatRoom();
 	$("#chat-send").on('click',function(){
 			that.sendChatMessage.call(that,getMessage());
@@ -152,13 +152,15 @@ Net.prototype.load = function (peer)
 	}
 	
 else{
-		this.inputBuffer = new InputBuffer(10);
-		this.me = this.renderer.createPlayer(this.nickname,"fakeevatar","me");
+		this.host = peer;
+		//this.inputBuffer = new InputBuffer(10);
+		this.me = this.renderer.createPlayer(this.nickname,"fakeevatar",this.peer.id);
+		//this.me.peer = this.peer.id;
 		this.renderer.startRender();
 
-	new ControllerClient(this.me,this,this.inputBuffer);
+	new ControllerClient(this.me,this);
 	//create host player
-	this.host = peer;
+
 	var p = this.renderer.createPlayer("host");
 	this.clients.put(peer,p);
 }
