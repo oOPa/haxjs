@@ -1,47 +1,31 @@
 class Renderer {
 
- constructor (isHost){
-	var that = this;
-    this.players = new Hashtable();
-    this.balls   = new Hashtable();
+ constructor (){
+
+    this.players = createArray(8);
+    this.playersRendering = createArray(8);
+    
     this.physics = new Physics();
     this.init();
     this.state = [];
-    this.isHost = isHost;
-    this.sequence_number = 0;
-    if(isHost)
-    {
-        this.interpolate = this.interpolateHost;
-        //this.doPhysicsFx = this.doPhysicsFxHost;
-    }
-    else
-    {
+    this.sequenceNumber = 0;
 
-    }
 }
 getState()
 {
     return this.state;
 }
-createPlayer (name,avatar,peer)
+createPlayer (name,avatar,index)
 {
-	var player = new NetPlayer(name,avatar);
+	var player = new NetPlayer(name,avatar,index);
     player.physics = new PhysicsPlayer(this.physics.world);
-	this.addPlayer(player); 
-	console.log("* "+player.name+" was moved to red");
-    if(this.players.size() == 1)
-    {
-        this.me = player;
-        if(this.isHost)
-        {
-            player.peer = "host";
-        }
-   
-    }
-    else
-    {
-        player.peer = peer;
-    }    
+	/** */
+    var p = new RendererPlayer(name,avatar);
+    this.camera.addChild(p.graphics);
+    this.playersRendering[index] = p;    
+    this.players[index] = player;    
+    /** */
+	console.log("* "+name+" was moved to red");
 	return player;
 }
 buildBall ()
@@ -196,21 +180,11 @@ startRender ()
         that.doPhysics();
         //clear forces
         that.clearForces();
-        that.interpolate();
+        that.drawPlayers();
         requestAnimationFrame( animate );      
     }
 };
 
-updateAvatar(player)
-{
-    this.players.get(player).updateAvatar(player.avatar);
-}
-addPlayer (player){
-       var that = this;
-       var p = new RendererPlayer(player);
-       this.camera.addChild(p.graphics);
-       this.players.put(player,p);       
-};
 addBall (ball){
 	if(ball == null)
 	{
@@ -225,11 +199,13 @@ addBall (ball){
 
 doPhysics()
 {
-    var keys = this.players.keys();
-	for(i in keys)
+	for(i in this.players)
 	{
-		var item = keys[i];
-		item.update();
+		var item = this.players[i];
+        if(item !== 0)
+        {
+		    item.update();
+        }
 	}
 	this.physics.update();   
 }
@@ -237,41 +213,23 @@ clearForces()
 {
     this.physics.clearForces();
 }
-interpolate (){
-    var that = this;
-    let keys = that.players.keys();
-   
-    for(i in keys)
+drawPlayers ()
+{
+    var temp = [++this.sequenceNumber,this.prevTime]; 
+    for(i in this.playersRendering)
     {
-        var item = keys[i];
-        var player_graphics = that.players.get(item);
-        var point = item.point();
-        var p = player_graphics.graphics.position;
-        p.x = point.x;
-        p.y = point.y;
-        
+        var item = this.playersRendering[i];
+        if(item !== 0 )
+        {
+            temp.push(i);
+            var point = this.players[i].point();
+            var p = item.graphics.position;
+            p.x = point.x;
+            p.y = point.y;
+            temp.push(point);
+        }
     }
-}
-interpolateHost (){
-    var that = this;
-    let keys = that.players.keys();
-    var temp = [++that.sequence_number,that.prevTime]; 
-    for(i in keys)
-    {
-        var item = keys[i];
-        var player_graphics = that.players.get(item);
-        temp.push(item.getPeer());
-        var point = item.point();
-        var p = player_graphics.graphics.position;
-        p.x = point.x;
-        p.y = point.y;
-
-        temp.push(point);
-        /** */
-    
-    }
-    that.state = temp;
-    
+    this.state = temp;
 }
 renderBalls (){
     
@@ -304,7 +262,7 @@ class RendererBall {
     that.graphics.endFill();
 }}
 class RendererPlayer {
-     constructor (player) {
+     constructor (name,avatar) {
      var that = this;
 		this.graphics = new PIXI.Graphics();
         that.graphics.position = new PIXI.Vector(0,0);
@@ -313,7 +271,7 @@ class RendererPlayer {
 		//that.graphics.drawCircle(hx.constants.Player.RADIUS, 50,hx.constants.Player.RADIUS * hx.constants.World.SCALE);
         that.graphics.drawCircle(0,0,30 * hx.constants.Player.RADIUS )//* hx.constants.World.SCALE);
 		that.graphics.endFill();
-		that.name_label = new PIXI.Text(player.name,{font : '25px Arial', fill : 'white', align : 'center'});
+		that.name_label = new PIXI.Text(name,{font : '25px Arial', fill : 'white', align : 'center'});
 		//that.avatar_label = new PIXI.Text("",{font : '25px Arial', fill : 'white', align : 'center'});
 		//that.avatar_label.x = Loader.constants.RADIUS-7.50;
 		//that.avatar_label.y = (50)-15;

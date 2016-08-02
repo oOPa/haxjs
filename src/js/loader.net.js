@@ -5,10 +5,10 @@ var Net = function(host,nickname)
 	this.isHost = host == null ? false : host;
 	this.clients = new Hashtable();
 	this.states = new Hashtable();
-	//this.queue = new Queue();
-    this.PlaybackQueue = new PlaybackQueue();
+    this.playbackQueue = new PlaybackQueue();
 	//corresponds with hx.network
 	this.lastSnapshotSeq = 0;
+	this.playerIndex = 0;
 	this.methods = ["","","","setKeys","","addChatMessage","receiveAuthoritativePosition","receiveInputs","receiveSnapshot"];
 }
 Net.prototype.getRooms = function ()
@@ -29,9 +29,9 @@ Net.prototype.play = function()
 }
 Net.prototype.copyBuffer = function()
 {
-	while(this.PlaybackQueue.hasNext())
+	while(this.playbackQueue.hasNext())
 	{
-		this.renderer.PlaybackQueue.add(this.PlaybackQueue.getNext());
+		this.renderer.playbackQueue.add(this.playbackQueue.getNext());
 	}
 }
 Net.prototype.receiveSnapshot = function(dummy,data)
@@ -40,8 +40,11 @@ Net.prototype.receiveSnapshot = function(dummy,data)
 	if(data.val[0] > this.lastSnapshotSeq)
 	{
 		this.lastSnapshotSeq = data.val[0];
-		this.renderer.PlaybackQueue.add(data.val);
-
+		//stop predicting??
+		//add to buffer
+		this.playbackQueue.add(data.val);
+		//this.renderer.playbackQueue.add(data.val);
+		//console.log(data.val);
 	}
 }
 Net.prototype.sendSnapshot = function()
@@ -62,12 +65,16 @@ Net.prototype.startUpdates = function ()
 		else
 		{
 			//playback delay
-			//this.playback = setInterval(this.play.bind(this),hx.playbackDelayMs);
+			this.timer = setInterval(this.play.bind(this),hx.playbackBufferTime);
 			//this.timer = setInterval(this.sendToHost.bind(this),hx.intervals);
 		}
 		//this.timer = this.isHost ? setInterval(this.updateAllClients.bind(this),hx.intervals) : setInterval(this.sendToHost.bind(this),hx.intervals);
 	}
 }
+Net.prototype.getPlayerFromId = function (peer) {
+	return this.clients.get(peer);
+}
+
 Net.prototype.joinRoom = function(host)
 {
 	var that = this;
@@ -99,7 +106,10 @@ Net.prototype.joinRoom = function(host)
 	}); 
 }
 
-
+Net.prototype.getNewPlayerIndex = function()
+{
+	return ++this.playerIndex;
+}
 Net.prototype.createRoom = function()
 {
 	var that = this;
@@ -116,7 +126,7 @@ Net.prototype.createRoom = function()
 			console.log("new peer "+dataConnection.peer+" connected");
 			console.log(dataConnection.peer);
 			that.client0 = dataConnection.peer;
-			var p=that.renderer.createPlayer(dataConnection.metadata,dataConnection.metadata,dataConnection.peer);
+			var p=that.renderer.createPlayer(dataConnection.metadata,dataConnection.metadata,that.getNewPlayerIndex());
 			that.clients.put(dataConnection.peer,p);
 			
 			dataConnection.on('close',function(){
@@ -147,9 +157,10 @@ Net.prototype.load = function (peer)
 	$("#chat-send").on('click',function(){
 			that.sendChatMessage.call(that,getMessage());
 	});
+
 	if(this.isHost)
 	{
-			this.me = this.renderer.createPlayer("host","fakeevatar");
+			this.me = this.renderer.createPlayer("host","fakeevatar",0);
 				this.renderer.startRender();
 
 		make_room("room_name",this.peer.id)
@@ -158,17 +169,15 @@ Net.prototype.load = function (peer)
 	
 else{
 		this.host = peer;
-		//this.inputBuffer = new InputBuffer(10);
-		this.me = this.renderer.createPlayer(this.nickname,"fakeevatar",this.peer.id);
-		//this.me.peer = this.peer.id;
+		this.me = this.renderer.createLocalPlayer(this.nickname,"fakeevatar",1);
 		this.renderer.startRender();
 
 	new ControllerClient(this.me,this);
 	//create host player
 
-	var p = this.renderer.createPlayer("host");
-	p.peer = "host";
-	this.clients.put(peer,p);
+	var p = this.renderer.createPlayer("host","host",0);
+	//p.peer = "host";
+	//this.clients.put(peer,p);
 }
 new Controller(this.me)
 	this.startUpdates();

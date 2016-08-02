@@ -4,16 +4,22 @@ hx.server = {};
 hx.server.host = "localhost";
 hx.server.port = 8888;
 hx.server.key = "peerjs";
-hx.version = 0.1;
+hx.version = 0.0.1;
 hx.intervals = 10;
-hx.lockstep = 60;
 hx.fps = 0;
-hx.playbackDelayMs = 100;
+hx.delay = 5;
 
+//hx.playbackBufferTime = hx.intervals * 3 + 50;
+hx.playbackBufferTime = hx.intervals * 1.5
+//hx.playbackBufferTime = 15;
 
-hx.playbackQueueMax = 10;
-hx.clientBufferSize = 5;
-
+hx.resolution = {
+    width: 500,
+    height: 600
+}
+hx.playbackQueueMax = 50;
+//hx.clientBufferSize = 5;
+hx.clientSidePredictionEnabled = false;
 
 hx.constants.World = {
     FRICTION:0.1,
@@ -66,5 +72,6 @@ hx.network = {
     CHAT: 5,
     AUTHORITY : 6,
     INPUTS : 7,
-    SNAPSHOT : 8
+    SNAPSHOT : 8,
+    ACK : 9
 }

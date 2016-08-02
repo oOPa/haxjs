@@ -190,3 +190,38 @@ SnapshotIterator.prototype.getObjectById = function(id)
 	}
 	return false;
 }
+var SnapshotBuilder = function(sequence,arg2,objectCount)
+{
+	this.snapshot = createArray(objectCount+2);
+	this.snapshot[0] = sequence;
+	this.snapshot[1] = args2;
+	this.pointer = 1;
+}
+SnapshotBuilder.prototype.add = function(id,data)
+{
+
+}
+SnapshotBuilder.prototype.add = function (index,id,data)
+{
+
+}
+SnapshotBuilder.prototype.getIterator = function()
+{
+	return new SnapshotIterator(this.snapshot);	
+}
+//De Casteljau's algorithm https://gist.github.com/atomizer/1049745
+
+function bezier(pts) {
+	return function (t) {
+		for (var a = pts; a.length > 1; a = b)  // do..while loop in disguise
+			for (var i = 0, b = [], j; i < a.length - 1; i++)  // cycle over control points
+				for (b[i] = [], j = 0; j < a[i].length; j++)  // cycle over dimensions
+					b[i][j] = a[i][j] * (1 - t) + a[i+1][j] * t;  // interpolation
+		return a[0];
+	}
+}
+
+/* example usage:
+var b = bezier([[0, 0, 0], [1, 1, 1], [2, -3, 6]]);
+for (var t = 0; t <= 10; t++) console.log(b(t/10));
+*/ 

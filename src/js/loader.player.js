@@ -1,88 +1,35 @@
-var NetPlayer = function(name,avatar,peer) {
+var NetPlayer = function(name,avatar,index) {
     var that = this;
     this.keys = [false,false,false,false];
     this.name = name;
     this.avatar = avatar;
-    //this.lastSendTime = 0;
-    //this.lastReceiveTime = 0;
     this.ping = 0;
-    this.peer = peer;
+    this.index = index;
     this.latency = 0;
-    this.positions = [];
-    this._previous = {x:0,y:0};
+    this.moving = false;
 };
-
+NetPlayer.prototype.stop = function()
+{
+    this.physics.body.SetLinearVelocity(new b2Vec2(0,0));
+}
 NetPlayer.prototype.point = function(){
-    //var time = new Date().getTime();
     var v = this.physics.body.GetPosition();
-    //var l = this.physics.body.GetLinearVelocity();
-    var p = {x : v.x,y:v.y};//,time:time};
-    this._previous = p ;
+    var p = {x : v.x,y:v.y};
     return p;   
 }
-NetPlayer.prototype.applyState = function(state_info)
+NetPlayer.prototype.getIndex = function()
 {
-   // this.physics.body.ApplyImpulse(this.physics.body.GetWorldCenter(),new b2Vec2(state_info.x,state_info.y));
-}
-NetPlayer.prototype.getPeer = function()
-{
-    return this.peer;
+    return this.index;
 }
 NetPlayer.prototype.getLatency = function()
 {
     return this.ping;
 }
-NetPlayer.prototype.previous =  function () {
-    return this._previous;
-}
 
 NetPlayer.prototype.getName = function () {
     return this.name;
 }
-NetPlayer.prototype.setState = function()
-{
-    
-}
-NetPlayer.prototype.getTotalPos = function () {
-    var total = {};
-    var time = new Date().getTime();
-    var p = this.physics.body.GetPosition();
-    var l = this.physics.body.GetLinearVelocity();
-    total.x = p.x;
-    total.y = p.y;
-    total.vx = l.x;
-    total.vy = l.y;
-    total.vxvy = (l.x == l.y) && (l.y == 0);
-    total.time = time;
-    return total;
-}
-NetPlayer.prototype.getTotalPosSlower = function () {
-    var total = {};
-    var time = new Date().getTime();
-    var p = this.physics.body.GetPosition();
-    var l = this.physics.body.GetLinearVelocity();
-    
-    /** accleration */
-    var t2 = new Date().getTime();
-    var l2 =  this.physics.body.GetLinearVelocity();
-    var dt = t2 - time;
-    total.ax = (l2.x - l.x) / dt
-    total.ay = (l2.y - l.y) / dt
-    total.t2 = t2;
-    
-    total.x = p.x;
-    total.y = p.y;
-    total.vx = l.x;
-    total.vy = l.y;
-    total.vxvy = (l.x == l.y) && (l.y == 0);
-    total.time = time;
-    return total;
-}
-NetPlayer.prototype.setTotalPos = function(pos)
-{
-    this.physics.body.SetPosition(new b2Vec2(pos.x,pos.y));
-    this.physics.body.SetLinearVelocity(new b2Vec2(pos.vx,pos.vy));
-}
+
 NetPlayer.prototype.setPos = function(pos)
 {
     this.physics.body.SetPosition(new b2Vec2(pos.x,pos.y));
