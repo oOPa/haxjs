@@ -1,16 +1,5 @@
 class Renderer {
 
- constructor (){
-
-    this.players = createArray(8);
-    this.playersRendering = createArray(8);
-    
-    this.physics = new Physics();
-    this.init();
-    this.state = [];
-    this.sequenceNumber = 0;
-
-}
 getState()
 {
     return this.state;
@@ -35,48 +24,56 @@ buildBall ()
 }
 
 init  () {
-var that = this;
-//var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
-var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true});
-this.renderer = renderer;
-document.getElementById("game-view").appendChild(renderer.view)
-//renderer.backgroundColor = 0x718c5a;
-renderer.backgroundColor = 0x939e7f;
-var stage = new PIXI.Container();
-that.stage = stage;
-var graphics = new PIXI.Graphics();
-this.graphics = graphics;
-var viewport_ = new PIXI.Container();
-that.camera = new PIXI.Graphics();
-viewport_.width = 20;
-viewport_.height = 20;
-viewport_.x=0;
-viewport_.y=0
+    this.players = createArray(8);
+    this.playersRendering = createArray(8);
+    this.physics = new Physics();
+    this.state = [];
+    this.sequenceNumber = 0;
+    this.loadDraw();
+}
+loadDraw()
+{
+/** initalise the renderer */
+this.renderer = PIXI.autoDetectRenderer(hx.rendering.resolution.width,hx.rendering.resolution.height, { antialias: hx.rendering.antialias});
+document.getElementById(hx.rendering.gameDivId).appendChild(this.renderer.view);
+this.renderer.backgroundColor = hx.rendering.backgroundColor;
+
+/** create variables and set up the stage */
+this.stage = new PIXI.Container();
+this.graphics = new PIXI.Graphics();
+this.viewport = new PIXI.Container();
+this.camera = new PIXI.Graphics();
+
+/** viewport */
+this.viewport.width = 20;
+this.viewport.height = 20;
+this.viewport.x=0;
+this.viewport.y=0;
+
 /** viewport border ***/
-graphics.lineStyle(20,0x3c312b,1);
-graphics.alpha = 1;
-graphics.drawRect(0,0,800,(600-150));
-graphics.endFill();
+this.graphics.lineStyle(20,0x3c312b,1);
+this.graphics.alpha = 1;
+this.graphics.drawRect(0,0,800,(600-150));
+this.graphics.endFill();
 
+/** display frame rate */
+this.fps =  new PIXI.Text('Menu (esc)',{font : '15px Arial', fill : 'white', align : 'center'});
+this.fps.x = 500;
+this.fps.y = 500;
+this.graphics.addChild(this.fps);
 
-var fps =  new PIXI.Text('Menu (esc)',{font : '15px Arial', fill : 'white', align : 'center'});
-fps.x = 500;
-fps.y = 500;
-graphics.addChild(fps);
-this.fps = fps;
-/** draw stadium **/
+//draw stadium
 this.drawStadium();
 //draw post(s)
 this.drawPosts();
-
+//draw nets
 this.drawNets();
 
-
-viewport_.addChild(that.camera);
-graphics.addChild(viewport_);
-
-stage.addChild(graphics);
+this.viewport.addChild(this.camera);
+this.graphics.addChild(this.viewport);
+this.stage.addChild(this.graphics);
 };
+
 /** draw the nets goals and everying in between **/
 drawNets ()
 {
@@ -161,7 +158,7 @@ drawStadium ()
 setFps()
 {
     var that = this;
-    var fps =1/that.frameTime;
+    var fps =that.frameTime;
     that.fps.text = fps;
 }
 startRender ()
@@ -175,16 +172,19 @@ startRender ()
 
     function animate(currentTime) {
         that.renderer.render(that.stage);
-        that.frameTime = (currentTime - prevTime) / 1000;      
-        prevTime = currentTime;       
+        that.frameTime = 1000 / (currentTime - prevTime);      
         that.doPhysics();
-        //clear forces
-        that.clearForces();
-        that.drawPlayers();
-        requestAnimationFrame( animate );      
+        that.drawObjects(currentTime);
+        prevTime = currentTime;       
+        requestAnimationFrame( animate ); 
+                   
+     
     }
 };
-
+drawObjects(currentTime)
+{
+    this.drawPlayers(currentTime);
+}
 addBall (ball){
 	if(ball == null)
 	{
@@ -207,13 +207,14 @@ doPhysics()
 		    item.update();
         }
 	}
-	this.physics.update();   
+	this.physics.update();
+    this.clearForces();  
 }
 clearForces()
 {
     this.physics.clearForces();
 }
-drawPlayers ()
+drawPlayers (currentTime)
 {
     var temp = [++this.sequenceNumber,this.prevTime]; 
     for(i in this.playersRendering)
@@ -222,7 +223,7 @@ drawPlayers ()
         if(item !== 0 )
         {
             temp.push(i);
-            var point = this.players[i].point();
+            var point = this.players[i].point(currentTime);
             var p = item.graphics.position;
             p.x = point.x;
             p.y = point.y;

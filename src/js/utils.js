@@ -225,3 +225,21 @@ function bezier(pts) {
 var b = bezier([[0, 0, 0], [1, 1, 1], [2, -3, 6]]);
 for (var t = 0; t <= 10; t++) console.log(b(t/10));
 */ 
+
+var PacketTemplate = function()
+{
+    this.sequence = 0;
+    this.inputs = createArray(hx.MaxInputsPerPacket);
+    this.num_object_updates = 0;
+    //this.state_updates[MaxStateUpdatesPerPacket];
+};
+
+var fillArray = function(n)
+{
+	var arr = new Array(n);
+	for(var i = 0;i< n;i++)
+	{
+		arr[i] = i;
+	}
+	return arr;
+}

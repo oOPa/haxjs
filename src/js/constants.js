@@ -13,14 +13,22 @@ hx.delay = 5;
 hx.playbackBufferTime = hx.intervals * 1.5
 //hx.playbackBufferTime = 15;
 
-hx.resolution = {
+/** rendering defaults */
+hx.rendering = {};
+//hx.rendering.backgroundColor = 0x718c5a;
+hx.rendering.backgroundColor = 0x939e7f;
+hx.rendering.gameDivId = "game-view";
+hx.rendering.antialias = true;
+hx.rendering.resolution = {
     width: 500,
     height: 600
 }
+
+/** client side */
 hx.playbackQueueMax = 50;
-//hx.clientBufferSize = 5;
 hx.clientSidePredictionEnabled = false;
 
+/** physics objects */
 hx.constants.World = {
     FRICTION:0.1,
     SCALE:30,
@@ -73,5 +81,14 @@ hx.network = {
     AUTHORITY : 6,
     INPUTS : 7,
     SNAPSHOT : 8,
-    ACK : 9
+    ACK : 9,
+    STATE : 10
 }
+
+//hx.MaxInputsPerPacket = 8;
+hx.MaxStateUpdatesPerPacket = 8;
+
+hx.MaxPriority = 1000000
+hx.InteractingPriority = 100
+hx.RestingPriority = 1;
+hx.ResetPriority = 0;

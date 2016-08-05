@@ -7,14 +7,23 @@ var NetPlayer = function(name,avatar,index) {
     this.index = index;
     this.latency = 0;
     this.moving = false;
+    //this.old = {vx:0,vy:0,time:getTimeMs()};
+    this.priority = 1000;
 };
 NetPlayer.prototype.stop = function()
 {
     this.physics.body.SetLinearVelocity(new b2Vec2(0,0));
 }
-NetPlayer.prototype.point = function(){
+NetPlayer.prototype.getPriority = function(){
+    return this.priority;
+}
+NetPlayer.prototype.point = function(t){
     var v = this.physics.body.GetPosition();
-    var p = {x : v.x,y:v.y};
+    //var velocity = this.physics.body.GetLinearVelocity();
+    //var dt = t - this.old.time;
+    //var p = {x : v.x,y:v.y,vx:velocity.x,vy:velocity.y,ax:(velocity.x - this.old.vx)/dt,ay:(velocity.y - this.old.vy)/dt};
+    //this.old = {vx:velocity.x,vy:velocity.y,time: t || getTimeMs()};
+    var p = {x:v.x,y:v.y};
     return p;   
 }
 NetPlayer.prototype.getIndex = function()
@@ -34,6 +43,11 @@ NetPlayer.prototype.setPos = function(pos)
 {
     this.physics.body.SetPosition(new b2Vec2(pos.x,pos.y));
 }
+NetPlayer.prototype.setPosAndVelocity = function(pos)
+{
+    this.physics.body.SetPosition(new b2Vec2(pos.x,pos.y));
+    this.physics.body.SetLinearVelocity(new b2Vec2(pos.vx,pos.vy));
+}
 NetPlayer.prototype.update = function(){
     var that = this;
     var vec = new PIXI.Vector(0, 0);
@@ -47,6 +61,7 @@ NetPlayer.prototype.update = function(){
     {
         that.physics.body.ApplyForce(vec, that.physics.body.GetWorldCenter());
     }
+    return this.keys;
 }
 NetPlayer.prototype.getVector = function()
 {

@@ -9,7 +9,16 @@ var Net = function(host,nickname)
 	//corresponds with hx.network
 	this.lastSnapshotSeq = 0;
 	this.playerIndex = 0;
-	this.methods = ["","","","setKeys","","addChatMessage","receiveAuthoritativePosition","receiveInputs","receiveSnapshot"];
+	this.methods = ["","","","setKeys","","addChatMessage","receiveAuthoritativePosition","receiveInputs","receiveSnapshot","ack","stateSynchronisation"];
+}
+Net.prototype.stateSynchronisation = function(peer,data)
+{
+	if(data.val[0] > this.lastSnapshotSeq)
+	{
+		this.lastSnapshotSeq = data.val[0];
+		this.playbackQueue.add(data.val);
+
+	}
 }
 Net.prototype.getRooms = function ()
 {
@@ -53,6 +62,11 @@ Net.prototype.sendSnapshot = function()
 	//console.log(data)
 	this.sendToClients(data);
 }
+Net.prototype.sendStateSync = function()
+{
+	var data = {command: hx.network.SNATE, val: this.renderer.getStateSync()}
+	this.sendToClients(data);
+}
 Net.prototype.startUpdates = function ()
 {
 	if(typeof this.timer == 'undefined')
@@ -60,7 +74,8 @@ Net.prototype.startUpdates = function ()
 		if(this.isHost)
 		{
 			//this.timer = setInterval(this.sendAllPos.bind(this),hx.intervals);
-			this.timer = setInterval(this.sendSnapshot.bind(this),hx.intervals);
+			//this.timer = setInterval(this.sendSnapshot.bind(this),hx.intervals);
+			this.timer = setInterval(this.sendStateSync.bind(this),hx.intervals);			
 		}
 		else
 		{
@@ -151,8 +166,9 @@ Net.prototype.load = function (peer)
 {
 	var that = this;
 	placeCanvas();
-	//this.renderer = this.isHost ? new Renderer() : new Prediction();
-	this.renderer = new Renderer(this.isHost,this.clients,peer);
+	this.renderer = this.isHost ? new Renderer() : new Prediction();
+	this.renderer.init();
+	//this.renderer = new Renderer(this.isHost,this.clients,peer);
 	addChatRoom();
 	$("#chat-send").on('click',function(){
 			that.sendChatMessage.call(that,getMessage());
