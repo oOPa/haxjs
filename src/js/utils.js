@@ -69,25 +69,7 @@ var getTimeMs = function()
 {
 	return new Date().getTime();
 }
-var InputBuffer = function(len)
-{
-	this.len = len;
-	this._pointer = -1;
-	//this._arr = new Array();
-	this._arr = create2dArray(len,4);
-}
-InputBuffer.prototype.add = function (args)
-{
-	this._arr[(++this._pointer)%this.len] = args;
-}
-InputBuffer.prototype.reset = function()
-{
-	this._arr = new Array();
-}
-InputBuffer.prototype.getBuffer = function ()
-{
-	return this._arr;
-}
+
 var createArray = function(n)
 {
 var arr = new Array();
@@ -112,10 +94,10 @@ var create2dArray = function (n,m)
 	   return arr;
     }
 
-var PlaybackQueue = function()
+var PlaybackQueue = function(max,arr)
 {
-    this.len = hx.playbackQueueMax;
-    this.arr = createArray(this.len);
+    this.len = max || hx.playbackQueueMax;
+    this.arr = arr || createArray(this.len);
     this.access_pointer = -1;
     this.insert_pointer = -1;
 }
@@ -134,17 +116,6 @@ PlaybackQueue.prototype.hasNext = function()
 PlaybackQueue.prototype.getNext = function()
 {
 	return this.arr[ this.access_pointer = ((this.access_pointer+1)%this.len)];
-}
-PlaybackQueue.prototype.getSecond = function()
-{
-	if(!this.hasNext())
-	{
-		return this.arr[this.access_pointer];
-	}
-	else
-	{
-		return this.getNext();
-	}
 }
 PlaybackQueue.prototype.getBuffer = function ()
 {
@@ -190,25 +161,7 @@ SnapshotIterator.prototype.getObjectById = function(id)
 	}
 	return false;
 }
-var SnapshotBuilder = function(sequence,arg2,objectCount)
-{
-	this.snapshot = createArray(objectCount+2);
-	this.snapshot[0] = sequence;
-	this.snapshot[1] = args2;
-	this.pointer = 1;
-}
-SnapshotBuilder.prototype.add = function(id,data)
-{
 
-}
-SnapshotBuilder.prototype.add = function (index,id,data)
-{
-
-}
-SnapshotBuilder.prototype.getIterator = function()
-{
-	return new SnapshotIterator(this.snapshot);	
-}
 //De Casteljau's algorithm https://gist.github.com/atomizer/1049745
 
 function bezier(pts) {
@@ -234,12 +187,41 @@ var PacketTemplate = function()
     //this.state_updates[MaxStateUpdatesPerPacket];
 };
 
-var fillArray = function(n)
+var fillArray = function(n,data)
 {
 	var arr = new Array(n);
 	for(var i = 0;i< n;i++)
 	{
-		arr[i] = i;
+		arr[i] = data || i;
 	}
 	return arr;
+}
+
+
+var SyncIterator = function(update)
+{
+	this.update = update;
+	this.len = update.length;
+	this.reset();
+}
+SyncIterator.prototype.reset = function()
+{
+	this.pointer = 0;
+}
+SyncIterator.prototype.getSequenceNumber = function()
+{
+	return this.update[0];
+}
+SyncIterator.prototype.hasNext = function()
+{
+	return this.pointer != (this.len-1);
+}
+SyncIterator.prototype.getNext = function()
+{
+	var next = {
+		id:this.update[++this.pointer],
+		data:this.update[++this.pointer],
+		inputs:this.update[++this.pointer]
+	};
+	return next;
 }

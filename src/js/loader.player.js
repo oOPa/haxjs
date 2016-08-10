@@ -51,7 +51,7 @@ NetPlayer.prototype.setPosAndVelocity = function(pos)
 NetPlayer.prototype.update = function(){
     var that = this;
     var vec = new PIXI.Vector(0, 0);
-    that.keys.forEach(function (key, i) {
+    this.keys.forEach(function (key, i) {
     if (key) {
         var vec2 = new Vec(i * -90,200);
         vec.add(vec2.vec);
@@ -63,6 +63,7 @@ NetPlayer.prototype.update = function(){
     }
     return this.keys;
 }
+
 NetPlayer.prototype.getVector = function()
 {
     return this.vec;

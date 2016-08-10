@@ -242,7 +242,7 @@ doPhysics()
 		var item = this.players[i];
         if(item !== 0)
         {
-		    this.inputs[i] = item.update();
+	        item.update();
         }
 	}
 	this.physics.update();
@@ -262,7 +262,7 @@ setPriority(index, priority)
 }
 drawPlayers (currentTime)
 {
-    var temp = [++this.sequenceNumber,this.prevTime]; 
+    var temp = [++this.sequenceNumber]; 
     for(i in this.indexOfPriorities)
     {
         var item = this.playersRendering[i];
@@ -284,9 +284,9 @@ drawPlayers (currentTime)
                     //add physics data
                     temp.push(point);
                     //add inputs
-                    temp.push(this.getInputs(i));
+                    temp.push(this.players[i].keys);
                     //set the priority to zero
-                    this.setPriority(item,0);
+                    //this.setPriority(item,0);
                 }
             }
 
@@ -341,6 +341,7 @@ class RendererPlayer {
         //this.setAvatar(player.avatar);
 		//that.graphics.addChild(that.avatar_label);
 		that.graphics.addChild(that.name_label);
+        that.error = {x:0,y:0};
     }
     updateAvatar(avatar)
     {

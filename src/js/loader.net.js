@@ -13,11 +13,12 @@ var Net = function(host,nickname)
 }
 Net.prototype.stateSynchronisation = function(peer,data)
 {
+	//this.monkey = (data.val);
 	if(data.val[0] > this.lastSnapshotSeq)
 	{
 		this.lastSnapshotSeq = data.val[0];
 		this.playbackQueue.add(data.val);
-
+		//console.log(data.val);
 	}
 }
 Net.prototype.getRooms = function ()
@@ -64,7 +65,7 @@ Net.prototype.sendSnapshot = function()
 }
 Net.prototype.sendStateSync = function()
 {
-	var data = {command: hx.network.SNATE, val: this.renderer.getStateSync()}
+	var data = {command: hx.network.STATE, val: this.renderer.getStateSync()}
 	this.sendToClients(data);
 }
 Net.prototype.startUpdates = function ()
@@ -166,9 +167,8 @@ Net.prototype.load = function (peer)
 {
 	var that = this;
 	placeCanvas();
-	this.renderer = this.isHost ? new Renderer() : new Prediction();
+	this.renderer = this.isHost ? new Renderer() : new Prediction(1);
 	this.renderer.init();
-	//this.renderer = new Renderer(this.isHost,this.clients,peer);
 	addChatRoom();
 	$("#chat-send").on('click',function(){
 			that.sendChatMessage.call(that,getMessage());
@@ -185,7 +185,7 @@ Net.prototype.load = function (peer)
 	
 else{
 		this.host = peer;
-		this.me = this.renderer.createLocalPlayer(this.nickname,"fakeevatar",1);
+		this.me = this.renderer.createPlayer(this.nickname,"fakeevatar",1);
 		this.renderer.startRender();
 
 	new ControllerClient(this.me,this);

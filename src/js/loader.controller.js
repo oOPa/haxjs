@@ -4,7 +4,8 @@ class Controller{
 
    document.addEventListener('keydown', (e) => {
         if (e.keyCode > 36 && e.keyCode < 41) {
-            this.player.keys[hx.constants.Directions[e.keyCode]] = true;     
+            this.player.keys[hx.constants.Directions[e.keyCode]] = true;
+            //this.player.addKeys();
         }
     });
     document.addEventListener('keyup', (e) => {
@@ -22,14 +23,14 @@ class ControllerClient{
    document.addEventListener('keydown', (e) => {
         if (e.keyCode > 36 && e.keyCode < 41) {
             this.player.keys[hx.constants.Directions[e.keyCode]] = true;	
-            this.player.moving = true; 
+            //this.player.moving = true; 
             this.net.sendToHost();	 
           //  inputBuffer.add(this.player.keys);         
         }
     });
     document.addEventListener('keyup', (e) => {
             this.player.keys[hx.constants.Directions[e.keyCode]] = false;	
-            this.player.update();
+            //this.player.update();
             this.net.sendToHost();		
            // this.inputBuffer.add(this.player.keys);	
     });
