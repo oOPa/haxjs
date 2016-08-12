@@ -8,6 +8,7 @@ var Net = function(host,nickname)
     this.playbackQueue = new PlaybackQueue();
 	//corresponds with hx.network
 	this.lastSnapshotSeq = 0;
+	this.updating = false;
 	this.playerIndex = 0;
 	this.methods = ["","","","setKeys","","addChatMessage","receiveAuthoritativePosition","receiveInputs","receiveSnapshot","ack","stateSynchronisation"];
 }
@@ -30,6 +31,7 @@ Net.prototype.stopUpdates =function ()
 	if(typeof this.timer != 'undefined')
 	{
 		clearInterval(this.timer);
+		this.updating = false;
 	}
 }
 Net.prototype.play = function()
@@ -70,12 +72,11 @@ Net.prototype.sendStateSync = function()
 }
 Net.prototype.startUpdates = function ()
 {
-	if(typeof this.timer == 'undefined')
+	if(this.updating == false)
 	{
 		if(this.isHost)
 		{
-			//this.timer = setInterval(this.sendAllPos.bind(this),hx.intervals);
-			//this.timer = setInterval(this.sendSnapshot.bind(this),hx.intervals);
+
 			this.timer = setInterval(this.sendStateSync.bind(this),hx.intervals);			
 		}
 		else
@@ -85,6 +86,7 @@ Net.prototype.startUpdates = function ()
 			//this.timer = setInterval(this.sendToHost.bind(this),hx.intervals);
 		}
 		//this.timer = this.isHost ? setInterval(this.updateAllClients.bind(this),hx.intervals) : setInterval(this.sendToHost.bind(this),hx.intervals);
+		this.updating = true;
 	}
 }
 Net.prototype.getPlayerFromId = function (peer) {

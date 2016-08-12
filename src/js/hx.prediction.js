@@ -20,10 +20,7 @@ createLocalPlayer (name,avatar,index)
 }
 
 init  () {
-    // this.balls   = new Hashtable();
     this.physics = new Physics();
-    // this.init();
-
     this.playbackQueue = new PlaybackQueue();
     this.players = createArray(8);
     this.delay = hx.delay;

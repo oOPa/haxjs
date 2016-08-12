@@ -36,27 +36,9 @@ drawPlayers()
             var point = this.players[i].point();
  
             var p = player.graphics.position;
-            //p.x = point.x;
-            //p.y = point.y;
-            //
-            //console.log(point);
-   
-         //   var newError = {};
-            
-            ////newError.x =  p.x + player.error.x -point.x;
-           // newError.y =  p.y + player.error.y -point.y;
-
- 
-         
-
-            p.x = point.x //+ newError.x;
-            p.y = point.y //+ newError.y;
-            
-            //newError.x *= hx.rendering.errorOffset; 
-           // newError.y *= hx.rendering.errorOffset;
-
-           // player.error = newError;
-            //--------------------------------------------------//
+            p.x += (point.x - p.x)  * 0.3;
+            p.y += (point.y - p.y)  * 0.3;
+           
         }
     }
 }
@@ -71,6 +53,7 @@ checkUpdates ()
             var netObject = it.getNext();
             var index = netObject.id;
             this.players[index].setPos(netObject.data);
+            //this.players[index].setPos(netObject.data);
             //update keyboard input
             if(index != this.localPlayerIndex)
             {
