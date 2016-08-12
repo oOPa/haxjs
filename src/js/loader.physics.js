@@ -35,7 +35,7 @@ clearForces()
 }
 class PhysicsPlayer {
     
-    constructor (world) {
+    constructor (world,stadium) {
     var bodyDef = new b2BodyDef();
     bodyDef.type = b2Body.b2_dynamicBody;
 	this.keys = [false,false,false,false];
@@ -82,10 +82,10 @@ update ()
 
 }
 class DefaultBall {
-    constructor (world) {
+    constructor (world,stadium) {
     var that = this;
     this.point = function(){
-            v = that.body.GetPosition();
+            var v = that.body.GetPosition();
             return {x : v.x,y:v.y};
     }
     var bodyDef = new b2BodyDef();
@@ -95,7 +95,6 @@ class DefaultBall {
     fixDef.density = hx.constants.Ball.DENSITY;
     fixDef.friction = hx.constants.Player.FRICTION;
     fixDef.restitution = hx.constants.Ball.RESTITUTION;
-    //fixDef.shape = new b2CircleShape(hx.constants.Player.RADIUS);
     fixDef.shape = new b2CircleShape(30*hx.constants.Ball.RADIUS);
     bodyDef.position.x = 100 / hx.constants.World.SCALE;
     bodyDef.position.y = 100 / hx.constants.World.SCALE;

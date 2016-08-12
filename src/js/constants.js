@@ -77,7 +77,7 @@ hx.label_size = 10;
 hx.network = {
     PACK:0,
     NICK: 1,
-    NEW_PLAYER: 2,
+    PLAYERS: 2,
     MOVE: 3,
     CONFIRM: 4,
     CHAT: 5,
@@ -85,7 +85,8 @@ hx.network = {
     INPUTS : 7,
     SNAPSHOT : 8,
     ACK : 9,
-    STATE : 10
+    STATE : 10,
+    STADIUM_HASH : 11
 }
 
 //hx.MaxInputsPerPacket = 8;

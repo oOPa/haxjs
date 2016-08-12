@@ -8,23 +8,23 @@ getStateSync()
 {
     return this.state;
 }
+
 createPlayer (name,avatar,index)
 {
 	var player = new NetPlayer(name,avatar,index);
     player.physics = new PhysicsPlayer(this.physics.world);
-	/** */
     var p = new RendererPlayer(name,avatar);
     this.camera.addChild(p.graphics);
     this.playersRendering[index] = p;    
     this.players[index] = player;    
-    /** */
 	console.log("* "+name+" was moved to red");
 	return player;
 }
 buildBall ()
 {
-	var ball = new DefaultBall(this.physics.world);
-	this.addBall(ball);
+	this.ballPhysics = new DefaultBall(this.physics.world);
+    this.ballRender = new RendererBall(this.ballPhysics);
+    this.camera.addChild(this.ballRender.graphics);
 }
 
 init  ()
@@ -33,7 +33,9 @@ init  ()
     this.playersRendering = createArray(8);
 
     this.physics = new Physics();
-
+    /** balls */
+    this.ballRender = 0;
+    this.ballPhysics = 0;
     /** information for packet */
     this.state = [];
     this.sequenceNumber = 0;
@@ -195,8 +197,9 @@ drawObjects(currentTime)
     //calculate priorities
     this.getPriories();
     this.sortPriorities();
-    /** render players and make packet*/
+    /** render players/balls and make packet*/
     this.drawPlayers(currentTime);
+    this.drawBall();
     //reset priorities
     this.lastPriorities = this.priorities;
 }
@@ -217,22 +220,6 @@ getPriories()
             this.priorities[i] = player.getPriority();
         }
     }
-}
-addBall (ball){
-	if(ball == null)
-	{
-		ball = new DefaultBall(game.physics.world);
-	}
-	var that = this;
-       b = new RendererBall(ball);
-       that.camera.addChild(b.graphics);
-       this.balls.put(ball, b);
-       
-};
-
-getInputs(index)
-{
-    return this.inputs[index];
 }
 
 doPhysics()
@@ -296,20 +283,16 @@ drawPlayers (currentTime)
     }
     this.state = temp;
 }
-renderBalls ()
+drawBall ()
 {
-    var that = this;
-    let keys = that.balls.keys();
-    for(i in keys)
+    if(this.ballRender !== 0)
     {
-        let item = keys[i];
-        let point = item.point();
-        let x = point.x;
-        let y = point.y;
-        let p = that.balls.get(item).graphics.position;
-        p.x = x;
-        p.y = y; 
-    }       
+        var pos = this.ballRender.graphics.position;
+        var point = this.ballPhysics.point();
+    
+        pos.x = point.x;
+        pos.y = point.y;    
+    }  
 }
 
 }
@@ -341,7 +324,7 @@ class RendererPlayer {
         //this.setAvatar(player.avatar);
 		//that.graphics.addChild(that.avatar_label);
 		that.graphics.addChild(that.name_label);
-        that.error = {x:0,y:0};
+    
     }
     updateAvatar(avatar)
     {

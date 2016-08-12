@@ -19,10 +19,6 @@ NetPlayer.prototype.getPriority = function(){
 }
 NetPlayer.prototype.point = function(t){
     var v = this.physics.body.GetPosition();
-    //var velocity = this.physics.body.GetLinearVelocity();
-    //var dt = t - this.old.time;
-    //var p = {x : v.x,y:v.y,vx:velocity.x,vy:velocity.y,ax:(velocity.x - this.old.vx)/dt,ay:(velocity.y - this.old.vy)/dt};
-    //this.old = {vx:velocity.x,vy:velocity.y,time: t || getTimeMs()};
     var p = {x:v.x,y:v.y};
     return p;   
 }

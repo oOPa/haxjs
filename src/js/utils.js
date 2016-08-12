@@ -218,3 +218,46 @@ SyncIterator.prototype.getNext = function()
 	};
 	return next;
 }
+var loadBallFromHash = function()
+{
+	
+}
+var GameLoaderState = function(readyFunction,context)
+{
+	this.reset();
+	this.readyFunction = readyFunction;
+	this.context = context;
+}
+GameLoaderState.prototype.reset()
+{
+	this.playerIndex = false;
+	this.otherPlayers = false;
+	this.stadium = false;
+	this.loaded = false;
+}
+GameLoaderState.prototype.playerIndexReady()
+{
+	this.playerIndex = true;
+	this.checkReady();
+}
+GameLoaderState.prototype.otherPlayersReady()
+{
+	this.otherPlayer = true;
+	this.checkReady();
+}
+GameLoaderState.prototype.stadiumReady()
+{
+	this.stadium = true;
+	this.checkReady();
+}
+GameLoaderState.prototype.checkReady = function()
+{
+	if(!this.loaded)
+	{
+		if(this.playerIndex && this.otherPlayer && this.stadium)
+		{
+			this.readyFunction.call(this.context);
+			this.loaded = true;
+		}
+	}
+}

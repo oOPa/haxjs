@@ -9,22 +9,35 @@ var Net = function(host,nickname)
 	//corresponds with hx.network
 	this.lastSnapshotSeq = 0;
 	this.updating = false;
+	this.loader = new GameLoaderState(this,displayRoom,this);
 	this.playerIndex = 0;
-	this.methods = ["","","","setKeys","","addChatMessage","receiveAuthoritativePosition","receiveInputs","receiveSnapshot","ack","stateSynchronisation"];
+	this.stadium = getStadiumFromHash();
+	//this.methods = ["","","","setKeys","","addChatMessage","receiveAuthoritativePosition","receiveInputs","receiveSnapshot","ack","stateSynchronisation"];
+
+	this.defineNetworkCommands();
 }
-Net.prototype.stateSynchronisation = function(peer,data)
+
+Net.prototype.defineNetworkCommands = function()
 {
-	//this.monkey = (data.val);
-	if(data.val[0] > this.lastSnapshotSeq)
+	if(this.isHost)
 	{
-		this.lastSnapshotSeq = data.val[0];
-		this.playbackQueue.add(data.val);
-		//console.log(data.val);
+		this.methods[hx.network.PLAYERS] = "sendPlayers";
+		this.methods[hx.network.MOVE] = "setKeys";
+		//this.methods[hx.network.RECV_CHAT] = "addChat"
+		//this.methods[hx.network.ACK]
+		this.methods[hx.network.STADIUM_HASH] = "sendStadiumHash";
+		this.methods[hx.network.STADIUM] = "sendStadium";
+
 	}
-}
-Net.prototype.getRooms = function ()
-{
-	return this.roomlist;
+	else
+	{
+		this.methods[hx.network.PLAYERS] = "receivePlayers";
+		this.methods[hx.network.SNAPSHOT] = "receiveSynchronisation";
+		this.methods[hx.network.STADIUM_HASH] = "recieveStadiumHash";
+		this.methods[hx.network.STADIUM] = "receiveStadium";
+	}
+	//both
+
 }
 Net.prototype.stopUpdates =function ()
 {
@@ -34,42 +47,9 @@ Net.prototype.stopUpdates =function ()
 		this.updating = false;
 	}
 }
-Net.prototype.play = function()
-{
-	this.copyBuffer();
-	//this.renderer.processQueue();
-}
-Net.prototype.copyBuffer = function()
-{
-	while(this.playbackQueue.hasNext())
-	{
-		this.renderer.playbackQueue.add(this.playbackQueue.getNext());
-	}
-}
-Net.prototype.receiveSnapshot = function(dummy,data)
-{
-	var that = this;
-	if(data.val[0] > this.lastSnapshotSeq)
-	{
-		this.lastSnapshotSeq = data.val[0];
-		//stop predicting??
-		//add to buffer
-		this.playbackQueue.add(data.val);
-		//this.renderer.playbackQueue.add(data.val);
-		//console.log(data.val);
-	}
-}
-Net.prototype.sendSnapshot = function()
-{
-	var data = {command: hx.network.SNAPSHOT, val: this.renderer.getState()}
-	//console.log(data)
-	this.sendToClients(data);
-}
-Net.prototype.sendStateSync = function()
-{
-	var data = {command: hx.network.STATE, val: this.renderer.getStateSync()}
-	this.sendToClients(data);
-}
+
+
+
 Net.prototype.startUpdates = function ()
 {
 	if(this.updating == false)
