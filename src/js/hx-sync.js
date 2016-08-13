@@ -1,9 +1,8 @@
 class Prediction extends Renderer {
 
-constructor(localPlayerIndex)
+constructor()
 {
     super();
-    this.localPlayerIndex = localPlayerIndex;
 }
 init  () {
 
@@ -13,18 +12,19 @@ init  () {
     this.playbackQueue = new PlaybackQueue();
     this.playersRendering = createArray(8);
     this.loadDraw();
-    
-    //dirty hack
-    this.inputs = createArray(8);
 }
 
-
+setLocalPlayerIndex(localPlayerIndex)
+{
+    this.localPlayerIndex = localPlayerIndex;
+}
 /** start rendering **/
 drawObjects()
 {
     this.checkUpdates();
     this.doPhysics();
     this.drawPlayers();
+    this.drawBall();
 }
 drawPlayers()
 {
@@ -42,15 +42,34 @@ drawPlayers()
         }
     }
 }
+drawBall ()
+{
+    if(this.ballRender !== 0)
+    {
+        var pos = this.ballRender.graphics.position;
+        var point = this.ballPhysics.point();
+    
+        pos.x = (point.x) //- pos.x) *0.3;
+        pos.y = (point.y )//- pos.y) *0.3;
+    }  
+}
 checkUpdates ()
 {
     if(this.playbackQueue.hasNext())
     {
         var it = new SyncIterator(this.playbackQueue.getNext());
+        //get ball
+        var ball = it.getBall()
+        if(ball) 
+        {
+            this.ballPhysics.setPos(ball);
+        }
+       
         while(it.hasNext())
         {
             //updates from server found, so let's apply them
             var netObject = it.getNext();
+         
             var index = netObject.id;
             this.players[index].setPos(netObject.data);
             //this.players[index].setPos(netObject.data);

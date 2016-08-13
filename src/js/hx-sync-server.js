@@ -20,6 +20,10 @@ createPlayer (name,avatar,index)
 	console.log("* "+name+" was moved to red");
 	return player;
 }
+setStadium()
+{
+    
+}
 buildBall ()
 {
 	this.ballPhysics = new DefaultBall(this.physics.world);
@@ -85,6 +89,8 @@ loadDraw()
     this.drawPosts();
     //draw nets
     this.drawNets();
+    //create a ball
+    this.buildBall();
 
     this.viewport.addChild(this.camera);
     this.graphics.addChild(this.viewport);
@@ -192,15 +198,17 @@ drawObjects(currentTime)
 {
     //calculate physics
     this.doPhysics();
-    //reset packet
+    //reset packet and add header
+    this.temp = [++this.sequenceNumber]; 
     this.stateCount = 0;
     //calculate priorities
     this.getPriories();
     this.sortPriorities();
     /** render players/balls and make packet*/
-    this.drawPlayers(currentTime);
     this.drawBall();
-    //reset priorities
+    this.drawPlayers(currentTime);
+    //reset priorities and update packet
+    this.state = this.temp;
     this.lastPriorities = this.priorities;
 }
 sortPriorities()
@@ -249,7 +257,6 @@ setPriority(index, priority)
 }
 drawPlayers (currentTime)
 {
-    var temp = [++this.sequenceNumber]; 
     for(i in this.indexOfPriorities)
     {
         var item = this.playersRendering[i];
@@ -267,11 +274,11 @@ drawPlayers (currentTime)
                 if(this.stateCount < hx.MaxStateUpdatesPerPacket)
                 {
                     //add index to packet
-                    temp.push(i);
+                    this.temp.push(i);
                     //add physics data
-                    temp.push(point);
+                    this.temp.push(point);
                     //add inputs
-                    temp.push(this.players[i].keys);
+                    this.temp.push(this.players[i].keys);
                     //set the priority to zero
                     //this.setPriority(item,0);
                 }
@@ -281,7 +288,6 @@ drawPlayers (currentTime)
             p.y = point.y;
         }
     }
-    this.state = temp;
 }
 drawBall ()
 {
@@ -289,7 +295,9 @@ drawBall ()
     {
         var pos = this.ballRender.graphics.position;
         var point = this.ballPhysics.point();
-    
+        
+        this.temp.push(point);
+        
         pos.x = point.x;
         pos.y = point.y;    
     }  

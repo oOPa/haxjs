@@ -72,7 +72,7 @@ var getStadiumFromHash = function (hash)
 {
     if(hash in StadiumStore)
     {
-        return new Stadium(StadiumStore.hash)
+        return new Stadium(StadiumStore[hash])
     }
     else{
         return false;
@@ -88,6 +88,6 @@ var addStadium = function (stadium)
     }
     else{
         //else add to store
-        StadiumStore.hash = stadium;
+        StadiumStore[hash] = stadium;
     }
 }

@@ -1,6 +1,5 @@
-Net.prototype.reciveSynchronisation = function(peer,data)
+Net.prototype.receiveSynchronization = function(peer,data)
 {
-	//this.monkey = (data.val);
 	if(data.val[0] > this.lastSnapshotSeq)
 	{
 		this.lastSnapshotSeq = data.val[0];
@@ -11,12 +10,12 @@ Net.prototype.reciveSynchronisation = function(peer,data)
 Net.prototype.receiveSnapshot = function(dummy,data)
 {
 	var that = this;
+	
 	if(data.val[0] > this.lastSnapshotSeq)
 	{
 		this.lastSnapshotSeq = data.val[0];
-	
 		this.playbackQueue.add(data.val);
-		
+			
 	}
 }
 
@@ -27,6 +26,7 @@ Net.prototype.sendToHost = function (data)
 
 Net.prototype.receiveHostData = function (data)
 {
+	//console.log(data);
 	var peer = data.peer || this.host;
 	this[this.methods[data.command]].call(this,peer,data);
 };
@@ -37,11 +37,11 @@ Net.prototype.requestStadiumHash = function()
 }
 Net.prototype.requestStadium = function(hash)
 {
-	this.connection.send({time: getTimeMs(),command: hx.network.STADIUM_HASH,hash : hash});
+	this.connection.send({time: getTimeMs(),command: hx.network.STADIUM,hash : hash});
 }
 Net.prototype.requestPlayers = function()
 {
-	this.connection.send({time: getTimeMs(),command: hx.network.PLAYERS,hash : hash});
+	this.connection.send({time: getTimeMs(),command: hx.network.PLAYERS});
 }
 Net.prototype.loadClientRoom = function (peer) 
 {
@@ -53,7 +53,7 @@ Net.prototype.loadClientRoom = function (peer)
 
 	//load stadium and players from network
 	this.requestPlayers();
-	this.requestStadiumHash();
+	//this.requestStadiumHash();
 	$("#chat-send").on('click',function(){
 			that.sendChatMessage.call(that,getMessage());
 	});
@@ -75,14 +75,23 @@ Net.prototype.copyBuffer = function()
 }
 Net.prototype.receivePlayers = function(peer,data)
 {
-	this.localPlayerIndex = data.localPlayerIndex;
+	this.renderer.setLocalPlayerIndex(data.localPlayerIndex);
 	for(var i in data.val)
 	{
 		var player = data.val[i];
-		net.renderer.createPlayer(player.name,player.avatar,player.index)
+
+		var p = this.renderer.createPlayer(player.name,player.avatar,player.id);
+				console.log(p);
+		if(i == data.localPlayerIndex)
+		{
+			this.me = p;
+			new ControllerClient(this.me,this);
+		}
 	}
-	this.loader.playerIndexReady();
-	this.loader.otherPlayersReady();
+	//load game
+	this.displayRoom();
+	//this.loader.playerIndexReady();
+	//this.loader.otherPlayersReady();
 }
 Net.prototype.receiveStadiumHash = function(peer,data)
 {
@@ -102,7 +111,6 @@ Net.prototype.receiveStadium = function()
 {
 	var stadium = data.val;
 	//var hash = data.hash;
-
 	addStadium(stadium)
 	this.loader.stadiumReady();
 }
@@ -115,4 +123,6 @@ Net.prototype.setStadium = function(stadium)
 Net.prototype.displayRoom = function()
 {
 	console.log("room ready");
+	this.startUpdates();
+	this.renderer.startRender();
 }

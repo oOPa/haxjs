@@ -88,6 +88,10 @@ class DefaultBall {
             var v = that.body.GetPosition();
             return {x : v.x,y:v.y};
     }
+        this.setPos = function(pos){
+    this.body.SetPosition(new b2Vec2(pos.x,pos.y));
+}
+    
     var bodyDef = new b2BodyDef();
     bodyDef.type = b2Body.b2_dynamicBody;
   

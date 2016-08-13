@@ -9,9 +9,10 @@ var Net = function(host,nickname)
 	//corresponds with hx.network
 	this.lastSnapshotSeq = 0;
 	this.updating = false;
-	this.loader = new GameLoaderState(this,displayRoom,this);
+	this.loader = new GameLoaderState(this.displayRoom,this);
 	this.playerIndex = 0;
-	this.stadium = getStadiumFromHash();
+	this.stadium = getStadiumFromHash("670b14728ad9902aecba32e22fa4f6bd");
+	this.methods = [];
 	//this.methods = ["","","","setKeys","","addChatMessage","receiveAuthoritativePosition","receiveInputs","receiveSnapshot","ack","stateSynchronisation"];
 
 	this.defineNetworkCommands();
@@ -25,16 +26,16 @@ Net.prototype.defineNetworkCommands = function()
 		this.methods[hx.network.MOVE] = "setKeys";
 		//this.methods[hx.network.RECV_CHAT] = "addChat"
 		//this.methods[hx.network.ACK]
-		this.methods[hx.network.STADIUM_HASH] = "sendStadiumHash";
-		this.methods[hx.network.STADIUM] = "sendStadium";
+		//this.methods[hx.network.STADIUM_HASH] = "sendStadiumHash";
+		//this.methods[hx.network.STADIUM] = "sendStadium";
 
 	}
 	else
 	{
 		this.methods[hx.network.PLAYERS] = "receivePlayers";
-		this.methods[hx.network.SNAPSHOT] = "receiveSynchronisation";
-		this.methods[hx.network.STADIUM_HASH] = "recieveStadiumHash";
-		this.methods[hx.network.STADIUM] = "receiveStadium";
+		this.methods[hx.network.STATE] = "receiveSynchronization";
+		//this.methods[hx.network.STADIUM_HASH] = "receiveStadiumHash";
+		//this.methods[hx.network.STADIUM] = "receiveStadium";
 	}
 	//both
 
@@ -86,7 +87,8 @@ Net.prototype.joinRoom = function(host)
 			
 		that.connection.on('open', function(){
 			console.log("connected to host!");
-			that.load(host);	
+			//that.load(host);
+			that.loadClientRoom(host);	
 		});
 		
 		that.connection.on('data',function(dataConnection){

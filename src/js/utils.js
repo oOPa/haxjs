@@ -199,7 +199,7 @@ var SyncIterator = function(update)
 }
 SyncIterator.prototype.reset = function()
 {
-	this.pointer = 0;
+	this.pointer = 1;
 }
 SyncIterator.prototype.getSequenceNumber = function()
 {
@@ -208,6 +208,17 @@ SyncIterator.prototype.getSequenceNumber = function()
 SyncIterator.prototype.hasNext = function()
 {
 	return this.pointer != (this.len-1);
+}
+SyncIterator.prototype.getBall = function()
+{
+	if(this.update[1] === 0)
+	{
+		return false;
+	}
+	else
+	{
+		return this.update[1];
+	}
 }
 SyncIterator.prototype.getNext = function()
 {
@@ -228,24 +239,24 @@ var GameLoaderState = function(readyFunction,context)
 	this.readyFunction = readyFunction;
 	this.context = context;
 }
-GameLoaderState.prototype.reset()
+GameLoaderState.prototype.reset = function()
 {
 	this.playerIndex = false;
 	this.otherPlayers = false;
 	this.stadium = false;
 	this.loaded = false;
 }
-GameLoaderState.prototype.playerIndexReady()
+GameLoaderState.prototype.playerIndexReady = function()
 {
 	this.playerIndex = true;
 	this.checkReady();
 }
-GameLoaderState.prototype.otherPlayersReady()
+GameLoaderState.prototype.otherPlayersReady = function()
 {
 	this.otherPlayer = true;
 	this.checkReady();
 }
-GameLoaderState.prototype.stadiumReady()
+GameLoaderState.prototype.stadiumReady = function()
 {
 	this.stadium = true;
 	this.checkReady();

@@ -86,7 +86,9 @@ hx.network = {
     SNAPSHOT : 8,
     ACK : 9,
     STATE : 10,
-    STADIUM_HASH : 11
+    STADIUM_HASH : 11,
+    ROOM_META: 12,
+    STADIUM : 13
 }
 
 //hx.MaxInputsPerPacket = 8;
