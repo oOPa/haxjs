@@ -33,9 +33,11 @@ buildBall ()
 
 init  ()
 {
+    this.LobbyPlayerMovable = true;
     this.players = createArray(8);
     this.playersRendering = createArray(8);
-
+    this.lobbyPlayers = createArray(8);
+    
     this.physics = new Physics();
     /** balls */
     this.ballRender = 0;
@@ -72,10 +74,10 @@ loadDraw()
     this.viewport.y=0;
 
     /** viewport border ***/
-    this.graphics.lineStyle(20,0x3c312b,1);
-    this.graphics.alpha = 1;
-    this.graphics.drawRect(0,0,800,(600-150));
-    this.graphics.endFill();
+    this.camera.lineStyle(20,0x3c312b,1);
+    this.camera.alpha = 1;
+    this.camera.drawRect(0,0,800,(600-150));
+    this.camera.endFill();
 
     /** display frame rate */
     this.fps =  new PIXI.Text('Menu (esc)',{font : '15px Arial', fill : 'white', align : 'center'});
@@ -91,12 +93,82 @@ loadDraw()
     this.drawNets();
     //create a ball
     this.buildBall();
+    //create lobby
+    this.showLobby = false;
+    this.buildLobby();
 
     this.viewport.addChild(this.camera);
     this.graphics.addChild(this.viewport);
+    this.graphics.addChild(this.lobby);
     this.stage.addChild(this.graphics);
 };
 
+/** create the lobby */
+buildLobby()
+{
+    this.lobby = new PIXI.Graphics();
+    this.lobby.visible = false;
+    this.lobby.beginFill(hx.rendering.backgroundColor);
+
+    var margin = {x : 20,y:20};
+    var rectProperties = {gap:50,width:200,height:200,text  :{font : '30px Arial', fill : 'white', align : 'center'}};
+    /** team 1 */
+    var team1 = new PIXI.Text('Team 1',rectProperties.text);
+    team1.x = margin.x;
+    team1.y = margin.y;
+    this.lobby.drawRect(margin.x,margin.y,rectProperties.width,rectProperties.height);
+   
+    /** spectator */
+    var spectator = new PIXI.Text('Spectators',rectProperties.text);
+    var x =  margin.x + rectProperties.width + rectProperties.gap
+    spectator.x = x;
+    spectator.y = margin.y;
+    this.lobby.drawRect(x, margin.y,rectProperties.width,rectProperties.height);
+
+    /** team 2 */
+    var team2 = new PIXI.Text('Team 2',rectProperties.text);
+    x +=  rectProperties.width + rectProperties.gap;
+    team2.x = x;
+    team2.y = margin.y;
+    this.lobby.drawRect(x,margin.y,rectProperties.width,rectProperties.height);
+    
+    /** start button */
+    var startButton = new PIXI.Text('Start',rectProperties.text);
+    startButton.x = 200;
+    startButton.y = 825;
+    this.lobby.drawRect(200,800,200,200);
+
+    /** lobby players */
+    this.team1Lobby = new LobbyPlayerManager(this.lobby,margin.x,margin.y+20);
+    this.team2Lobby = new LobbyPlayerManager(this.lobby);
+    this.spectatorLobby = new LobbyPlayerManager(this.lobby);
+
+    //sample lobby player
+    this.sampleLobbyPlayer = new LobbyPlayerObject();
+    this.lobby.addChild(this.sampleLobbyPlayer.graphics);
+    this.team1Lobby.addPlayer(this.sampleLobbyPlayer);
+    /** add to lobby */
+    this.lobby.addChild(team1);
+    this.lobby.addChild(spectator);
+    this.lobby.addChild(team2);
+    this.lobby.addChild(startButton);
+}
+toggleLobby()
+{
+    if(this.showLobby)
+    {
+        this.viewport.visible = false;
+        this.lobby.visible = true;
+        this.renderer.backgroundColor = 0x3c312b;
+    }
+    else
+    {
+        this.viewport.visible = true;
+        this.lobby.visible = false;
+        this.renderer.backgroundColor = hx.rendering.backgroundColor;
+    }
+    this.showLobby = !this.showLobby;
+}
 /** draw the nets goals and everying in between **/
 drawNets ()
 {
@@ -339,4 +411,84 @@ class RendererPlayer {
         this.avatar_label.txt = avatar;
     }
     
+}
+class LobbyPlayerObject
+{
+   
+  
+    setPos(x,y)
+    {
+        this.graphics.x = x;
+        this.graphics.y = y;
+    }
+     constructor()
+    {
+        var width = 200;
+        var height = 20;
+        this.hitButtonWidth = 5;
+        this.graphics = new PIXI.Graphics();
+        this.graphics.beginFill(0xFFFFFF,0.5);
+        this.graphics.drawRect(0,0,width,height);
+        this.graphics.endFill();
+        var countryText = new PIXI.Text("UK",{font : '15px Arial', fill : 'white'});
+        countryText.x = 12;
+        var nicknameText = new PIXI.Text("Benjamin",{font : '15px Arial', fill : 'white'});
+        nicknameText.x = 40;
+        this.pingText = new PIXI.Text("12",{font : '15px Arial', fill : 'green'});
+        this.pingText.x = 100;
+        this.graphics.addChild(countryText);
+        this.graphics.addChild(nicknameText);
+        this.graphics.addChild(this.pingText);
+    }
+    getIndex()
+    {
+        return this.index;
+    }
+    update()
+    {
+        this.ping = player.getPing();
+    }
+    makeLeftButton(actionPerformed)
+    {
+        var leftButton = new PIXI.Text("<",{font : '15px Arial', fill : 'white'});
+    }
+    makeRightButton()
+    {
+        
+    }
+    makeBothButton()
+    {
+
+    }
+
+}
+class LobbyPlayerManager
+{
+    constructor(lobby,x,y)
+    {
+        this.players = createArray(8);
+        this.len = 0;
+        this.x = x;
+        this.y = y;
+        this.lobby = lobby;
+    }
+    addPlayer(lobbyPlayer)
+    {
+        if(!this.players[lobbyPlayer.getIndex()])
+        {
+            this.len += 1;
+            lobbyPlayer.setPos(this.x,this.y+20*this.len);
+            return true;
+        }
+        return false;
+    }
+    removePlayer(lobbyPlayer)
+    {
+        if(this.players[lobbyPlayer.getIndex()])
+        {
+            this.players[lobbyPlayer.getIndex()] = 0;  
+            this.len -= 1;  
+        }
+    }
+
 }

@@ -3,6 +3,7 @@ class Prediction extends Renderer {
 constructor()
 {
     super();
+    this.LobbyPlayerMovable = false;
 }
 init  () {
 

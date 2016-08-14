@@ -23,7 +23,7 @@ hx.rendering.backgroundColor = 0x939e7f;
 hx.rendering.gameDivId = "game-view";
 hx.rendering.antialias = true;
 hx.rendering.resolution = {
-    width: 500,
+    width: 800,
     height: 600
 }
 

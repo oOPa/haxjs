@@ -56,7 +56,7 @@ var join_debug_room = function()
 {
 	$.get("/get_debug_room",function(data)
 	{
-		window.net=new Net(false,'client');window.net.joinRoom(data);
+		window.net=new Client('benjamin-client');window.net.joinRoom(data);
 	});
 }
 var getMessage=function ()

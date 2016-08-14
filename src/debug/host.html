@@ -25,14 +25,13 @@
 <script src="./js/constants.js"></script>
 <script src="./js/stadium.js"></script>
 <script src="./js/utils.js"></script>
-<script src="./js/loader.controller.js"></script>
-<script src="./js/loader.player.js"></script>
-
-<script src="./js/loader.net.js"></script>
-<script src="./js/hx.net-server.js"></script>
-<script src="./js/loader.physics.js"></script>
-<script src="./js/hx-sync-server.js"></script>
-<script src="./js/loader.ui.js"></script>
+<script src="./js/input.js"></script>
+<script src="./js/player.js"></script>
+<script src="./js/server.js"></script>
+<script src="./js/physics.js"></script>
+<script src="./js/ui.js"></script>
+<script src="./js/rendering.js"></script>
+<script src="./js/prediction.js"></script>
 <style type="text/css">
 .center-text{text-align:center;}
 body { padding-top: 70px; }
@@ -43,7 +42,7 @@ body { padding-top: 70px; }
     }
 </style>
 </head>	
-<body onload="make_room = make_room_host;window.net = new Net(true,'benjamin-host');window.net.createRoom();">
+<body onload="make_room = make_room_host;window.net = new Host('benjamin-host');window.net.createRoom();">
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
    
