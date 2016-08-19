@@ -23,8 +23,8 @@ hx.rendering.backgroundColor = 0x939e7f;
 hx.rendering.gameDivId = "game-view";
 hx.rendering.antialias = true;
 hx.rendering.resolution = {
-    width: 800,
-    height: 600
+    width: 1280,
+    height: 720
 }
 
 /** client side */
@@ -61,6 +61,7 @@ hx.constants.Directions = {
     37:2,
     38:1
 };
+hx.constants.Action = {88 : 1,32 : 0,13 : 1}
 hx.constants.Ball = {
         RADIUS:0.25,
         DENSITY:0.001,

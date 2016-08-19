@@ -1,6 +1,8 @@
 var NetPlayer = function(name,avatar,index) {
     var that = this;
     this.keys = [false,false,false,false];
+    this.action = false;
+    this.isActionSet = false;
     this.name = name;
     this.avatar = avatar;
     this.ping = 0;
@@ -46,6 +48,10 @@ NetPlayer.prototype.setPosAndVelocity = function(pos)
 }
 NetPlayer.prototype.update = function(){
     var that = this;
+    if(this.action != this.isActionSet)
+    {
+        this.setAction();
+    }
     var vec = new PIXI.Vector(0, 0);
     this.keys.forEach(function (key, i) {
     if (key) {
@@ -63,4 +69,20 @@ NetPlayer.prototype.update = function(){
 NetPlayer.prototype.getVector = function()
 {
     return this.vec;
+}
+NetPlayer.prototype.setAction = function()
+{
+    return true;
+    if(this.action)
+    {
+    this.physics.fix.SetRestitution(100)
+    this.physics.fix.SetDensity(2)
+    }
+    else
+    {
+        this.physics.fix.SetRestitution(0.2)
+        this.physics.fix.SetDensity(0);
+    }
+    this.isActionSet = this.action;
+    this.physics.body.ResetMassData()
 }

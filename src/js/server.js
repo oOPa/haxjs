@@ -87,7 +87,7 @@ Host.prototype.load = function (peer)
 			that.sendChatMessage.call(that,getMessage());
 	});
 
-	this.me = this.renderer.createPlayer(this.nickname,"fakeevatar",0);
+	window.me = this.me = this.renderer.createPlayer(this.nickname,"fakeevatar",0);
 	this.renderer.startRender();
 	make_room("room_name",this.peer.id);
 	new Controller(this.me)

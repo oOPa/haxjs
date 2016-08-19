@@ -86,23 +86,145 @@ loadDraw()
     this.graphics.addChild(this.fps);
 
     //draw stadium
-    this.drawStadium();
+    this.drawStadiumFromIterator(window.classicStadiumIterator);
+    //this.drawStadium();
     //draw post(s)
-    this.drawPosts();
+    //this.drawPosts();
     //draw nets
-    this.drawNets();
+    //this.drawNets();
     //create a ball
     this.buildBall();
     //create lobby
     this.showLobby = false;
-    this.buildLobby();
+    //this.buildLobby();
 
     this.viewport.addChild(this.camera);
     this.graphics.addChild(this.viewport);
-    this.graphics.addChild(this.lobby);
+    //this.graphics.addChild(this.lobby);
     this.stage.addChild(this.graphics);
 };
+drawStadiumFromIterator(it)
+{
+    console.log("loading stadium \"" + it.getName()+"\"")
 
+    this.stadium = new PIXI.Graphics();
+    var size = it.getSize();
+    this.stadium.width = it.width;
+    this.stadium.height = it.height;
+
+    var vit = it.getVertexes();
+    var len = vit.length;
+    var traits = it.getTraits();
+    var scale = 50;
+
+    //discs
+    var dit = it.getDiscs();
+    len = dit.length;
+    for(var i = 0; i < len;i++)
+    {
+        var disc = dit[i];
+          var radius = disc.radius || traits[disc.trait].radius;
+        this.stadium.beginFill(parseInt(disc.color,16));
+        this.stadium.drawCircle(disc.pos[0],disc.pos[1],radius);
+        this.stadium.endFill();
+    }
+    //rnadom
+     // this.stadium.lineStyle(2,0x000000);
+  //  this.stadium.arcTo(50,0,50,50,2);
+    //segments
+    var sit = it.getSegments();
+    len = sit.length;
+    for(var i =0;i < len;i++)
+    {
+        var segment = sit[i];
+
+            var v0 = vit[segment["v0"]];
+            var v1 = vit[segment["v1"]];
+           // console.log(v0);
+            //check if visible
+            if(true)
+           // if(traits[segment.trait].vis)
+            {
+                if(!segment.curve)
+                {
+                    //no curve
+                    this.stadium.lineStyle(2,0x000000);
+                    
+                    this.stadium.moveTo(v0.x,v0.y);
+                    this.stadium.lineTo(v1.x,v1.y);
+                }
+                else
+                {
+                    //draw curve
+                    var arc = (calculate_arc([v0.x,v0.y],[v1.x,v1.y],segment.curve));
+  console.log(arc);
+                    if(arc.radius)
+                    {
+                       this.stadium.lineStyle(5,0xFFFFFF);
+                       this.stadium.arc(arc.center[0], arc.center[1], arc.radius, arc.from, arc.to, false);
+                      
+                      this.stadium.moveTo(0,0);//this.stadium.endFill();
+                    }
+                    else
+                    {
+    // this.stadium.moveTo(v0.x, v0.y);
+     //           this.stadium.lineTo(v1.x, v1.y);
+                    }
+                }
+}
+        
+    }
+    //planes
+    var pit = it.getPlanes();
+    len = pit.length;
+    for(var i =0;i < len;i++)
+    {
+
+    }
+
+    this.camera.addChild(this.stadium);
+}
+moveToTeam1Lobby(lobbyPlayer)
+{
+    var that = this;
+    if(lobbyPlayer.lobby)
+    {
+        lobbyPlayer.lobby.removePlayer(lobbyPlayer);
+    }
+    this.team1Lobby.addPlayer(lobbyPlayer);
+    lobbyPlayer.setOnLeftDirectionClick(false);
+    lobbyPlayer.setOnRightDirectionClick(function(){
+        that.moveToSpecLobby();
+    });
+}
+moveToSpecLobby()
+{
+    var that = this;
+    if(lobbyPlayer.lobby)
+    {
+        lobbyPlayer.lobby.removePlayer(lobbyPlayer);
+    }
+    this.spectatorLobby.addPlayer(lobbyPlayer);
+    lobbyPlayer.setOnRightDirectionClick(function(){
+        that.moveToTeam2Lobby();
+    });   
+    lobbyPlayer.setOnRightDirectionClick(function(){
+        that.moveToTeam1Lobby();
+    });  
+}
+moveToTeam2Lobby()
+{
+    var that = this;
+    if(lobbyPlayer.lobby)
+    {
+        lobbyPlayer.lobby.removePlayer(lobbyPlayer);
+    }
+    this.team2Lobby.addPlayer(lobbyPlayer);
+    lobbyPlayer.setOnRightDirectionClick(false);
+    lobbyPlayer.setOnLeftDirectionClick(function(){
+        that.moveToSpecLobby();
+    });
+}
 /** create the lobby */
 buildLobby()
 {
@@ -111,7 +233,7 @@ buildLobby()
     this.lobby.beginFill(hx.rendering.backgroundColor);
 
     var margin = {x : 20,y:20};
-    var rectProperties = {gap:50,width:200,height:200,text  :{font : '30px Arial', fill : 'white', align : 'center'}};
+    var rectProperties = {gap:50,width:250,height:200,text  :{font : '30px Arial', fill : 'white', align : 'center'}};
     /** team 1 */
     var team1 = new PIXI.Text('Team 1',rectProperties.text);
     team1.x = margin.x;
@@ -139,22 +261,31 @@ buildLobby()
     this.lobby.drawRect(200,800,200,200);
 
     /** lobby players */
-    this.team1Lobby = new LobbyPlayerManager(this.lobby,margin.x,margin.y+20);
-    this.team2Lobby = new LobbyPlayerManager(this.lobby);
-    this.spectatorLobby = new LobbyPlayerManager(this.lobby);
+    this.team1Lobby = new LobbyPlayerManager(margin.x,margin.y+20);
+    this.team2Lobby = new LobbyPlayerManager(x,margin.y);
+    this.spectatorLobby = new LobbyPlayerManager(spectator.x,spectator.y);
 
     //sample lobby player
     this.sampleLobbyPlayer = new LobbyPlayerObject();
+    this.sampleLobbyPlayer2 = new LobbyPlayerObject();
     this.lobby.addChild(this.sampleLobbyPlayer.graphics);
+    this.lobby.addChild(this.sampleLobbyPlayer2.graphics);
     this.team1Lobby.addPlayer(this.sampleLobbyPlayer);
+    this.team2Lobby.addPlayer(this.sampleLobbyPlayer2);
+
     /** add to lobby */
     this.lobby.addChild(team1);
     this.lobby.addChild(spectator);
     this.lobby.addChild(team2);
     this.lobby.addChild(startButton);
 }
+createLobbyPlayer(player)
+{
+
+}
 toggleLobby()
 {
+    return false;
     if(this.showLobby)
     {
         this.viewport.visible = false;
@@ -260,12 +391,23 @@ startRender ()
         that.renderer.render(that.stage);
         that.frameTime = 1000 / (currentTime - prevTime);
         that.drawObjects(currentTime);
+        that.moveCamera();
         prevTime = currentTime;       
         requestAnimationFrame( animate ); 
                    
      
     }
 };
+moveCamera()
+{
+    if(this.playersRendering[0])
+    {
+        //console.log(this.playersRendering[0].graphics);
+        var point = this.playersRendering[0].graphics.position;
+        this.viewport.pivot.x = point.x - 250;
+        this.viewport.pivot.y= point.y - 250;
+    }
+}
 drawObjects(currentTime)
 {
     //calculate physics
@@ -355,7 +497,7 @@ drawPlayers (currentTime)
                     //this.setPriority(item,0);
                 }
             }
-
+            item.setAction(this.players[i].action);
             p.x = point.x;
             p.y = point.y;
         }
@@ -387,6 +529,18 @@ class RendererBall {
     that.graphics.endFill();
 }}
 class RendererPlayer {
+    setAction(isAction)
+    {
+        if(isAction)
+        {
+    
+		this.graphics.lineStyle(3.5,0xFFFFFF);
+        }
+        else
+        {
+			this.graphics.lineStyle(3,0xFFFFFF);
+        }
+    }
      constructor (name,avatar) {
      var that = this;
 		this.graphics = new PIXI.Graphics();
@@ -424,18 +578,25 @@ class LobbyPlayerObject
      constructor()
     {
         var width = 200;
-        var height = 20;
+        this.height = 30;
         this.hitButtonWidth = 5;
         this.graphics = new PIXI.Graphics();
         this.graphics.beginFill(0xFFFFFF,0.5);
-        this.graphics.drawRect(0,0,width,height);
+        this.graphics.drawRoundedRect(0,0,width,this.height,15);
         this.graphics.endFill();
-        var countryText = new PIXI.Text("UK",{font : '15px Arial', fill : 'white'});
-        countryText.x = 12;
-        var nicknameText = new PIXI.Text("Benjamin",{font : '15px Arial', fill : 'white'});
+
+        var countryText = new PIXI.Text("UK",{font : '10px Arial', fill : 'black'});
+        countryText.x = 20;
+        countryText.y = 5;      
+        var nicknameText = new PIXI.Text("Benjamin",{font : '20px Arial', fill : 'black'});
         nicknameText.x = 40;
-        this.pingText = new PIXI.Text("12",{font : '15px Arial', fill : 'green'});
-        this.pingText.x = 100;
+        nicknameText.y  =2.5;
+        this.pingText = new PIXI.Text("ping: 12",{font : '15px Arial', fill : 'green'});
+        this.pingText.x = 140;
+        this.pingText.y = 5;
+        
+        //buttons
+        this.createButtons();
         this.graphics.addChild(countryText);
         this.graphics.addChild(nicknameText);
         this.graphics.addChild(this.pingText);
@@ -448,36 +609,88 @@ class LobbyPlayerObject
     {
         this.ping = player.getPing();
     }
-    makeLeftButton(actionPerformed)
+    setLobby(lobby)
     {
-        var leftButton = new PIXI.Text("<",{font : '15px Arial', fill : 'white'});
+        this.lobby = lobby;
     }
-    makeRightButton()
+    setOnLeftDirectionClick(action)
     {
-        
-    }
-    makeBothButton()
-    {
+        if(action)
+        {
+            this.leftButton.interative = true;
+                        this.rightButton.buttonMode =true;
 
+            this.rightButton.hitArea = new PIXI.RoundedRectangle(0,0,20,30,5);
+            this.leftButton.click = action;
+            
+        }
+        else
+        {
+            this.leftButton.interative = false;
+            this.rightButton.buttonMode =false;
+        }
+    }
+    setOnRightDirectionClick(action)
+    {
+        if(action)
+        {
+            this.rightButton.interative = true;
+            this.rightButton.buttonMode =true;
+            this.rightButton.hitArea = new PIXI.RoundedRectangle(10,0,20,30,5);
+            this.rightButton.click = action;  
+        }
+        else
+        {
+            this.rightButton.interative = false;
+                        this.rightButton.buttonMode =false;
+        }  
+    }
+    createButtons()
+    {
+        var that = this;
+        /** left */
+        this.leftButton = new PIXI.Graphics();
+        this.leftButton.beginFill(0x000000);
+        this.leftButton.drawRoundedRect(0,0,20,30,5);
+        var leftButtonTxt = new PIXI.Text("<",{font : '20px Arial', fill : 'white'});
+        this.leftButton.x = 0;
+
+        //this.leftButton.setInteractive(true);
+        /** right */
+        this.rightButton = new PIXI.Graphics();
+        this.rightButton.beginFill(0x000000);
+        this.rightButton.drawRoundedRect(10,0,20,30,5);
+        var rightButtonTxt = new PIXI.Text(">",{font : '20px Arial', fill : 'white'});
+        rightButtonTxt.x =20;
+        rightButtonTxt.y = 0;
+        this.rightButton.x = 180    ;
+        //this.rightButton.setInteractive(true);
+        /** add */
+
+        this.leftButton.addChild(leftButtonTxt);
+        this.graphics.addChild(this.leftButton);
+        
+        this.rightButton.addChild(rightButtonTxt);
+        this.graphics.addChild(this.rightButton);
     }
 
 }
 class LobbyPlayerManager
 {
-    constructor(lobby,x,y)
+    constructor(x,y)
     {
         this.players = createArray(8);
         this.len = 0;
         this.x = x;
         this.y = y;
-        this.lobby = lobby;
     }
     addPlayer(lobbyPlayer)
     {
         if(!this.players[lobbyPlayer.getIndex()])
         {
             this.len += 1;
-            lobbyPlayer.setPos(this.x,this.y+20*this.len);
+            lobbyPlayer.setPos(this.x,this.y+35*this.len);
+            lobbyPlayer.setLobby(this);
             return true;
         }
         return false;
@@ -486,7 +699,8 @@ class LobbyPlayerManager
     {
         if(this.players[lobbyPlayer.getIndex()])
         {
-            this.players[lobbyPlayer.getIndex()] = 0;  
+            this.players[lobbyPlayer.getIndex()] = 0; 
+            lobbyPlayer.setLobby(0); 
             this.len -= 1;  
         }
     }

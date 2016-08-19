@@ -3,6 +3,11 @@ class Controller{
         this.player = player;
 
    document.addEventListener('keydown', (e) => {
+        if(e.keyCode in hx.constants.Action)
+        {
+            console.log(("down"))
+            this.player.action = true;
+        }
         if (e.keyCode > 36 && e.keyCode < 41) {
             this.player.keys[hx.constants.Directions[e.keyCode]] = true;
             //this.player.addKeys();
@@ -15,6 +20,11 @@ class Controller{
                 //show lobby
                 window.net.renderer.toggleLobby();
             }
+            if(e.keyCode in hx.constants.Action)
+        {
+            console.log(("up"))
+            this.player.action = false;
+        }
     });
     
     }
@@ -24,20 +34,15 @@ class ControllerClient{
      constructor(player,net){
         this.player = player;
         this.net = net;
-       // this.inputBuffer = inputBuffer;
    document.addEventListener('keydown', (e) => {
         if (e.keyCode > 36 && e.keyCode < 41) {
             this.player.keys[hx.constants.Directions[e.keyCode]] = true;	
-            //this.player.moving = true; 
-            this.net.sendInputToHost();	 
-          //  inputBuffer.add(this.player.keys);         
+            this.net.sendInputToHost();	         
         }
     });
     document.addEventListener('keyup', (e) => {
             this.player.keys[hx.constants.Directions[e.keyCode]] = false;	
-            //this.player.update();
             this.net.sendInputToHost();		
-           // this.inputBuffer.add(this.player.keys);	
     });
 }
 }

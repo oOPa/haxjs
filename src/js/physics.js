@@ -23,7 +23,8 @@ class Physics
 update()
 {
    
-    this.world.Step(1 / 60, 10, 10);
+    //this.world.Step(1 / 60, 10, 10);
+    this.world.Step(1 / 30, 10, 10);
     this.world.ClearForces();
     
 }
@@ -57,7 +58,7 @@ class PhysicsPlayer {
     bodyDef.angularDamping = hx.constants.Player.AD;
 
     this.body = world.CreateBody(bodyDef);
-    this.body.CreateFixture(fixDef);
+    this.fix = this.body.CreateFixture(fixDef);
 }
 update ()
 {
@@ -98,17 +99,49 @@ class DefaultBall {
     var fixDef = new b2FixtureDef();
     fixDef.density = hx.constants.Ball.DENSITY;
     fixDef.friction = hx.constants.Player.FRICTION;
-    fixDef.restitution = hx.constants.Ball.RESTITUTION;
+    fixDef.restitution = 0.1;
     fixDef.shape = new b2CircleShape(30*hx.constants.Ball.RADIUS);
     bodyDef.position.x = 100 / hx.constants.World.SCALE;
     bodyDef.position.y = 100 / hx.constants.World.SCALE;
     
     bodyDef.position.x = 50;
     bodyDef.position.y = 50;
-    bodyDef.linearDamping = hx.constants.Player.LD;
+    bodyDef.linearDamping =1// hx.constants.Player.LD;
     bodyDef.angularDamping = hx.constants.Player.AD;
 
     this.body = world.CreateBody(bodyDef);
-    this.body.CreateFixture(fixDef);
+    this.fix = this.body.CreateFixture(fixDef);
 }
+
+}
+class BallFromStadium
+{
+    constructor(world,stadium)
+    {
+        var ballDefaults = stadium.getBall();
+        var bodyDef = new b2BodyDef();
+        bodyDef.type = b2Body.b2_dynamicBody;
+
+        var fixDef = new b2FixtureDef();
+        fixDef.density = ballDefaults.DENSITY;
+        fixDef.friction = ballDefaults.FRICTION;
+        fixDef.restitution = ballDefaults.RESTITUTION;
+        fixDef.shape = new b2CircleShape(hx.constants.World.SCALE*ballDefaults.RADIUS);
+
+        bodyDef.position.x = 50;
+        bodyDef.position.y = 50;
+        bodyDef.linearDamping = hx.constants.Player.LD;
+        bodyDef.angularDamping = hx.constants.Player.AD;
+
+        this.body = world.CreateBody(bodyDef);
+        this.body.CreateFixture(fixDef);
+    }
+    setPos(pos)
+    {
+            this.body.SetPosition(new b2Vec2(pos.x,pos.y));
+    }
+    point(){
+        var v = this.body.GetPosition();
+        return {x : v.x,y:v.y};
+    }
 }
