@@ -56,7 +56,7 @@ class PhysicsPlayer {
 	//bodyDef.position.y = 0;
     bodyDef.linearDamping = hx.constants.Player.LD;
     bodyDef.angularDamping = hx.constants.Player.AD;
-
+	debugger;
     this.body = world.CreateBody(bodyDef);
     this.fix = this.body.CreateFixture(fixDef);
 }
