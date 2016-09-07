@@ -1,3 +1,3 @@
 # haxjs
 
-Moving to [http://github.com/oOPa/haxpuck]
+Moving to hhttp://github.com/oOPa/haxpuck
